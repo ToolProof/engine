@@ -4,7 +4,7 @@ import { Storage } from '@google-cloud/storage';
 
 const storage = new Storage();
 
-export const fetchRegistry = {
+export const transportRegistry = {
     fetchContentFromUrl: async (url: string) => {
         const response = await fetch(url);
         if (!response.ok) {

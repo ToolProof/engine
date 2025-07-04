@@ -1,6 +1,6 @@
 import { GraphStateAnnotationRoot } from '../types.js';
 import { NodeMutus } from '../nodes/nodeMutus.js';
-import { fetchRegistry } from '../registries/registries.js';
+import { transportRegistry } from '../registries/registries.js';
 import { StateGraph, START, END } from '@langchain/langgraph';
 
 
@@ -10,7 +10,7 @@ const stateGraph = new StateGraph(GraphStateAnnotationRoot)
             {
                 key: 'candidate',
                 intraMorphisms: {
-                    transport: fetchRegistry.fetchContentFromUrl2,
+                    transport: transportRegistry.fetchContentFromUrl2,
                     transform: () => { } //intraMorphismRegistry.getCandidates,
                 }
             },

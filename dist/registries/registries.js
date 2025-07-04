@@ -1,7 +1,7 @@
 // import { intraMorphismRegistry as intraMR_ligandokreado, interMorphismRegistry as interMR_ligandokreado } from "./ligandokreado";
 import { Storage } from '@google-cloud/storage';
 const storage = new Storage();
-export const fetchRegistry = {
+export const transportRegistry = {
     fetchContentFromUrl: async (url) => {
         const response = await fetch(url);
         if (!response.ok) {
