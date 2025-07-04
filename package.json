@@ -22,7 +22,6 @@
     "dotenv": "^16.4.7",
     "firebase-admin": "^13.2.0",
     "openai": "^4.87.3",
-    "shared": "file:../shared",
     "ws": "^8.18.3"
   },
   "devDependencies": {
