@@ -1,4 +1,4 @@
-import { GraphSpec_ToolProof, _GraphSpec_ToolProof } from 'shared/src/types.js';
+// import { GraphSpec_ToolProof, _GraphSpec_ToolProof } from 'shared/src/types.js';
 import { parse } from '@babel/parser';
 const traverseModule = await import('@babel/traverse');
 const traverse = traverseModule.default;
@@ -7,7 +7,7 @@ import * as t from '@babel/types';
 
 
 export const intraMorphismRegistry = {
-    getNodeInvocationsFromSourceCode: (sourceCode: string) => {
+    /* getNodeInvocationsFromSourceCode: (sourceCode: string) => {
         const ast = parse(sourceCode, {
             sourceType: 'module',
             plugins: ['typescript'], // or 'jsx' if JSX used
@@ -74,7 +74,7 @@ export const intraMorphismRegistry = {
             spec: toolProofSpecs,
         };
         return graphSpec;
-    },
+    }, */
     getCandidates: (content: string): { spec: string[] } => {
         return {
             spec: content

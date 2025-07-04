@@ -1,4 +1,4 @@
-import { intraMorphismRegistry as intraMR_grafumilo, interMorphismRegistry as interMR_grafumilo } from "./grafumilo";
+import { interMorphismRegistry as interMR_grafumilo } from "./grafumilo";
 // import { intraMorphismRegistry as intraMR_ligandokreado, interMorphismRegistry as interMR_ligandokreado } from "./ligandokreado";
 import { storage, bucketName } from '../firebaseAdminInit.js';
 
