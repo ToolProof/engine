@@ -1,7 +1,9 @@
 import { NodeBase } from '../types.js';
-import { storage, bucketName } from '../firebaseAdminInit.js';
+import { Storage } from '@google-cloud/storage';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
+const storage = new Storage();
+const bucketName = 'tp_resources'; // ATTENTION
 export class NodeDedit extends NodeBase {
     constructor(spec) {
         super();

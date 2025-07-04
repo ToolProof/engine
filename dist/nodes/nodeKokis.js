@@ -1,9 +1,9 @@
 import { NodeBase } from '../types.js';
-import { bucketName } from '../firebaseAdminInit.js';
 import { AIMessage } from '@langchain/core/messages';
 import * as path from 'path';
 import axios from 'axios';
 import WebSocket from 'ws';
+const bucketName = 'tp_resources'; // ATTENTION
 export class NodeKokis extends NodeBase {
     constructor(spec) {
         super();
