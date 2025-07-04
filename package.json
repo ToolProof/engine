@@ -16,7 +16,7 @@
     "@babel/traverse": "^7.27.3",
     "@google-cloud/storage": "^7.14.0",
     "@langchain/core": "^0.3.62",
-    "@langchain/langgraph": "^0.2.54",
+    "@langchain/langgraph": "^0.3.6",
     "@langchain/openai": "^0.4.4",
     "axios": "^1.10.0",
     "dotenv": "^16.4.7",
