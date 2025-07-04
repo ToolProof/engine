@@ -3,8 +3,4 @@
 # dependencies
 node_modules
 
-gcp-key.json
-
-.env
-
 services/
