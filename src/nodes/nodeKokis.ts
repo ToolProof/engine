@@ -1,5 +1,4 @@
 import { NodeBase, GraphState, ResourceMap } from '../types.js';
-import { bucketName } from '../firebaseAdminInit.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import * as path from 'path';
@@ -11,6 +10,8 @@ interface TSpec {
     outputDir: string;
     interMorphism: () => string;
 }
+
+const bucketName = 'tp_resources'; // ATTENTION
 
 export class NodeKokis extends NodeBase<TSpec> {
 

@@ -1,7 +1,9 @@
 import { interMorphismRegistry as interMR_grafumilo } from "./grafumilo";
 // import { intraMorphismRegistry as intraMR_ligandokreado, interMorphismRegistry as interMR_ligandokreado } from "./ligandokreado";
-import { storage, bucketName } from '../firebaseAdminInit.js';
+import { Storage } from '@google-cloud/storage';
 
+const storage = new Storage();
+const bucketName = 'tp_resources'; // ATTENTION
 
 export const fetchRegistry = {
     fetchContentFromUrl: async (url: string) => {
