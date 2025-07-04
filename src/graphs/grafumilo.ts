@@ -6,11 +6,11 @@ import { StateGraph, START, END } from '@langchain/langgraph';
 
 const stateGraph = new StateGraph(GraphStateAnnotationRoot)
     .addNode('nodeMutus', new NodeMutus({
-        inputs: [
+        units: [
             {
                 key: 'candidate',
                 intraMorphisms: {
-                    fetch: fetchRegistry.fetchContentFromUrl2,
+                    transport: fetchRegistry.fetchContentFromUrl2,
                     transform: () => { } //intraMorphismRegistry.getCandidates,
                 }
             },

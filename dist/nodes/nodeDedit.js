@@ -30,7 +30,7 @@ export class NodeDedit extends NodeBase {
         try {
             const storage = new Storage();
             const resourceMapAugmentedWithPath = {};
-            for (const inputSpec of this.spec.inputs) {
+            for (const inputSpec of this.spec.units) {
                 const value = state.resourceMap[inputSpec.key].value;
                 const timestamp = new Date().toISOString();
                 const outputPath = inputSpec.path.replace('timestamp', timestamp);

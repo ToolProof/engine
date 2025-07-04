@@ -1,10 +1,10 @@
 import { NodeBase, GraphState } from '../types.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 interface TSpec {
-    inputs: {
+    units: {
         key: string;
         intraMorphisms: {
-            fetch: (url: string) => Promise<string>;
+            transport: (url: string) => Promise<string>;
             transform: (content: string) => any | Promise<any>;
         };
     }[];

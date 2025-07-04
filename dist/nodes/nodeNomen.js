@@ -35,9 +35,9 @@ export class NodeNomen extends NodeBase {
             });
             const result = await this.spec.interMorphism(...inputs);
             const extraResources = this.spec.outputs.reduce((acc, output) => {
-                acc[output.key] = {
+                acc[output] = {
                     path: '',
-                    value: result[output.key], // ATTENTION: should be taken through intraMorphism(s)
+                    value: result[output],
                 };
                 return acc;
             }, {});

@@ -4,10 +4,10 @@ import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
 
 interface TSpec {
-    inputs: {
+    units: {
         key: string;
         intraMorphisms: {
-            fetch: (url: string) => Promise<string>;
+            transport: (url: string) => Promise<string>;
             transform: (content: string) => any | Promise<any>; // ATTENTION
         }
     }[];
@@ -53,14 +53,14 @@ export class NodeMutus extends NodeBase<TSpec> {
 
         for (const key of Object.keys(state.resourceMap)) {
 
-            if (!this.spec.inputs.map((input) => input.key).includes(key)) {
+            if (!this.spec.units.map((input) => input.key).includes(key)) {
                 console.log('Skipping resource:', key);
                 continue;
             } else {
                 console.log('Processing resource:', key);
             }
 
-            const intraMorphisms = this.spec.inputs.find((input) => input.key === key)?.intraMorphisms;
+            const intraMorphisms = this.spec.units.find((input) => input.key === key)?.intraMorphisms;
             if (!intraMorphisms) {
                 throw new Error(`No intraMorphisms defined for key: ${key}`);
             }
@@ -68,7 +68,7 @@ export class NodeMutus extends NodeBase<TSpec> {
             const resource = state.resourceMap[key];
 
             try {
-                const content = await intraMorphisms.fetch(resource.path);
+                const content = await intraMorphisms.transport(resource.path);
                 const value = await intraMorphisms.transform(content);
 
                 resource.value = value;

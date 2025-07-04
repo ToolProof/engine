@@ -1,7 +1,7 @@
 import { NodeBase, GraphState } from '../types.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 interface TSpec {
-    inputs: {
+    units: {
         key: string;
         path: string;
     }[];

@@ -3,17 +3,16 @@ import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
 
-type OutputSpec = { key: string; intraMorphisms: string[] };
 
-interface TSpec<Outputs extends readonly OutputSpec[] = OutputSpec[]> {
+interface TSpec<Outputs extends readonly string[] = string[]> {
     inputs: string[];
     outputs: Outputs;
     interMorphism: (...args: any[]) => {
-        [K in Outputs[number] as K['key']]: any;
+        [K in Outputs[number]]: any;
     };
 }
 
-export class NodeNomen<Outputs extends readonly OutputSpec[]> extends NodeBase<TSpec<Outputs>> {
+export class NodeNomen<Outputs extends readonly string[]> extends NodeBase<TSpec<Outputs>> {
 
     spec: TSpec<Outputs>;
 
@@ -63,9 +62,9 @@ export class NodeNomen<Outputs extends readonly OutputSpec[]> extends NodeBase<T
             const result = await this.spec.interMorphism(...inputs);
 
             const extraResources: ResourceMap = this.spec.outputs.reduce((acc, output) => {
-                acc[output.key] = {
+                acc[output] = {
                     path: '',
-                    value: result[output.key as Outputs[number]['key']], // ATTENTION: should be taken through intraMorphism(s)
+                    value: result[output as Outputs[number]],
                 }
                 return acc;
             }, {} as ResourceMap);
