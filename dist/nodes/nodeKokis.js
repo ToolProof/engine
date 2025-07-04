@@ -3,7 +3,7 @@ import { AIMessage } from '@langchain/core/messages';
 import * as path from 'path';
 import axios from 'axios';
 import WebSocket from 'ws';
-export class NodeKokis extends NodeBase {
+export class NodeHigh extends NodeBase {
     constructor(spec) {
         super();
         this.spec = spec;
@@ -14,7 +14,7 @@ export class NodeKokis extends NodeBase {
             const ws = new WebSocket('https://service-websocket-384484325421.europe-west2.run.app');
             ws.on('open', () => {
                 ws.send(JSON.stringify({
-                    node: 'NodeKokis',
+                    node: 'NodeHigh',
                 }));
                 ws.close();
             });
@@ -25,7 +25,7 @@ export class NodeKokis extends NodeBase {
         if (state.dryModeManager.dryRunMode) {
             await new Promise(resolve => setTimeout(resolve, state.dryModeManager.delay));
             return {
-                messages: [new AIMessage('NodeKokis completed in DryRun mode')],
+                messages: [new AIMessage('NodeHigh completed in DryRun mode')],
             };
         }
         try {
@@ -70,7 +70,7 @@ export class NodeKokis extends NodeBase {
                 return acc;
             }, {});
             return {
-                messages: [new AIMessage('NodeKokis completed')],
+                messages: [new AIMessage('NodeHigh completed')],
                 resourceMap: {
                     ...state.resourceMap,
                     ...extraResources,
@@ -78,9 +78,9 @@ export class NodeKokis extends NodeBase {
             };
         }
         catch (error) {
-            console.error('Error in NodeKokis:', error);
+            console.error('Error in NodeHigh:', error);
             return {
-                messages: [new AIMessage('NodeKokis failed')],
+                messages: [new AIMessage('NodeHigh failed')],
             };
         }
     }

@@ -1,7 +1,7 @@
 import { NodeBase } from '../types.js';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
-export class NodeMutus extends NodeBase {
+export class NodeDown extends NodeBase {
     constructor(spec) {
         super();
         this.spec = spec;
@@ -12,7 +12,7 @@ export class NodeMutus extends NodeBase {
             const ws = new WebSocket('https://service-websocket-384484325421.europe-west2.run.app');
             ws.on('open', () => {
                 ws.send(JSON.stringify({
-                    node: 'NodeMutus',
+                    node: 'NodeDown',
                 }));
                 ws.close();
             });
@@ -23,7 +23,7 @@ export class NodeMutus extends NodeBase {
         if (state.dryModeManager.dryRunMode) {
             await new Promise(resolve => setTimeout(resolve, state.dryModeManager.delay));
             return {
-                messages: [new AIMessage('NodeMutus completed in DryRun mode')],
+                messages: [new AIMessage('NodeDown completed in DryRun mode')],
             };
         }
         const resourceMap = state.resourceMap;
@@ -51,7 +51,7 @@ export class NodeMutus extends NodeBase {
             }
         }
         return {
-            messages: [new AIMessage('NodeMutus completed')],
+            messages: [new AIMessage('NodeDown completed')],
             resourceMap,
         };
     }

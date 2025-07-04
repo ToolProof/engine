@@ -1,11 +1,11 @@
 import { GraphStateAnnotationRoot } from '../types.js';
-import { NodeMutus } from '../nodes/nodeMutus.js';
+import { NodeDown } from '../nodes/nodeDown.js';
 import { transportRegistry } from '../registries/registries.js';
 import { StateGraph, START, END } from '@langchain/langgraph';
 
 
 const stateGraph = new StateGraph(GraphStateAnnotationRoot)
-    .addNode('nodeMutus', new NodeMutus({
+    .addNode('nodeDown', new NodeDown({
         units: [
             {
                 key: 'candidate',
@@ -25,7 +25,7 @@ const stateGraph = new StateGraph(GraphStateAnnotationRoot)
             },
         ] */
     }))
-    .addEdge(START, 'nodeMutus')
-    .addEdge('nodeMutus', END);
+    .addEdge(START, 'nodeDown')
+    .addEdge('nodeDown', END);
 
 export const graph = stateGraph.compile();

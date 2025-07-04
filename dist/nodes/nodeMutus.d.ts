@@ -9,7 +9,7 @@ interface TSpec {
         };
     }[];
 }
-export declare class NodeMutus extends NodeBase<TSpec> {
+export declare class NodeDown extends NodeBase<TSpec> {
     spec: TSpec;
     constructor(spec: TSpec);
     invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>>;

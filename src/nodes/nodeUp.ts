@@ -12,7 +12,7 @@ interface TSpec {
     }[]
 }
 
-export class NodeDedit extends NodeBase<TSpec> {
+export class NodeUp extends NodeBase<TSpec> {
 
     spec: TSpec;
 
@@ -30,7 +30,7 @@ export class NodeDedit extends NodeBase<TSpec> {
 
             ws.on('open', () => {
                 ws.send(JSON.stringify({
-                    node: 'NodeDedit',
+                    node: 'NodeUp',
                 }));
                 ws.close();
             });
@@ -44,7 +44,7 @@ export class NodeDedit extends NodeBase<TSpec> {
             await new Promise(resolve => setTimeout(resolve, state.dryModeManager.delay));
 
             return {
-                messages: [new AIMessage('NodeDedit completed in DryRun mode')],
+                messages: [new AIMessage('NodeUp completed in DryRun mode')],
             };
         }
 
@@ -74,16 +74,16 @@ export class NodeDedit extends NodeBase<TSpec> {
             }
 
             return {
-                messages: [new AIMessage('NodeDedit completed')],
+                messages: [new AIMessage('NodeUp completed')],
                 resourceMap: {
                     ...state.resourceMap,
                     ...resourceMapAugmentedWithPath,
                 }
             };
         } catch (error: any) {
-            console.error('Error in NodeDedit:', error);
+            console.error('Error in NodeUp:', error);
             return {
-                messages: [new AIMessage('NodeDedit failed')],
+                messages: [new AIMessage('NodeUp failed')],
             };
         }
 

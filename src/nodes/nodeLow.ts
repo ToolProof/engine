@@ -12,7 +12,7 @@ interface TSpec<Outputs extends readonly string[] = string[]> {
     };
 }
 
-export class NodeNomen<Outputs extends readonly string[]> extends NodeBase<TSpec<Outputs>> {
+export class NodeLow<Outputs extends readonly string[]> extends NodeBase<TSpec<Outputs>> {
 
     spec: TSpec<Outputs>;
 
@@ -31,7 +31,7 @@ export class NodeNomen<Outputs extends readonly string[]> extends NodeBase<TSpec
 
             ws.on('open', () => {
                 ws.send(JSON.stringify({
-                    node: 'NodeNomen',
+                    node: 'NodeLow',
                 }));
                 ws.close();
             });
@@ -45,7 +45,7 @@ export class NodeNomen<Outputs extends readonly string[]> extends NodeBase<TSpec
             await new Promise(resolve => setTimeout(resolve, state.dryModeManager.delay));
 
             return {
-                messages: [new AIMessage('NodeNomen completed in DryRun mode')],
+                messages: [new AIMessage('NodeLow completed in DryRun mode')],
             };
         }
 
@@ -70,16 +70,16 @@ export class NodeNomen<Outputs extends readonly string[]> extends NodeBase<TSpec
             }, {} as ResourceMap);
 
             return {
-                messages: [new AIMessage('NodeNomen completed')],
+                messages: [new AIMessage('NodeLow completed')],
                 resourceMap: {
                     ...state.resourceMap,
                     ...extraResources,
                 }
             };
         } catch (error: any) {
-            console.error('Error in NodeNomen:', error);
+            console.error('Error in NodeLow:', error);
             return {
-                messages: [new AIMessage('NodeNomen failed')],
+                messages: [new AIMessage('NodeLow failed')],
             };
         }
     }

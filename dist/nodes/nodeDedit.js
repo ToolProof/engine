@@ -2,7 +2,7 @@ import { NodeBase } from '../types.js';
 import { Storage } from '@google-cloud/storage';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
-export class NodeDedit extends NodeBase {
+export class NodeUp extends NodeBase {
     constructor(spec) {
         super();
         this.spec = spec;
@@ -13,7 +13,7 @@ export class NodeDedit extends NodeBase {
             const ws = new WebSocket('https://service-websocket-384484325421.europe-west2.run.app');
             ws.on('open', () => {
                 ws.send(JSON.stringify({
-                    node: 'NodeDedit',
+                    node: 'NodeUp',
                 }));
                 ws.close();
             });
@@ -24,7 +24,7 @@ export class NodeDedit extends NodeBase {
         if (state.dryModeManager.dryRunMode) {
             await new Promise(resolve => setTimeout(resolve, state.dryModeManager.delay));
             return {
-                messages: [new AIMessage('NodeDedit completed in DryRun mode')],
+                messages: [new AIMessage('NodeUp completed in DryRun mode')],
             };
         }
         try {
@@ -46,7 +46,7 @@ export class NodeDedit extends NodeBase {
                 };
             }
             return {
-                messages: [new AIMessage('NodeDedit completed')],
+                messages: [new AIMessage('NodeUp completed')],
                 resourceMap: {
                     ...state.resourceMap,
                     ...resourceMapAugmentedWithPath,
@@ -54,9 +54,9 @@ export class NodeDedit extends NodeBase {
             };
         }
         catch (error) {
-            console.error('Error in NodeDedit:', error);
+            console.error('Error in NodeUp:', error);
             return {
-                messages: [new AIMessage('NodeDedit failed')],
+                messages: [new AIMessage('NodeUp failed')],
             };
         }
     }

@@ -13,7 +13,7 @@ interface TSpec {
     }[];
 }
 
-export class NodeMutus extends NodeBase<TSpec> {
+export class NodeDown extends NodeBase<TSpec> {
 
     spec: TSpec;
 
@@ -31,7 +31,7 @@ export class NodeMutus extends NodeBase<TSpec> {
 
             ws.on('open', () => {
                 ws.send(JSON.stringify({
-                    node: 'NodeMutus',
+                    node: 'NodeDown',
                 }));
                 ws.close();
             });
@@ -45,7 +45,7 @@ export class NodeMutus extends NodeBase<TSpec> {
             await new Promise(resolve => setTimeout(resolve, state.dryModeManager.delay));
 
             return {
-                messages: [new AIMessage('NodeMutus completed in DryRun mode')],
+                messages: [new AIMessage('NodeDown completed in DryRun mode')],
             };
         }
 
@@ -80,7 +80,7 @@ export class NodeMutus extends NodeBase<TSpec> {
         }
 
         return {
-            messages: [new AIMessage('NodeMutus completed')],
+            messages: [new AIMessage('NodeDown completed')],
             resourceMap,
         };
 

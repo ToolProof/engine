@@ -11,7 +11,7 @@ interface TSpec {
     interMorphism: () => string;
 }
 
-export class NodeKokis extends NodeBase<TSpec> {
+export class NodeHigh extends NodeBase<TSpec> {
 
     spec: TSpec;
 
@@ -29,7 +29,7 @@ export class NodeKokis extends NodeBase<TSpec> {
 
             ws.on('open', () => {
                 ws.send(JSON.stringify({
-                    node: 'NodeKokis',
+                    node: 'NodeHigh',
                 }));
                 ws.close();
             });
@@ -43,7 +43,7 @@ export class NodeKokis extends NodeBase<TSpec> {
             await new Promise(resolve => setTimeout(resolve, state.dryModeManager.delay));
 
             return {
-                messages: [new AIMessage('NodeKokis completed in DryRun mode')],
+                messages: [new AIMessage('NodeHigh completed in DryRun mode')],
             };
         }
 
@@ -110,7 +110,7 @@ export class NodeKokis extends NodeBase<TSpec> {
             }, {} as ResourceMap);
 
             return {
-                messages: [new AIMessage('NodeKokis completed')],
+                messages: [new AIMessage('NodeHigh completed')],
                 resourceMap: {
                     ...state.resourceMap,
                     ...extraResources,
@@ -118,9 +118,9 @@ export class NodeKokis extends NodeBase<TSpec> {
             };
 
         } catch (error: any) {
-            console.error('Error in NodeKokis:', error);
+            console.error('Error in NodeHigh:', error);
             return {
-                messages: [new AIMessage('NodeKokis failed')],
+                messages: [new AIMessage('NodeHigh failed')],
             };
         }
     }

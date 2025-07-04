@@ -7,7 +7,7 @@ interface TSpec<Outputs extends readonly string[] = string[]> {
         [K in Outputs[number]]: any;
     };
 }
-export declare class NodeNomen<Outputs extends readonly string[]> extends NodeBase<TSpec<Outputs>> {
+export declare class NodeLow<Outputs extends readonly string[]> extends NodeBase<TSpec<Outputs>> {
     spec: TSpec<Outputs>;
     constructor(spec: TSpec<Outputs>);
     invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>>;

@@ -6,7 +6,7 @@ interface TSpec {
         path: string;
     }[];
 }
-export declare class NodeDedit extends NodeBase<TSpec> {
+export declare class NodeUp extends NodeBase<TSpec> {
     spec: TSpec;
     constructor(spec: TSpec);
     invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>>;

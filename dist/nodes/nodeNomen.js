@@ -1,7 +1,7 @@
 import { NodeBase } from '../types.js';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
-export class NodeNomen extends NodeBase {
+export class NodeLow extends NodeBase {
     constructor(spec) {
         super();
         this.spec = spec;
@@ -12,7 +12,7 @@ export class NodeNomen extends NodeBase {
             const ws = new WebSocket('https://service-websocket-384484325421.europe-west2.run.app');
             ws.on('open', () => {
                 ws.send(JSON.stringify({
-                    node: 'NodeNomen',
+                    node: 'NodeLow',
                 }));
                 ws.close();
             });
@@ -23,7 +23,7 @@ export class NodeNomen extends NodeBase {
         if (state.dryModeManager.dryRunMode) {
             await new Promise(resolve => setTimeout(resolve, state.dryModeManager.delay));
             return {
-                messages: [new AIMessage('NodeNomen completed in DryRun mode')],
+                messages: [new AIMessage('NodeLow completed in DryRun mode')],
             };
         }
         try {
@@ -42,7 +42,7 @@ export class NodeNomen extends NodeBase {
                 return acc;
             }, {});
             return {
-                messages: [new AIMessage('NodeNomen completed')],
+                messages: [new AIMessage('NodeLow completed')],
                 resourceMap: {
                     ...state.resourceMap,
                     ...extraResources,
@@ -50,9 +50,9 @@ export class NodeNomen extends NodeBase {
             };
         }
         catch (error) {
-            console.error('Error in NodeNomen:', error);
+            console.error('Error in NodeLow:', error);
             return {
-                messages: [new AIMessage('NodeNomen failed')],
+                messages: [new AIMessage('NodeLow failed')],
             };
         }
     }
