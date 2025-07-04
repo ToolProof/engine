@@ -1,7 +1,6 @@
 // import { intraMorphismRegistry as intraMR_ligandokreado, interMorphismRegistry as interMR_ligandokreado } from "./ligandokreado";
 import { Storage } from '@google-cloud/storage';
 const storage = new Storage();
-const bucketName = 'tp_resources'; // ATTENTION
 export const fetchRegistry = {
     fetchContentFromUrl: async (url) => {
         const response = await fetch(url);
@@ -18,14 +17,14 @@ export const fetchRegistry = {
         const prefix = match[1].endsWith('/') ? match[1] : match[1] + '/';
         // List files and prefixes (subfolders) under the prefix
         const [files] = await storage
-            .bucket(bucketName)
+            .bucket(process.env.BUCKET_NAME)
             .getFiles({
             prefix,
             delimiter: '/',
         });
         // The API returns subfolders in the second argument of getFiles
         const [, , apiResponse] = await storage
-            .bucket(bucketName)
+            .bucket(process.env.BUCKET_NAME)
             .getFiles({
             prefix,
             delimiter: '/',

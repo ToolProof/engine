@@ -2,8 +2,6 @@ import { NodeBase } from '../types.js';
 import { Storage } from '@google-cloud/storage';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
-const storage = new Storage();
-const bucketName = 'tp_resources'; // ATTENTION
 export class NodeDedit extends NodeBase {
     constructor(spec) {
         super();
@@ -30,13 +28,14 @@ export class NodeDedit extends NodeBase {
             };
         }
         try {
+            const storage = new Storage();
             const resourceMapAugmentedWithPath = {};
             for (const inputSpec of this.spec.inputs) {
                 const value = state.resourceMap[inputSpec.key].value;
                 const timestamp = new Date().toISOString();
                 const outputPath = inputSpec.path.replace('timestamp', timestamp);
                 await storage
-                    .bucket(bucketName)
+                    .bucket(process.env.BUCKET_NAME)
                     .file(outputPath)
                     .save(value, {
                     contentType: 'text/plain',

@@ -3,7 +3,6 @@ import { interMorphismRegistry as interMR_grafumilo } from "./grafumilo";
 import { Storage } from '@google-cloud/storage';
 
 const storage = new Storage();
-const bucketName = 'tp_resources'; // ATTENTION
 
 export const fetchRegistry = {
     fetchContentFromUrl: async (url: string) => {
@@ -21,7 +20,7 @@ export const fetchRegistry = {
 
         // List files and prefixes (subfolders) under the prefix
         const [files] = await storage
-            .bucket(bucketName)
+            .bucket(process.env.BUCKET_NAME!)
             .getFiles({
                 prefix,
                 delimiter: '/',
@@ -29,7 +28,7 @@ export const fetchRegistry = {
 
         // The API returns subfolders in the second argument of getFiles
         const [, , apiResponse] = await storage
-            .bucket(bucketName)
+            .bucket(process.env.BUCKET_NAME!)
             .getFiles({
                 prefix,
                 delimiter: '/',

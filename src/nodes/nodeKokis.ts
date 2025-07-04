@@ -11,8 +11,6 @@ interface TSpec {
     interMorphism: () => string;
 }
 
-const bucketName = 'tp_resources'; // ATTENTION
-
 export class NodeKokis extends NodeBase<TSpec> {
 
     spec: TSpec;
@@ -63,13 +61,13 @@ export class NodeKokis extends NodeBase<TSpec> {
                     const toBeStrippedAway = 'https://storage.googleapis.com/'; // ATTENTION: temporary hack
                     let strippedPath = state.resourceMap[key].path.replace(toBeStrippedAway, '');
                     console.log('strippedPath:', strippedPath);
-                    strippedPath = key === 'candidate' ? `${bucketName}/${strippedPath}` : strippedPath; // ATTENTION: temporary hack
+                    strippedPath = key === 'candidate' ? `${process.env.BUCKET_NAME}/${strippedPath}` : strippedPath; // ATTENTION: temporary hack
                     payload[key] = `${strippedPath}`;
                 });
 
                 payload = {
                     ...payload,
-                    outputDir: `${bucketName}/${outputDir}`,
+                    outputDir: `${process.env.BUCKET_NAME}/${outputDir}`,
                 }
 
                 console.log('payload:', JSON.stringify(payload, null, 2));
@@ -103,7 +101,7 @@ export class NodeKokis extends NodeBase<TSpec> {
             const extraResources: ResourceMap = outputFiles.reduce((acc, file) => {
                 let path2 = path.join(outputDir, file);
                 console.log('path2:', path2);
-                path2 = `https://storage.googleapis.com/${bucketName}/${path2}`; // ATTENTION: temporary hack
+                path2 = `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${path2}`; // ATTENTION: temporary hack
                 acc[file.split('.')[0]] = {
                     path: path2,
                     value: null,

@@ -12,9 +12,6 @@ interface TSpec {
     }[]
 }
 
-const storage = new Storage();
-const bucketName = 'tp_resources'; // ATTENTION
-
 export class NodeDedit extends NodeBase<TSpec> {
 
     spec: TSpec;
@@ -53,6 +50,8 @@ export class NodeDedit extends NodeBase<TSpec> {
 
         try {
 
+            const storage = new Storage();
+
             const resourceMapAugmentedWithPath: ResourceMap = {};
 
             for (const inputSpec of this.spec.inputs) {
@@ -62,7 +61,7 @@ export class NodeDedit extends NodeBase<TSpec> {
                 const outputPath = inputSpec.path.replace('timestamp', timestamp);
 
                 await storage
-                    .bucket(bucketName)
+                    .bucket(process.env.BUCKET_NAME!)
                     .file(outputPath)
                     .save(value, {
                         contentType: 'text/plain',
