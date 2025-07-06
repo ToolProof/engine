@@ -95,11 +95,8 @@ export class NodeHigh extends NodeBase<TSpec> {
             );
 
             const extraResources: ResourceMap = outputs.reduce((acc, file) => {
-                let path2 = path.join(outputDir, file);
-                console.log('path2:', path2);
-                path2 = `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${path2}`; // ATTENTION: temporary hack
                 acc[file.split('.')[0]] = {
-                    path: path2,
+                    path: path.join(outputDir, file),
                     value: null,
                 };
                 return acc;

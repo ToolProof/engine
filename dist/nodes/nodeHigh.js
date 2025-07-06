@@ -56,11 +56,8 @@ export class NodeHigh extends NodeBase {
             const outputDir = path.dirname(state.resourceMap[this.spec.outputDir].path); // ATTENTION: convention: outputDir is a resource key, not a path 
             const outputs = await foo(this.spec.interMorphism(), this.spec.inputs, outputDir);
             const extraResources = outputs.reduce((acc, file) => {
-                let path2 = path.join(outputDir, file);
-                console.log('path2:', path2);
-                path2 = `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${path2}`; // ATTENTION: temporary hack
                 acc[file.split('.')[0]] = {
-                    path: path2,
+                    path: path.join(outputDir, file),
                     value: null,
                 };
                 return acc;
