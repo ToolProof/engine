@@ -8,7 +8,7 @@ import WebSocket from 'ws';
 interface TSpec {
     units: {
         key: string;
-        path: string;
+        path: string; // ATTENTION: should be a path template, e.g. 'output/timestamp/${key}.txt'
     }[]
 }
 
@@ -54,11 +54,11 @@ export class NodeUp extends NodeBase<TSpec> {
 
             const resourceMapAugmentedWithPath: ResourceMap = {};
 
-            for (const inputSpec of this.spec.units) {
-                const value = state.resourceMap[inputSpec.key].value;
+            for (const unit of this.spec.units) {
+                const value = state.resourceMap[unit.key].value;
 
                 const timestamp = new Date().toISOString();
-                const outputPath = inputSpec.path.replace('timestamp', timestamp);
+                const outputPath = unit.path.replace('timestamp', timestamp);
 
                 await storage
                     .bucket(process.env.BUCKET_NAME!)
@@ -67,8 +67,8 @@ export class NodeUp extends NodeBase<TSpec> {
                         contentType: 'text/plain',
                     });
 
-                resourceMapAugmentedWithPath[inputSpec.key] = {
-                    ...state.resourceMap[inputSpec.key],
+                resourceMapAugmentedWithPath[unit.key] = {
+                    ...state.resourceMap[unit.key],
                     path: `${outputPath}`,
                 };
             }

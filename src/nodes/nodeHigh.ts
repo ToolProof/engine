@@ -49,7 +49,7 @@ export class NodeHigh extends NodeBase<TSpec> {
 
         try {
 
-            const foo = async (url: string, inputKeys: string[], outputDir: string): Promise<string[]> => {
+            const foo = async (url: string, inputs: string[], outputDir: string): Promise<string[]> => {
                 // Here we must invoke the service at the given URL
                 // This function cannot know about anything specific to Ligandokreado
                 // spec must specify all neccessary parameters
@@ -57,17 +57,13 @@ export class NodeHigh extends NodeBase<TSpec> {
 
                 let payload: { [key: string]: string } = {};
 
-                inputKeys.forEach((key) => {
-                    const toBeStrippedAway = 'https://storage.googleapis.com/'; // ATTENTION: temporary hack
-                    let strippedPath = state.resourceMap[key].path.replace(toBeStrippedAway, '');
-                    console.log('strippedPath:', strippedPath);
-                    strippedPath = key === 'candidate' ? `${process.env.BUCKET_NAME}/${strippedPath}` : strippedPath; // ATTENTION: temporary hack
-                    payload[key] = `${strippedPath}`;
+                inputs.forEach((input) => {
+                    payload[input] = state.resourceMap[input].path;
                 });
 
                 payload = {
                     ...payload,
-                    outputDir: `${process.env.BUCKET_NAME}/${outputDir}`,
+                    outputDir,
                 }
 
                 console.log('payload:', JSON.stringify(payload, null, 2));
@@ -90,7 +86,7 @@ export class NodeHigh extends NodeBase<TSpec> {
                 return result.result.uploaded_files;
             }
 
-            const outputDir = path.dirname(state.resourceMap[this.spec.outputDir].path); // ATTENTION: temporary hack 
+            const outputDir = path.dirname(state.resourceMap[this.spec.outputDir].path); // ATTENTION: convention: outputDir is a resource key, not a path 
 
             const outputFiles = await foo(
                 this.spec.interMorphism(),
