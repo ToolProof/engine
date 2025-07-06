@@ -1,4 +1,4 @@
-import { NodeBase, GraphState } from '../types.js';
+import { ResourceMap, NodeBase, GraphState } from '../types.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
@@ -49,15 +49,12 @@ export class NodeDown extends NodeBase<TSpec> {
             };
         }
 
-        const resourceMap = state.resourceMap;
+        const newResourceMap: ResourceMap = { ...state.resourceMap };
 
         for (const key of Object.keys(state.resourceMap)) {
-
             if (!this.spec.units.map((input) => input.key).includes(key)) {
                 console.log('Skipping resource:', key);
                 continue;
-            } else {
-                console.log('Processing resource:', key);
             }
 
             const intraMorphisms = this.spec.units.find((input) => input.key === key)?.intraMorphisms;
@@ -71,17 +68,19 @@ export class NodeDown extends NodeBase<TSpec> {
                 const content = await intraMorphisms.transport(resource.path);
                 const value = await intraMorphisms.transform(content);
 
-                resource.value = value;
-                resourceMap[key] = resource;
+                // ✅ Never mutate existing object — create new one
+                newResourceMap[key] = {
+                    ...resource,
+                    value,
+                };
             } catch (error) {
                 throw new Error(`Error fetching or processing file: ${error}`);
             }
-
         }
 
         return {
             messages: [new AIMessage('NodeDown completed')],
-            resourceMap,
+            resourceMap: newResourceMap,
         };
 
     }
