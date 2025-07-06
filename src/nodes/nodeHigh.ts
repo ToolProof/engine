@@ -83,18 +83,18 @@ export class NodeHigh extends NodeBase<TSpec> {
 
                 console.log('result tool:', JSON.stringify(result, null, 2));
 
-                return result.result.uploaded_files;
+                return result.result.outputs;
             }
 
             const outputDir = path.dirname(state.resourceMap[this.spec.outputDir].path); // ATTENTION: convention: outputDir is a resource key, not a path 
 
-            const outputFiles = await foo(
+            const outputs = await foo(
                 this.spec.interMorphism(),
                 this.spec.inputs,
                 outputDir
             );
 
-            const extraResources: ResourceMap = outputFiles.reduce((acc, file) => {
+            const extraResources: ResourceMap = outputs.reduce((acc, file) => {
                 let path2 = path.join(outputDir, file);
                 console.log('path2:', path2);
                 path2 = `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${path2}`; // ATTENTION: temporary hack
