@@ -30,18 +30,18 @@ export class NodeUp extends NodeBase {
         try {
             const storage = new Storage();
             const resourceMapAugmentedWithPath = {};
-            for (const inputSpec of this.spec.units) {
-                const value = state.resourceMap[inputSpec.key].value;
+            for (const unit of this.spec.units) {
+                const value = state.resourceMap[unit.key].value;
                 const timestamp = new Date().toISOString();
-                const outputPath = inputSpec.path.replace('timestamp', timestamp);
+                const outputPath = unit.path.replace('timestamp', timestamp);
                 await storage
                     .bucket(process.env.BUCKET_NAME)
                     .file(outputPath)
                     .save(value, {
                     contentType: 'text/plain',
                 });
-                resourceMapAugmentedWithPath[inputSpec.key] = {
-                    ...state.resourceMap[inputSpec.key],
+                resourceMapAugmentedWithPath[unit.key] = {
+                    ...state.resourceMap[unit.key],
                     path: `${outputPath}`,
                 };
             }

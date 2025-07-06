@@ -29,22 +29,18 @@ export class NodeHigh extends NodeBase {
             };
         }
         try {
-            const foo = async (url, inputKeys, outputDir) => {
+            const foo = async (url, inputs, outputDir) => {
                 // Here we must invoke the service at the given URL
                 // This function cannot know about anything specific to Ligandokreado
                 // spec must specify all neccessary parameters
                 // Maybe the tool only needs to return the output keys...
                 let payload = {};
-                inputKeys.forEach((key) => {
-                    const toBeStrippedAway = 'https://storage.googleapis.com/'; // ATTENTION: temporary hack
-                    let strippedPath = state.resourceMap[key].path.replace(toBeStrippedAway, '');
-                    console.log('strippedPath:', strippedPath);
-                    strippedPath = key === 'candidate' ? `${process.env.BUCKET_NAME}/${strippedPath}` : strippedPath; // ATTENTION: temporary hack
-                    payload[key] = `${strippedPath}`;
+                inputs.forEach((input) => {
+                    payload[input] = state.resourceMap[input].path;
                 });
                 payload = {
                     ...payload,
-                    outputDir: `${process.env.BUCKET_NAME}/${outputDir}`,
+                    outputDir,
                 };
                 console.log('payload:', JSON.stringify(payload, null, 2));
                 const response = await axios.post(url, payload, {
@@ -55,11 +51,11 @@ export class NodeHigh extends NodeBase {
                 });
                 const result = response.data;
                 console.log('result tool:', JSON.stringify(result, null, 2));
-                return result.result.uploaded_files;
+                return result.result.outputs;
             };
-            const outputDir = path.dirname(state.resourceMap[this.spec.outputDir].path); // ATTENTION: temporary hack 
-            const outputFiles = await foo(this.spec.interMorphism(), this.spec.inputs, outputDir);
-            const extraResources = outputFiles.reduce((acc, file) => {
+            const outputDir = path.dirname(state.resourceMap[this.spec.outputDir].path); // ATTENTION: convention: outputDir is a resource key, not a path 
+            const outputs = await foo(this.spec.interMorphism(), this.spec.inputs, outputDir);
+            const extraResources = outputs.reduce((acc, file) => {
                 let path2 = path.join(outputDir, file);
                 console.log('path2:', path2);
                 path2 = `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${path2}`; // ATTENTION: temporary hack

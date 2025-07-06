@@ -10,7 +10,7 @@ const stateGraph = new StateGraph(GraphStateAnnotationRoot)
             {
                 key: 'candidate',
                 intraMorphisms: {
-                    transport: transportRegistry.fetchContentFromUrl2,
+                    transport: transportRegistry.fetchContentFromPath,
                     transform: () => { } //intraMorphismRegistry.getCandidates,
                 }
             },
