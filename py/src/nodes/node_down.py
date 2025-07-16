@@ -71,6 +71,7 @@ class NodeDown(NodeBase):
         Returns:
             Dictionary with updated messages and resource map
         """
+        
         # Send WebSocket notification if not in dry socket mode
         if not state.dry_mode_manager.dry_socket_mode:
             await self._send_websocket_notification()

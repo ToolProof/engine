@@ -6,3 +6,11 @@ node_modules
 .vscode
 
 services/
+
+package-lock.json
+
+
+.DS_Store
+py/venv
+__init__.py
+__pycache__
