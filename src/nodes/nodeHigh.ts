@@ -5,19 +5,11 @@ import * as path from 'path';
 import axios from 'axios';
 import WebSocket from 'ws';
 
-interface TSpec {
-    inputs: string[];
-    outputDir: string;
-    interMorphism: () => string;
-}
 
-export class NodeHigh extends NodeBase<TSpec> {
+export class NodeHigh extends NodeBase {
 
-    spec: TSpec;
-
-    constructor(spec: TSpec) {
+    constructor() {
         super();
-        this.spec = spec;
     }
 
     async invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>> {

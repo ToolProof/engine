@@ -3,23 +3,11 @@ import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
 
-interface TSpec {
-    units: {
-        key: string;
-        intraMorphisms: {
-            transport: (url: string) => Promise<string>;
-            transform: (content: string) => any | Promise<any>; // ATTENTION
-        }
-    }[];
-}
 
-export class NodeDown extends NodeBase<TSpec> {
+export class NodeDown extends NodeBase {
 
-    spec: TSpec;
-
-    constructor(spec: TSpec) {
+    constructor() {
         super();
-        this.spec = spec;
     }
 
     async invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>> {

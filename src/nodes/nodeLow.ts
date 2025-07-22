@@ -4,23 +4,11 @@ import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
 
 
-interface TSpec<Outputs extends readonly string[] = string[]> {
-    inputs: string[];
-    outputs: Outputs;
-    interMorphism: (...args: any[]) => {
-        [K in Outputs[number]]: any;
-    };
-}
+export class NodeLow extends NodeBase {
 
-export class NodeLow<Outputs extends readonly string[]> extends NodeBase<TSpec<Outputs>> {
-
-    spec: TSpec<Outputs>;
-
-    constructor(spec: TSpec<Outputs>) {
+    constructor() {
         super();
-        this.spec = spec;
     }
-
 
     async invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>> {
 
