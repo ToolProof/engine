@@ -1,15 +1,9 @@
 import { Annotation, MessagesAnnotation } from '@langchain/langgraph';
 import { Runnable } from '@langchain/core/runnables';
 
-export type Resource = {
-    path: string;
-    value: any; // ATTENTION
+export type InputMap = {
+    [key: string]: string;
 }
-
-export type ResourceMap = {
-    [key: string]: Resource;
-}
-
 
 /***
  * ATTENTION_RONAK: I have copied these types from toolproof_core just so that Workflow can be used in the GraphState. However, since there'll now be a generic graph, updohilo does not need to be a library anymore. I will move it to toolproof_core later.
@@ -35,36 +29,31 @@ export interface ResourceType extends Concept {
 
 export interface Job extends Concept {
     url: string;
+    isFake: boolean;
     syntacticSpec: {
         inputs: ResourceType[];
         outputs: ResourceType[];
     }
 }
 
-export interface WorkflowNode {
-    job: Job;
-    isFakeStep?: boolean;
-    langgraphNodeToUse: 'NodeDown' | 'NodeUp' | 'NodeHigh' | 'NodeLow'; // ATTENTION_RONAK: I've added this field just as a mock to show how edgeRouting in genericGraph.ts can be used to route to the correct node.
-}
-
-export interface FakeStepInputs {
-    [key: string]: string; // Maps input name to selected file name
-}
-
-export interface WorkflowEdge {
-    from: string; // WorkflowNode id
-    to: string;   // WorkflowNode id
+export interface Link {
+    from: string; // Job id
+    to: string;   // Job id
     dataFlow: string[]; // The specific outputs from 'from' that become inputs to 'to'
 }
 
 export interface Workflow {
-    nodes: WorkflowNode[];
-    edges: WorkflowEdge[];
+    jobs: Job[];
+    links: Link[];
 }
 /**
  * END of copied types from toolproof_core
 */
 
+export interface WorkflowSpec<T extends InputMap = InputMap> {
+    workflow: Workflow;
+    inputMaps: T[]; // All items must be the same type T
+}
 
 export const GraphStateAnnotationRoot = Annotation.Root({
     ...MessagesAnnotation.spec,
@@ -82,9 +71,7 @@ export const GraphStateAnnotationRoot = Annotation.Root({
             }),
         }
     ),
-    resourceMap: Annotation<ResourceMap>(),
-    workflow: Annotation<Workflow>(), // ATTENTION_RONAK: This is the workflow that the graph will execute. It will be set by the remote graph that invokes this generic graph.
-    counter: Annotation<number>(), // ATTENTION_RONAK: This is a counter to keep track of the current node in the workflow. It should be incremented by each node after its invoke method is called.
+    workflowSpec: Annotation<WorkflowSpec>(),
 });
 
 export type GraphState = typeof GraphStateAnnotationRoot.State;

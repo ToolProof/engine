@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:grafumilo": "set NODE_ENV=grafumilo&& node --loader ts-node/esm src/index.ts",
-    "start:genericGraph": "set NODE_ENV=genericGraph&& node --loader ts-node/esm src/index.ts"
+    "start:workflowRunner": "set NODE_ENV=workflowRunner && node --loader ts-node/esm src/index.ts"
   },
   "author": "",
   "license": "ISC",

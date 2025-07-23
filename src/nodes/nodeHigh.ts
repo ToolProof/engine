@@ -1,4 +1,4 @@
-import { NodeBase, GraphState, ResourceMap } from '../types.js';
+import { NodeBase, GraphState, InputMap } from '../types.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import * as path from 'path';
@@ -86,13 +86,13 @@ export class NodeHigh extends NodeBase {
                 outputDir
             );
 
-            const extraResources: ResourceMap = outputs.reduce((acc, file) => {
+            const extraResources: InputMap = outputs.reduce((acc, file) => {
                 acc[file.split('.')[0]] = {
                     path: path.join(outputDir, file),
                     value: null,
                 };
                 return acc;
-            }, {} as ResourceMap);
+            }, {} as InputMap);
 
             return {
                 messages: [new AIMessage('NodeHigh completed')],

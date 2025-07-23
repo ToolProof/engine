@@ -1,4 +1,4 @@
-import { NodeBase, GraphState, ResourceMap } from '../types.js';
+import { NodeBase, GraphState, InputMap } from '../types.js';
 import { Storage } from '@google-cloud/storage';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
@@ -42,7 +42,7 @@ export class NodeUp extends NodeBase {
 
             const storage = new Storage();
 
-            const resourceMapAugmentedWithPath: ResourceMap = {};
+            const resourceMapAugmentedWithPath: InputMap = {};
 
             for (const unit of this.spec.units) {
                 const value = state.resourceMap[unit.key].value;

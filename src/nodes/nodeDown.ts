@@ -1,4 +1,4 @@
-import { ResourceMap, NodeBase, GraphState } from '../types.js';
+import { InputMap, NodeBase, GraphState } from '../types.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
@@ -37,7 +37,7 @@ export class NodeDown extends NodeBase {
             };
         }
 
-        const newResourceMap: ResourceMap = { ...state.resourceMap };
+        const newResourceMap: InputMap = { ...state.resourceMap };
 
         for (const key of Object.keys(state.resourceMap)) {
             if (!this.spec.units.map((input) => input.key).includes(key)) {
