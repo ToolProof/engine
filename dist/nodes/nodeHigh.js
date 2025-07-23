@@ -4,9 +4,8 @@ import * as path from 'path';
 import axios from 'axios';
 import WebSocket from 'ws';
 export class NodeHigh extends NodeBase {
-    constructor(spec) {
+    constructor() {
         super();
-        this.spec = spec;
     }
     async invoke(state, options) {
         if (!state.dryModeManager.drySocketMode) {

@@ -10,7 +10,7 @@ export const GraphStateAnnotationRoot = Annotation.Root({
             drySocketMode: false,
         }),
     }),
-    resourceMap: Annotation(),
+    workflowSpec: Annotation(),
 });
 export class NodeBase extends Runnable {
     constructor() {

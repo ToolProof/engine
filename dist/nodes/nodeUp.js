@@ -3,9 +3,8 @@ import { Storage } from '@google-cloud/storage';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
 export class NodeUp extends NodeBase {
-    constructor(spec) {
+    constructor() {
         super();
-        this.spec = spec;
     }
     async invoke(state, options) {
         if (!state.dryModeManager.drySocketMode) {

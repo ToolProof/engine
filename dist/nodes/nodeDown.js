@@ -2,9 +2,8 @@ import { NodeBase } from '../types.js';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
 export class NodeDown extends NodeBase {
-    constructor(spec) {
+    constructor() {
         super();
-        this.spec = spec;
     }
     async invoke(state, options) {
         if (!state.dryModeManager.drySocketMode) {

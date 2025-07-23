@@ -1,11 +1,50 @@
 import { Runnable } from '@langchain/core/runnables';
-export type Resource = {
-    path: string;
-    value: any;
+export type InputMap = {
+    [key: string]: string;
 };
-export type ResourceMap = {
-    [key: string]: Resource;
-};
+/***
+ * ATTENTION_RONAK: I have copied these types from toolproof_core just so that Workflow can be used in the GraphState. However, since there'll now be a generic graph, updohilo does not need to be a library anymore. I will move it to toolproof_core later.
+*/
+export interface Tool {
+    id: string;
+    displayName: string;
+}
+export interface Concept extends Tool {
+    semanticSpec: {
+        description: string;
+        embedding: number[];
+    };
+}
+export interface ResourceType extends Concept {
+    syntacticSpec: {
+        format: string;
+        schema: object | null;
+    };
+}
+export interface Job extends Concept {
+    url: string;
+    isFake: boolean;
+    syntacticSpec: {
+        inputs: ResourceType[];
+        outputs: ResourceType[];
+    };
+}
+export interface Link {
+    from: string;
+    to: string;
+    dataFlow: string[];
+}
+export interface Workflow {
+    jobs: Job[];
+    links: Link[];
+}
+/**
+ * END of copied types from toolproof_core
+*/
+export interface WorkflowSpec<T extends InputMap = InputMap> {
+    workflow: Workflow;
+    inputMaps: T[];
+}
 export declare const GraphStateAnnotationRoot: import("@langchain/langgraph").AnnotationRoot<{
     dryModeManager: import("@langchain/langgraph").BinaryOperatorAggregate<{
         dryRunMode: boolean;
@@ -16,11 +55,10 @@ export declare const GraphStateAnnotationRoot: import("@langchain/langgraph").An
         delay: number;
         drySocketMode: boolean;
     }>;
-    resourceMap: import("@langchain/langgraph").LastValue<ResourceMap>;
+    workflowSpec: import("@langchain/langgraph").LastValue<WorkflowSpec<InputMap>>;
     messages: import("@langchain/langgraph").BinaryOperatorAggregate<import("@langchain/core/messages").BaseMessage[], import("@langchain/langgraph").Messages>;
 }>;
 export type GraphState = typeof GraphStateAnnotationRoot.State;
-export declare abstract class NodeBase<TSpec> extends Runnable {
-    abstract spec: TSpec;
+export declare abstract class NodeBase extends Runnable {
     lc_namespace: never[];
 }

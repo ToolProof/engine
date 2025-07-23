@@ -1,4 +1,4 @@
-import { runRemoteGraph as runGrafumilo } from './testClients/clientGrafumilo.js';
-if (process.env.NODE_ENV === 'grafumilo') {
-    runGrafumilo();
+import { runRemoteGraph as runWorkflowRunner } from './testClients/clientWorkflowRunner.js';
+if (process.env.NODE_ENV === 'workflowRunner') {
+    runWorkflowRunner();
 }

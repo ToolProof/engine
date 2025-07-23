@@ -1,15 +1,6 @@
 import { NodeBase, GraphState } from '../types.js';
 import { RunnableConfig } from '@langchain/core/runnables';
-interface TSpec<Outputs extends readonly string[] = string[]> {
-    inputs: string[];
-    outputs: Outputs;
-    interMorphism: (...args: any[]) => {
-        [K in Outputs[number]]: any;
-    };
-}
-export declare class NodeLow<Outputs extends readonly string[]> extends NodeBase<TSpec<Outputs>> {
-    spec: TSpec<Outputs>;
-    constructor(spec: TSpec<Outputs>);
+export declare class NodeLow extends NodeBase {
+    constructor();
     invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>>;
 }
-export {};
