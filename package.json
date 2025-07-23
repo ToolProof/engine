@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
     "start:workflowRunner": "set NODE_ENV=workflowRunner && node --loader ts-node/esm src/index.ts"
   },
   "author": "",
