@@ -1,26 +1,14 @@
-import { NodeBase, GraphState, ResourceMap } from '../types.js';
+import { NodeBase, GraphState, InputMap } from '../types.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
 
 
-interface TSpec<Outputs extends readonly string[] = string[]> {
-    inputs: string[];
-    outputs: Outputs;
-    interMorphism: (...args: any[]) => {
-        [K in Outputs[number]]: any;
-    };
-}
+export class NodeLow extends NodeBase {
 
-export class NodeLow<Outputs extends readonly string[]> extends NodeBase<TSpec<Outputs>> {
-
-    spec: TSpec<Outputs>;
-
-    constructor(spec: TSpec<Outputs>) {
+    constructor() {
         super();
-        this.spec = spec;
     }
-
 
     async invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>> {
 
@@ -61,13 +49,13 @@ export class NodeLow<Outputs extends readonly string[]> extends NodeBase<TSpec<O
 
             const result = await this.spec.interMorphism(...inputs);
 
-            const extraResources: ResourceMap = this.spec.outputs.reduce((acc, output) => {
+            const extraResources: InputMap = this.spec.outputs.reduce((acc, output) => {
                 acc[output] = {
                     path: '',
                     value: result[output as Outputs[number]],
                 }
                 return acc;
-            }, {} as ResourceMap);
+            }, {} as InputMap);
 
             return {
                 messages: [new AIMessage('NodeLow completed')],

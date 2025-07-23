@@ -1,24 +1,14 @@
-import { NodeBase, GraphState, ResourceMap } from '../types.js';
+import { NodeBase, GraphState, InputMap } from '../types.js';
 import { Storage } from '@google-cloud/storage';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
 
 
-interface TSpec {
-    units: {
-        key: string;
-        path: string; // ATTENTION: should be a path template, e.g. 'output/timestamp/${key}.txt'
-    }[]
-}
+export class NodeUp extends NodeBase {
 
-export class NodeUp extends NodeBase<TSpec> {
-
-    spec: TSpec;
-
-    constructor(spec: TSpec) {
+    constructor() {
         super();
-        this.spec = spec;
     }
 
     async invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>> {
@@ -52,7 +42,7 @@ export class NodeUp extends NodeBase<TSpec> {
 
             const storage = new Storage();
 
-            const resourceMapAugmentedWithPath: ResourceMap = {};
+            const resourceMapAugmentedWithPath: InputMap = {};
 
             for (const unit of this.spec.units) {
                 const value = state.resourceMap[unit.key].value;

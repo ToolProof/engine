@@ -16,3 +16,6 @@ package-lock.json
 py/venv
 __init__.py
 __pycache__
+
+# LangGraph API
+.langgraph_api

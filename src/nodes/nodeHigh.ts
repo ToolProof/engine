@@ -1,23 +1,15 @@
-import { NodeBase, GraphState, ResourceMap } from '../types.js';
+import { NodeBase, GraphState, InputMap } from '../types.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import * as path from 'path';
 import axios from 'axios';
 import WebSocket from 'ws';
 
-interface TSpec {
-    inputs: string[];
-    outputDir: string;
-    interMorphism: () => string;
-}
 
-export class NodeHigh extends NodeBase<TSpec> {
+export class NodeHigh extends NodeBase {
 
-    spec: TSpec;
-
-    constructor(spec: TSpec) {
+    constructor() {
         super();
-        this.spec = spec;
     }
 
     async invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>> {
@@ -94,13 +86,13 @@ export class NodeHigh extends NodeBase<TSpec> {
                 outputDir
             );
 
-            const extraResources: ResourceMap = outputs.reduce((acc, file) => {
+            const extraResources: InputMap = outputs.reduce((acc, file) => {
                 acc[file.split('.')[0]] = {
                     path: path.join(outputDir, file),
                     value: null,
                 };
                 return acc;
-            }, {} as ResourceMap);
+            }, {} as InputMap);
 
             return {
                 messages: [new AIMessage('NodeHigh completed')],
