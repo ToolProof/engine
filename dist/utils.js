@@ -12,9 +12,9 @@ export const calculateExecutionLevels = (workflow) => {
             return levels.get(jobId) || 0;
         }
         processing.add(jobId);
-        // Find all links that lead TO this job (dependencies)
-        const incominglinks = workflow.links.filter(link => link.to === jobId);
-        if (incominglinks.length === 0) {
+        // Find all workflowedges that lead TO this job (dependencies)
+        const incomingWorkflowedges = workflow.workflowEdges.filter(workflowedge => workflowedge.to === jobId);
+        if (incomingWorkflowedges.length === 0) {
             // No dependencies, this is a starting job (level 0)
             levels.set(jobId, 0);
             visited.add(jobId);
@@ -23,8 +23,8 @@ export const calculateExecutionLevels = (workflow) => {
         }
         // Calculate the maximum level of all dependencies + 1
         let maxDependencyLevel = -1;
-        for (const link of incominglinks) {
-            const dependencyLevel = calculateLevel(link.from);
+        for (const workflowedge of incomingWorkflowedges) {
+            const dependencyLevel = calculateLevel(workflowedge.from);
             maxDependencyLevel = Math.max(maxDependencyLevel, dependencyLevel);
         }
         const jobLevel = maxDependencyLevel + 1;
@@ -34,8 +34,8 @@ export const calculateExecutionLevels = (workflow) => {
         return jobLevel;
     };
     // Calculate levels for all jobs
-    workflow.jobs.forEach(job => {
-        calculateLevel(job.id);
+    workflow.workflowNodes.forEach(wn => {
+        calculateLevel(wn.job.id);
     });
     return levels;
 };

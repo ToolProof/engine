@@ -5,9 +5,6 @@ export type InputMap = {
     [key: string]: string;
 }
 
-/***
- * ATTENTION_RONAK: I have copied these types from toolproof_core just so that Workflow can be used in the GraphState. However, since there'll now be a generic graph, updohilo does not need to be a library anymore. I will move it to toolproof_core later.
-*/
 export interface Tool {
     id: string;
     displayName: string;
@@ -29,26 +26,27 @@ export interface ResourceType extends Concept {
 
 export interface Job extends Concept {
     url: string;
-    isFake: boolean;
     syntacticSpec: {
         inputs: ResourceType[];
         outputs: ResourceType[];
     }
 }
 
-export interface Link {
-    from: string; // Job id
-    to: string;   // Job id
+export interface WorkflowNode {
+    job: Job;
+    isFakeStep: boolean;
+}
+
+export interface WorkflowEdge {
+    from: string; // WorkflowNode id
+    to: string;   // WorkflowNode id
     dataFlow: string[]; // The specific outputs from 'from' that become inputs to 'to'
 }
 
 export interface Workflow {
-    jobs: Job[];
-    links: Link[];
+    workflowNodes: WorkflowNode[];
+    workflowEdges: WorkflowEdge[];
 }
-/**
- * END of copied types from toolproof_core
-*/
 
 export interface WorkflowSpec<T extends InputMap = InputMap> {
     workflow: Workflow;
