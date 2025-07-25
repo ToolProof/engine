@@ -1,7 +1,0 @@
-# Core dependencies for the Python implementation
-aiohttp>=3.8.0
-websockets>=11.0.0
-
-# Optional: For compatibility with LangChain if needed in the future
-# langchain>=0.1.0
-# langchain-core>=0.1.0
