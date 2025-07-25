@@ -44,8 +44,8 @@ export interface WorkflowEdge {
 }
 
 export interface Workflow {
-    workflowNodes: WorkflowNode[];
-    workflowEdges: WorkflowEdge[];
+    nodes: WorkflowNode[];
+    edges: WorkflowEdge[];
 }
 
 export interface WorkflowSpec<T extends InputMap = InputMap> {
