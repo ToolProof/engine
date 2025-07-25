@@ -5,12 +5,9 @@ export type InputMap = {
     [key: string]: string;
 }
 
-export interface Tool {
+export interface Concept {
     id: string;
-    displayName: string;
-}
-
-export interface Concept extends Tool {
+    name: string;
     semanticSpec: {
         description: string;
         embedding: number[];
@@ -24,28 +21,47 @@ export interface ResourceType extends Concept {
     }
 }
 
+export interface ResourceRole extends Concept { }
+
+export interface ResourceSpec {
+    type: ResourceType;
+    role: ResourceRole;
+}
+
 export interface Job extends Concept {
     url: string;
     syntacticSpec: {
-        inputs: ResourceType[];
-        outputs: ResourceType[];
+        inputs: ResourceSpec[];
+        outputs: ResourceSpec[];
     }
 }
 
 export interface WorkflowNode {
     job: Job;
-    isFakeStep: boolean;
+    isFake: boolean;
 }
 
 export interface WorkflowEdge {
-    from: string; // WorkflowNode id
-    to: string;   // WorkflowNode id
-    dataFlow: string[]; // The specific outputs from 'from' that become inputs to 'to'
+    id: string; // Unique identifier for the edge
+    source: string;
+    target: string;
+}
+
+export interface DataExchange {
+    edgeId: string;
+    sourceOutput: string; // Validator ensures that this output exists in the 'source' node's job outputs
+    targetInput: string; // Validator ensures that this input exists in the 'target' node's job inputs
+}
+
+export interface WorkflowStep {
+    edgeId: string; // The edge's target node is run
+    dataExchanges: DataExchange[]; // Validator ensures that the edge's target node gets the correct inputs from the source node's outputs
 }
 
 export interface Workflow {
     nodes: WorkflowNode[];
-    edges: WorkflowEdge[];
+    edges: WorkflowEdge[]; // Validator ensures that edges connect nodes with matching inputs and outputs
+    steps: WorkflowStep[];
 }
 
 export interface WorkflowSpec<T extends InputMap = InputMap> {
