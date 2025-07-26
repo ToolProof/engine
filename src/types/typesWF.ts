@@ -1,4 +1,3 @@
-// Core types without LangChain dependencies - safe for validation code
 
 export type InputMap = {
     [key: string]: string;

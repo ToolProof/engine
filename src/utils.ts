@@ -1,5 +1,5 @@
 
-import { Job, Workflow, WorkflowStepUnion, SimpleWorkflowStep, ParallelWorkflowStep, WorkflowStep } from './core-types.js';
+import { Job, Workflow, WorkflowStepUnion, SimpleWorkflowStep, ParallelWorkflowStep, WorkflowStep } from './types/typesWF.js';
 
 /* export const calculateExecutionLevels = (workflow: Workflow): Map<string, number> => {
     const levels = new Map<string, number>();
@@ -65,6 +65,7 @@ export function validateWorkflow(availableJobs: Job[], workflow: Workflow): Vali
     }
 
     const definedOutputs: Map<string, Set<string>> = new Map();
+    const definedAliases: Set<string> = new Set(); // Track output aliases
     const consumedInputs: Set<string> = new Set();
     const initialInputs: Set<string> = new Set();
 
@@ -78,8 +79,8 @@ export function validateWorkflow(availableJobs: Job[], workflow: Workflow): Vali
             return;
         }
 
-        const inputRoles = new Set(job.syntacticSpec.inputs.map(i => i.role.id));
-        const outputRoles = new Set(job.syntacticSpec.outputs.map(o => o.role.id));
+        const inputRoles = new Set(job.syntacticSpec.inputs.map(i => i.role.name));
+        const outputRoles = new Set(job.syntacticSpec.outputs.map(o => o.role.name));
 
         for (const exch of step.dataExchanges) {
             if (exch.targetJobId !== step.jobId) {
@@ -91,7 +92,8 @@ export function validateWorkflow(availableJobs: Job[], workflow: Workflow): Vali
                 isValid = false;
             }
             consumedInputs.add(exch.sourceOutput);
-            if (!definedOutputs.get(exch.sourceJobId)?.has(exch.sourceOutput)) {
+            // Check if this output was defined as an alias by a previous step
+            if (!definedAliases.has(exch.sourceOutput)) {
                 initialInputs.add(exch.sourceOutput);
             }
         }
@@ -105,6 +107,9 @@ export function validateWorkflow(availableJobs: Job[], workflow: Workflow): Vali
                     definedOutputs.set(step.jobId, new Set());
                 }
                 definedOutputs.get(step.jobId)!.add(outputRole);
+                // Track the alias for this output
+                const alias = step.resultBindings[outputRole];
+                definedAliases.add(alias);
             }
         }
     }

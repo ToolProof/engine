@@ -6,7 +6,7 @@ import { numericalJobs, numericalWorkflow_1, numericalWorkflow_2 } from './mocks
     runWorkflowRunner();
 } */
 
-if (true || process.env.NODE_ENV === 'workflowValidator') {
+if (true || process.env.NODE_ENV === 'workflowValidator') { // ATTENTION: hack
     try {
         console.log('Starting workflow validation...');
         const result1 = validateWorkflow(Array.from(numericalJobs.values()), numericalWorkflow_1);

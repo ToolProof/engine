@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { WorkflowSpec, Workflow } from '../types.js';
+import { WorkflowSpec, Workflow } from '../types/typesLG.js';
 import { Client } from '@langchain/langgraph-sdk';
 import { RemoteGraph } from '@langchain/langgraph/remote';
 import { HumanMessage } from '@langchain/core/messages';

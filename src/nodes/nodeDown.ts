@@ -1,4 +1,4 @@
-import { InputMap, NodeBase, GraphState } from '../types.js';
+import { InputMap, NodeBase, GraphState } from '../types/typesLG.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';

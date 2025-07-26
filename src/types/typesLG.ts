@@ -1,4 +1,4 @@
-import { WorkflowSpec } from './core-types';
+import { WorkflowSpec } from './typesWF';
 import { Annotation, MessagesAnnotation } from '@langchain/langgraph';
 import { Runnable } from '@langchain/core/runnables';
 
