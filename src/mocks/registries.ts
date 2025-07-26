@@ -1,4 +1,4 @@
-import { ResourceType, ResourceRole, Concept } from '../types';
+import { ResourceType, ResourceRole, Concept } from '../core-types.js';
 import { v4 as uuidv4 } from 'uuid';
 
 /**

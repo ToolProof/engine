@@ -1,7 +1,7 @@
 
-import { Job, Workflow, WorkflowStepUnion, WorkflowStep } from './types';
+import { Job, Workflow, WorkflowStepUnion, SimpleWorkflowStep, ParallelWorkflowStep, WorkflowStep } from './core-types.js';
 
-export const calculateExecutionLevels = (workflow: Workflow): Map<string, number> => {
+/* export const calculateExecutionLevels = (workflow: Workflow): Map<string, number> => {
     const levels = new Map<string, number>();
     const visited = new Set<string>();
     const processing = new Set<string>();
@@ -51,8 +51,7 @@ export const calculateExecutionLevels = (workflow: Workflow): Map<string, number
     });
 
     return levels;
-}
-
+} */
 
 interface ValidationResult {
     isValid: boolean;

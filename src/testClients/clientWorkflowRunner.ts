@@ -1,20 +1,19 @@
-// import dotenv from 'dotenv';
-// dotenv.config(); // Commented out to test
-// import { WorkflowSpec, Workflow } from '../types';
-// import { Client } from '@langchain/langgraph-sdk';
-// import { RemoteGraph } from '@langchain/langgraph/remote';
-// import { HumanMessage } from '@langchain/core/messages';
+import dotenv from 'dotenv';
+dotenv.config();
+import { WorkflowSpec, Workflow } from '../types.js';
+import { Client } from '@langchain/langgraph-sdk';
+import { RemoteGraph } from '@langchain/langgraph/remote';
+import { HumanMessage } from '@langchain/core/messages';
 
 const urlLocal = `http://localhost:8123`;
 const urlRemote = `https://deployment-typescript-48b9b40b9bac500f8fe557700e4c49d9.us.langgraph.app`;
 const url = urlLocal; //process.env.URL || urlLocal;
 const graphId = 'genericGraph';
-// const client = new Client({
-//     apiUrl: url,
-// });
-// const remoteGraph = new RemoteGraph({ graphId, url });
+const client = new Client({
+    apiUrl: url,
+});
+const remoteGraph = new RemoteGraph({ graphId, url });
 
-/*
 const workflow: Workflow = {
     jobs: [
         {
@@ -1182,9 +1181,7 @@ const workflow: Workflow = {
         }
     ]
 }
-*/
 
-/*
 const workflowSpec: WorkflowSpec = {
     workflow: workflow,
     inputMaps: [
@@ -1194,14 +1191,8 @@ const workflowSpec: WorkflowSpec = {
         }
     ]
 }
-*/
 
 export async function runRemoteGraph() {
-    console.log('runRemoteGraph called but temporarily disabled for testing');
-    return;
-    
-    // Commented out for testing
-    /*
     try {
         // Create a thread (or use an existing thread instead)
         const thread = await client.threads.create();
@@ -1240,6 +1231,5 @@ export async function runRemoteGraph() {
     } catch (error) {
         console.error('Error invoking graph:', error);
     }
-    */
 
 }

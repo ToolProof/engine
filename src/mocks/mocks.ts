@@ -1,5 +1,5 @@
-import { RT, RR } from './registries';
-import { Job, Workflow } from '../types';
+import { RT, RR } from './registries.js';
+import { Job, Workflow } from '../core-types.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export const fakeJobs: Map<string, Job> = new Map([
