@@ -1,5 +1,6 @@
 import { RT, RR } from './registries';
 import { Job, Workflow } from '../types';
+import { v4 as uuidv4 } from 'uuid';
 
 export const fakeJobs: Map<string, Job> = new Map([
     ['start_job', {
@@ -16,22 +17,7 @@ export const fakeJobs: Map<string, Job> = new Map([
             outputs: [
             ]
         }
-    }],
-    ['end_job', {
-        id: 'end_job',
-        name: 'end_job',
-        url: 'https://dummy-url.com/end_job   ',
-        semanticSpec: {
-            description: 'Ends a workflow.',
-            embedding: []
-        },
-        syntacticSpec: {
-            inputs: [
-            ],
-            outputs: [
-            ]
-        }
-    }],
+    }]
 ]);
 
 export const numericalJobs: Map<string, Job> = new Map([
@@ -147,107 +133,153 @@ export const numericalJobs: Map<string, Job> = new Map([
 
 
 const numericalWorkflow_1: Workflow = {
-    nodes: [
-        {
-            job: fakeJobs.get('start_job')!,
-            isFake: true
-        },
-        {
-            job: numericalJobs.get('add_numbers')!,
-            isFake: false
-        },
-        {
-            job: fakeJobs.get('end_job')!,
-            isFake: true
-        }
-    ],
-    edges: [
-        {
-            id: 'edge_1',
-            source: 'start_job',
-            target: 'add_numbers'
-        },
-        {
-            id: 'edge_2',
-            source: 'add_numbers',
-            target: 'add_numbers'
-        },
-        {
-            id: 'edge_3',
-            source: 'add_numbers',
-            target: 'end_job'
-        }
-    ],
+    id: 'numerical_workflow_1',
     steps: [
+        // Step 1: Initial addition from start_job
         {
-            edgeId: 'edge_1',
-            dataExchanges: [
-                {
-                    edgeId: 'edge_1',
-                    sourceOutput: 'addend_1',
-                    targetInput: 'addend_1'
-                },
-                {
-                    edgeId: 'edge_1',
-                    sourceOutput: 'addend_2',
-                    targetInput: 'addend_2'
+            type: 'simple',
+            step: {
+                id: uuidv4(),
+                jobId: 'add_numbers',
+                dataExchanges: [
+                    { sourceJobId: 'start_job', sourceOutput: 'num_1', targetJobId: 'add_numbers', targetInput: 'addend_1' },
+                    { sourceJobId: 'start_job', sourceOutput: 'num_2', targetJobId: 'add_numbers', targetInput: 'addend_2' }
+                ],
+                resultBindings: {
+                    sum: 'sum'
                 }
+            }
+        },
+
+        // Step 2: Parallel block using output from step 1 (sum)
+        {
+            type: 'parallel',
+            branches: [
+                // Branch 1: multiply sum with 2
+                [
+                    {
+                        type: 'simple',
+                        step: {
+                            id: uuidv4(),
+                            jobId: 'multiply_numbers',
+                            dataExchanges: [
+                                { sourceJobId: 'add_numbers', sourceOutput: 'sum', targetJobId: 'multiply_numbers', targetInput: 'multiplicand' },
+                                { sourceJobId: 'start_job', sourceOutput: 'two', targetJobId: 'multiply_numbers', targetInput: 'multiplier' }
+                            ],
+                            resultBindings: {
+                                product: 'product'
+                            }
+                        }
+                    }
+                ],
+                // Branch 2: reuse sum in another addition
+                [
+                    {
+                        type: 'simple',
+                        step: {
+                            id: uuidv4(),
+                            jobId: 'add_numbers',
+                            dataExchanges: [
+                                { sourceJobId: 'add_numbers', sourceOutput: 'sum', targetJobId: 'add_numbers', targetInput: 'addend_1' },
+                                { sourceJobId: 'start_job', sourceOutput: 'num_3', targetJobId: 'add_numbers', targetInput: 'addend_2' }
+                            ],
+                            resultBindings: {
+                                sum: 'sum'
+                            }
+                        }
+                    }
+                ]
             ]
         },
+
+        // Step 3: Use product in another addition (simulated loop)
         {
-            edgeId: 'edge_2',
-            dataExchanges: [
-                {
-                    edgeId: 'edge_2',
-                    sourceOutput: 'sum',
-                    targetInput: 'addend_1'
-                },
-                {
-                    edgeId: 'edge_1',
-                    sourceOutput: 'addend_3',
-                    targetInput: 'addend_2'
+            type: 'simple',
+            step: {
+                id: uuidv4(),
+                jobId: 'add_numbers',
+                dataExchanges: [
+                    { sourceJobId: 'multiply_numbers', sourceOutput: 'product', targetJobId: 'add_numbers', targetInput: 'addend_1' },
+                    { sourceJobId: 'start_job', sourceOutput: 'num_4', targetJobId: 'add_numbers', targetInput: 'addend_2' }
+                ],
+                resultBindings: {
+                    sum: 'sum'
                 }
-            ]
+            }
         },
+
+        // Step 4: Final multiplication using last sum as multiplicand
         {
-            edgeId: 'edge_2',
-            dataExchanges: [
-                {
-                    edgeId: 'edge_2',
-                    sourceOutput: 'sum',
-                    targetInput: 'addend_1'
-                },
-                {
-                    edgeId: 'edge_1',
-                    sourceOutput: 'addend_4',
-                    targetInput: 'addend_2'
+            type: 'simple',
+            step: {
+                id: uuidv4(),
+                jobId: 'multiply_numbers',
+                dataExchanges: [
+                    { sourceJobId: 'multiply_numbers', sourceOutput: 'product', targetJobId: 'multiply_numbers', targetInput: 'multiplicand' },
+                    { sourceJobId: 'start_job', sourceOutput: 'ten', targetJobId: 'multiply_numbers', targetInput: 'multiplier' }
+                ],
+                resultBindings: {
+                    product: 'product'
                 }
-            ]
-        },
-        {
-            edgeId: 'edge_2',
-            dataExchanges: [
-                {
-                    edgeId: 'edge_2',
-                    sourceOutput: 'sum',
-                    targetInput: 'addend_1'
-                },
-                {
-                    edgeId: 'edge_1',
-                    sourceOutput: 'addend_5',
-                    targetInput: 'addend_2'
-                }
-            ]
-        },
-        {
-            edgeId: 'edge_3',
-            dataExchanges: [
-                {
-                    edgeId: 'edge_3',
-                    sourceOutput: 'sum',
-                    targetInput: 'sum'
-                }
-            ]
+            }
         }
     ]
 }
+
+
+export const numericalWorkflow_2: Workflow = {
+    id: 'numerical_workflow_2',
+    steps: [
+        {
+            type: 'parallel',
+            branches: [
+                [
+                    {
+                        type: 'simple',
+                        step: {
+                            id: uuidv4(),
+                            jobId: 'add_numbers',
+                            dataExchanges: [
+                                { sourceJobId: 'start_job', sourceOutput: 'a1', targetJobId: 'add_numbers', targetInput: 'addend_1' },
+                                { sourceJobId: 'start_job', sourceOutput: 'a2', targetJobId: 'add_numbers', targetInput: 'addend_2' }
+                            ],
+                            resultBindings: {
+                                sum: 'sum_A'
+                            }
+                        }
+                    }
+                ],
+                [
+                    {
+                        type: 'simple',
+                        step: {
+                            id: uuidv4(),
+                            jobId: 'add_numbers',
+                            dataExchanges: [
+                                { sourceJobId: 'start_job', sourceOutput: 'b1', targetJobId: 'add_numbers', targetInput: 'addend_1' },
+                                { sourceJobId: 'start_job', sourceOutput: 'b2', targetJobId: 'add_numbers', targetInput: 'addend_2' }
+                            ],
+                            resultBindings: {
+                                sum: 'sum_B'
+                            }
+                        }
+                    }
+                ]
+            ]
+        },
+        {
+            type: 'simple',
+            step: {
+                id: uuidv4(),
+                jobId: 'multiply_numbers',
+                dataExchanges: [
+                    { sourceJobId: 'add_numbers', sourceOutput: 'sum_A', targetJobId: 'multiply_numbers', targetInput: 'multiplicand' },
+                    { sourceJobId: 'add_numbers', sourceOutput: 'sum_B', targetJobId: 'multiply_numbers', targetInput: 'multiplier' }
+                ],
+                resultBindings: {
+                    product: 'final_product'
+                }
+            }
+        }
+    ]
+};

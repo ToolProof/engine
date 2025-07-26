@@ -5,8 +5,11 @@ export type InputMap = {
     [key: string]: string;
 }
 
-export interface Concept {
+export interface ConceptBase {
     id: string;
+}
+
+export interface Concept extends ConceptBase {
     name: string;
     semanticSpec: {
         description: string;
@@ -36,32 +39,65 @@ export interface Job extends Concept {
     }
 }
 
-export interface WorkflowNode {
-    job: Job;
-    isFake: boolean;
-}
-
-export interface WorkflowEdge {
-    id: string; // Unique identifier for the edge
-    source: string;
-    target: string;
-}
-
 export interface DataExchange {
-    edgeId: string;
-    sourceOutput: string; // Validator ensures that this output exists in the 'source' node's job outputs
-    targetInput: string; // Validator ensures that this input exists in the 'target' node's job inputs
+    sourceJobId: string;
+    sourceOutput: string; // Validator ensures that this output exists in sourceJob's outputs
+    targetJobId: string;
+    targetInput: string; // Validator ensures that this input exists in the targetJob's inputs
 }
 
-export interface WorkflowStep {
-    edgeId: string; // The edge's target node is run
-    dataExchanges: DataExchange[]; // Validator ensures that the edge's target node gets the correct inputs from the source node's outputs
+export interface WorkflowStep extends ConceptBase {
+    jobId: string; // The job that this step executes
+    dataExchanges: DataExchange[]; // Validator ensures that the job gets the correct inputs from the links leading to it
+    resultBindings: {
+        [outputRole: string]: string;
+    };
 }
 
-export interface Workflow {
-    nodes: WorkflowNode[];
-    edges: WorkflowEdge[]; // Validator ensures that edges connect nodes with matching inputs and outputs
-    steps: WorkflowStep[];
+export type Condition =
+    | { op: 'equals'; left: string; right: any }
+    | { op: 'not_equals'; left: string; right: any }
+    | { op: 'greater_than'; left: string; right: number }
+    | { op: 'less_than'; left: string; right: number }
+    | { op: 'and'; conditions: Condition[] }
+    | { op: 'or'; conditions: Condition[] }
+    | { op: 'not'; condition: Condition }
+    | { op: 'always' }; // Always true — fallback/default branch
+
+export interface SimpleWorkflowStep {
+    type: 'simple';
+    step: WorkflowStep;
+}
+
+export interface ParallelWorkflowStep {
+    type: 'parallel';
+    branches: WorkflowStepUnion[][];
+}
+
+export interface ConditionalWorkflowStep {
+    type: 'conditional';
+    branches: {
+        condition: Condition;
+        steps: WorkflowStepUnion[];
+    }[];
+}
+
+export interface WhileLoopWorkflowStep {
+    type: 'while';
+    condition: string;
+    body: WorkflowStepUnion[];
+}
+
+export interface ForLoopWorkflowStep {
+    type: 'for';
+    iterations: number;
+    body: WorkflowStepUnion[];
+}
+
+export type WorkflowStepUnion = SimpleWorkflowStep | ParallelWorkflowStep | ConditionalWorkflowStep | WhileLoopWorkflowStep | ForLoopWorkflowStep;
+
+export interface Workflow extends ConceptBase {
+    steps: WorkflowStepUnion[];
 }
 
 export interface WorkflowSpec<T extends InputMap = InputMap> {

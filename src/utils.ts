@@ -45,7 +45,7 @@ export const calculateExecutionLevels = (workflow: Workflow): Map<string, number
     };
 
     // Calculate levels for all jobs
-    workflow.nodes.forEach(wn => {
+    workflow.jobs.forEach(wn => {
         calculateLevel(wn.job.id);
     });
 
