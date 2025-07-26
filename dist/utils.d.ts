@@ -1,5 +1,4 @@
-import { Job, Workflow } from './types';
-export declare const calculateExecutionLevels: (workflow: Workflow) => Map<string, number>;
+import { Job, Workflow } from './types/typesWF.js';
 interface ValidationResult {
     isValid: boolean;
     initialInputs: string[];

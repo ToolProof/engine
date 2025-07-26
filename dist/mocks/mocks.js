@@ -1,20 +1,5 @@
-import { RT, RR } from './registries';
+import { RT, RR } from './registries.js';
 import { v4 as uuidv4 } from 'uuid';
-export const fakeJobs = new Map([
-    ['start_job', {
-            id: 'start_job',
-            name: 'start_job',
-            url: 'https://dummy-url.com/start_job   ',
-            semanticSpec: {
-                description: 'Starts a workflow.',
-                embedding: []
-            },
-            syntacticSpec: {
-                inputs: [],
-                outputs: []
-            }
-        }]
-]);
 export const numericalJobs = new Map([
     ['add_numbers', {
             id: 'add_numbers',

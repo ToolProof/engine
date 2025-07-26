@@ -1,50 +1,10 @@
-export const calculateExecutionLevels = (workflow) => {
-    const levels = new Map();
-    const visited = new Set();
-    const processing = new Set();
-    // Helper function to calculate the maximum dependency level for a job
-    const calculateLevel = (jobId) => {
-        if (processing.has(jobId)) {
-            // Circular dependency detected, treat as level 0
-            return 0;
-        }
-        if (visited.has(jobId)) {
-            return levels.get(jobId) || 0;
-        }
-        processing.add(jobId);
-        // Find all edges that lead TO this node (dependencies)
-        const incomingEdges = workflow.edges.filter(edge => edge.to === jobId);
-        if (incomingEdges.length === 0) {
-            // No dependencies, this is a starting job (level 0)
-            levels.set(jobId, 0);
-            visited.add(jobId);
-            processing.delete(jobId);
-            return 0;
-        }
-        // Calculate the maximum level of all dependencies + 1
-        let maxDependencyLevel = -1;
-        for (const edge of incomingEdges) {
-            const dependencyLevel = calculateLevel(edge.from);
-            maxDependencyLevel = Math.max(maxDependencyLevel, dependencyLevel);
-        }
-        const jobLevel = maxDependencyLevel + 1;
-        levels.set(jobId, jobLevel);
-        visited.add(jobId);
-        processing.delete(jobId);
-        return jobLevel;
-    };
-    // Calculate levels for all jobs
-    workflow.jobs.forEach(wn => {
-        calculateLevel(wn.job.id);
-    });
-    return levels;
-};
 export function validateWorkflow(availableJobs, workflow) {
     const jobMap = new Map();
     for (const job of availableJobs) {
         jobMap.set(job.id, job);
     }
     const definedOutputs = new Map();
+    const definedAliases = new Set(); // Track output aliases
     const consumedInputs = new Set();
     const initialInputs = new Set();
     let isValid = true;
@@ -55,8 +15,8 @@ export function validateWorkflow(availableJobs, workflow) {
             isValid = false;
             return;
         }
-        const inputRoles = new Set(job.syntacticSpec.inputs.map(i => i.role.id));
-        const outputRoles = new Set(job.syntacticSpec.outputs.map(o => o.role.id));
+        const inputRoles = new Set(job.syntacticSpec.inputs.map(i => i.role.name));
+        const outputRoles = new Set(job.syntacticSpec.outputs.map(o => o.role.name));
         for (const exch of step.dataExchanges) {
             if (exch.targetJobId !== step.jobId) {
                 console.error(`[ERROR] DataExchange targetJobId '${exch.targetJobId}' does not match step.jobId '${step.jobId}'`);
@@ -67,7 +27,8 @@ export function validateWorkflow(availableJobs, workflow) {
                 isValid = false;
             }
             consumedInputs.add(exch.sourceOutput);
-            if (!definedOutputs.get(exch.sourceJobId)?.has(exch.sourceOutput)) {
+            // Check if this output was defined as an alias by a previous step
+            if (!definedAliases.has(exch.sourceOutput)) {
                 initialInputs.add(exch.sourceOutput);
             }
         }
@@ -81,6 +42,9 @@ export function validateWorkflow(availableJobs, workflow) {
                     definedOutputs.set(step.jobId, new Set());
                 }
                 definedOutputs.get(step.jobId).add(outputRole);
+                // Track the alias for this output
+                const alias = step.resultBindings[outputRole];
+                definedAliases.add(alias);
             }
         }
     }

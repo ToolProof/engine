@@ -1,4 +1,4 @@
-import { GraphStateAnnotationRoot } from '../types';
+import { GraphStateAnnotationRoot } from '../types/typesLG';
 import { NodeDown } from '../nodes/nodeDown';
 import { NodeLow } from '../nodes/nodeLow';
 import { NodeUp } from '../nodes/nodeUp';

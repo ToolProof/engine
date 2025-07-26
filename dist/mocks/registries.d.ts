@@ -1,4 +1,4 @@
-import { ResourceType, ResourceRole, Concept } from '../types';
+import { ResourceType, ResourceRole, Concept } from '../types/typesWF.js';
 /**
  * Base registry class for managing concepts with common functionality
  */

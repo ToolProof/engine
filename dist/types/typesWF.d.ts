@@ -1,4 +1,3 @@
-import { Runnable } from '@langchain/core/runnables';
 export type InputMap = {
     [key: string]: string;
 };
@@ -104,21 +103,4 @@ export interface Workflow extends ConceptBase {
 export interface WorkflowSpec<T extends InputMap = InputMap> {
     workflow: Workflow;
     inputMaps: T[];
-}
-export declare const GraphStateAnnotationRoot: import("@langchain/langgraph").AnnotationRoot<{
-    dryModeManager: import("@langchain/langgraph").BinaryOperatorAggregate<{
-        dryRunMode: boolean;
-        delay: number;
-        drySocketMode: boolean;
-    }, {
-        dryRunMode: boolean;
-        delay: number;
-        drySocketMode: boolean;
-    }>;
-    workflowSpec: import("@langchain/langgraph").LastValue<WorkflowSpec<InputMap>>;
-    messages: import("@langchain/langgraph").BinaryOperatorAggregate<import("@langchain/core/messages").BaseMessage[], import("@langchain/langgraph").Messages>;
-}>;
-export type GraphState = typeof GraphStateAnnotationRoot.State;
-export declare abstract class NodeBase extends Runnable {
-    lc_namespace: never[];
 }

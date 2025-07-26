@@ -1,4 +1,4 @@
-import { NodeBase, GraphState } from '../types.js';
+import { NodeBase, GraphState } from '../types/typesLG.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 export declare class NodeDown extends NodeBase {
     constructor();

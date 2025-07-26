@@ -1,4 +1,4 @@
-import { NodeBase } from '../types.js';
+import { NodeBase } from '../types/typesLG.js';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';
 export class NodeLow extends NodeBase {

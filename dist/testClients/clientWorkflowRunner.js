@@ -1,19 +1,17 @@
-// import dotenv from 'dotenv';
-// dotenv.config(); // Commented out to test
-// import { WorkflowSpec, Workflow } from '../types';
-// import { Client } from '@langchain/langgraph-sdk';
-// import { RemoteGraph } from '@langchain/langgraph/remote';
-// import { HumanMessage } from '@langchain/core/messages';
+import dotenv from 'dotenv';
+dotenv.config();
+import { Client } from '@langchain/langgraph-sdk';
+import { RemoteGraph } from '@langchain/langgraph/remote';
+import { HumanMessage } from '@langchain/core/messages';
 const urlLocal = `http://localhost:8123`;
 const urlRemote = `https://deployment-typescript-48b9b40b9bac500f8fe557700e4c49d9.us.langgraph.app`;
 const url = urlLocal; //process.env.URL || urlLocal;
 const graphId = 'genericGraph';
-// const client = new Client({
-//     apiUrl: url,
-// });
-// const remoteGraph = new RemoteGraph({ graphId, url });
-/*
-const workflow: Workflow = {
+const client = new Client({
+    apiUrl: url,
+});
+const remoteGraph = new RemoteGraph({ graphId, url });
+const workflow = {
     jobs: [
         {
             id: 'c045dbc0-bab9-4214-a62c-cbe5d26bd275',
@@ -1179,24 +1177,17 @@ const workflow: Workflow = {
             ]
         }
     ]
-}
-*/
-/*
-const workflowSpec: WorkflowSpec = {
+};
+const workflowSpec = {
     workflow: workflow,
     inputMaps: [
-        { // ATTENTION: must be runtime-validated against the workflow
+        {
             alpha: 'alpha_path',
             beta: 'beta_path',
         }
     ]
-}
-*/
+};
 export async function runRemoteGraph() {
-    console.log('runRemoteGraph called but temporarily disabled for testing');
-    return;
-    // Commented out for testing
-    /*
     try {
         // Create a thread (or use an existing thread instead)
         const thread = await client.threads.create();
@@ -1204,7 +1195,6 @@ export async function runRemoteGraph() {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 1800000); // 30 minutes
         console.log('timeout :', timeout);
-
         try {
             // console.log('Invoking the graph')
             const result = await remoteGraph.invoke({
@@ -1219,21 +1209,18 @@ export async function runRemoteGraph() {
                 configurable: { thread_id: thread.thread_id },
                 signal: controller.signal,
             });
-
             // console.log('threadId:', thread.thread_id);
             console.log('result:', JSON.stringify(result.messages, null, 2));
-
             return result;
-
-        } finally {
+        }
+        finally {
             clearTimeout(timeout);
             if (!controller.signal.aborted) {
                 controller.abort();
             }
         }
-
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error invoking graph:', error);
     }
-    */
 }

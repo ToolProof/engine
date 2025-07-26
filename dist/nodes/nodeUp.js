@@ -1,4 +1,4 @@
-import { NodeBase } from '../types.js';
+import { NodeBase } from '../types/typesLG.js';
 import { Storage } from '@google-cloud/storage';
 import { AIMessage } from '@langchain/core/messages';
 import WebSocket from 'ws';

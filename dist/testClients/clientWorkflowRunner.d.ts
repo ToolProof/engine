@@ -1,1 +1,1 @@
-export declare function runRemoteGraph(): Promise<void>;
+export declare function runRemoteGraph(): Promise<any>;
