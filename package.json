@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start:workflowRunner": "set NODE_ENV=workflowRunner && node --loader ts-node/esm src/index.ts"
+    "start:workflowRunner": "set NODE_ENV=workflowRunner && node --loader ts-node/esm src/index.ts",
+    "start:workflowValidator": "set NODE_ENV=workflowValidator && node --loader ts-node/esm src/index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -19,10 +20,12 @@
     "@langchain/core": "^0.3.62",
     "@langchain/langgraph": "^0.3.6",
     "@langchain/openai": "^0.4.4",
+    "@types/uuid": "^10.0.0",
     "axios": "^1.10.0",
     "dotenv": "^16.4.7",
     "firebase-admin": "^13.2.0",
     "openai": "^4.87.3",
+    "uuid": "^11.1.0",
     "ws": "^8.18.3"
   },
   "devDependencies": {

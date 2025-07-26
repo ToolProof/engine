@@ -2,11 +2,11 @@ import { Runnable } from '@langchain/core/runnables';
 export type InputMap = {
     [key: string]: string;
 };
-export interface Tool {
+export interface ConceptBase {
     id: string;
-    displayName: string;
 }
-export interface Concept extends Tool {
+export interface Concept extends ConceptBase {
+    name: string;
     semanticSpec: {
         description: string;
         embedding: number[];
@@ -18,25 +18,88 @@ export interface ResourceType extends Concept {
         schema: object | null;
     };
 }
+export interface ResourceRole extends Concept {
+}
+export interface ResourceSpec {
+    type: ResourceType;
+    role: ResourceRole;
+}
 export interface Job extends Concept {
     url: string;
     syntacticSpec: {
-        inputs: ResourceType[];
-        outputs: ResourceType[];
+        inputs: ResourceSpec[];
+        outputs: ResourceSpec[];
     };
 }
-export interface WorkflowNode {
-    job: Job;
-    isFakeStep: boolean;
+export interface DataExchange {
+    sourceJobId: string;
+    sourceOutput: string;
+    targetJobId: string;
+    targetInput: string;
 }
-export interface WorkflowEdge {
-    from: string;
-    to: string;
-    dataFlow: string[];
+export interface WorkflowStep extends ConceptBase {
+    jobId: string;
+    dataExchanges: DataExchange[];
+    resultBindings: {
+        [outputRole: string]: string;
+    };
 }
-export interface Workflow {
-    nodes: WorkflowNode[];
-    edges: WorkflowEdge[];
+export type Condition = {
+    op: 'equals';
+    left: string;
+    right: any;
+} | {
+    op: 'not_equals';
+    left: string;
+    right: any;
+} | {
+    op: 'greater_than';
+    left: string;
+    right: number;
+} | {
+    op: 'less_than';
+    left: string;
+    right: number;
+} | {
+    op: 'and';
+    conditions: Condition[];
+} | {
+    op: 'or';
+    conditions: Condition[];
+} | {
+    op: 'not';
+    condition: Condition;
+} | {
+    op: 'always';
+};
+export interface SimpleWorkflowStep {
+    type: 'simple';
+    step: WorkflowStep;
+}
+export interface ParallelWorkflowStep {
+    type: 'parallel';
+    branches: WorkflowStepUnion[][];
+}
+export interface ConditionalWorkflowStep {
+    type: 'conditional';
+    branches: {
+        condition: Condition;
+        steps: WorkflowStepUnion[];
+    }[];
+}
+export interface WhileLoopWorkflowStep {
+    type: 'while';
+    condition: string;
+    body: WorkflowStepUnion[];
+}
+export interface ForLoopWorkflowStep {
+    type: 'for';
+    iterations: number;
+    body: WorkflowStepUnion[];
+}
+export type WorkflowStepUnion = SimpleWorkflowStep | ParallelWorkflowStep | ConditionalWorkflowStep | WhileLoopWorkflowStep | ForLoopWorkflowStep;
+export interface Workflow extends ConceptBase {
+    steps: WorkflowStepUnion[];
 }
 export interface WorkflowSpec<T extends InputMap = InputMap> {
     workflow: Workflow;

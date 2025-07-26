@@ -1,138 +1,131 @@
 import { RT, RR } from './registries';
-import { Job, Workflow } from '../types';
 import { v4 as uuidv4 } from 'uuid';
-
-export const fakeJobs: Map<string, Job> = new Map([
+export const fakeJobs = new Map([
     ['start_job', {
-        id: 'start_job',
-        name: 'start_job',
-        url: 'https://dummy-url.com/start_job   ',
-        semanticSpec: {
-            description: 'Starts a workflow.',
-            embedding: []
-        },
-        syntacticSpec: {
-            inputs: [
-            ],
-            outputs: [
-            ]
-        }
-    }]
+            id: 'start_job',
+            name: 'start_job',
+            url: 'https://dummy-url.com/start_job   ',
+            semanticSpec: {
+                description: 'Starts a workflow.',
+                embedding: []
+            },
+            syntacticSpec: {
+                inputs: [],
+                outputs: []
+            }
+        }]
 ]);
-
-export const numericalJobs: Map<string, Job> = new Map([
+export const numericalJobs = new Map([
     ['add_numbers', {
-        id: 'add_numbers',
-        name: 'add_numbers',
-        url: 'https://dummy-url.com/add_numbers',
-        semanticSpec: {
-            description: 'Add two numbers together.',
-            embedding: []
-        },
-        syntacticSpec: {
-            inputs: [
-                {
-                    type: RT('number'),
-                    role: RR('addend_1')
-                },
-                {
-                    type: RT('number'),
-                    role: RR('addend_2')
-                }
-            ],
-            outputs: [
-                {
-                    type: RT('number'),
-                    role: RR('sum')
-                }
-            ]
-        }
-    }],
+            id: 'add_numbers',
+            name: 'add_numbers',
+            url: 'https://dummy-url.com/add_numbers',
+            semanticSpec: {
+                description: 'Add two numbers together.',
+                embedding: []
+            },
+            syntacticSpec: {
+                inputs: [
+                    {
+                        type: RT('number'),
+                        role: RR('addend_1')
+                    },
+                    {
+                        type: RT('number'),
+                        role: RR('addend_2')
+                    }
+                ],
+                outputs: [
+                    {
+                        type: RT('number'),
+                        role: RR('sum')
+                    }
+                ]
+            }
+        }],
     ['subtract_numbers', {
-        id: 'subtract_numbers',
-        name: 'subtract_numbers',
-        url: 'https://dummy-url.com/subtract_numbers',
-        semanticSpec: {
-            description: 'Subtract one number from another.',
-            embedding: []
-        },
-        syntacticSpec: {
-            inputs: [
-                {
-                    type: RT('number'),
-                    role: RR('minuend')
-                },
-                {
-                    type: RT('number'),
-                    role: RR('subtrahend')
-                }
-            ],
-            outputs: [
-                {
-                    type: RT('number'),
-                    role: RR('difference')
-                }
-            ]
-        }
-    }],
+            id: 'subtract_numbers',
+            name: 'subtract_numbers',
+            url: 'https://dummy-url.com/subtract_numbers',
+            semanticSpec: {
+                description: 'Subtract one number from another.',
+                embedding: []
+            },
+            syntacticSpec: {
+                inputs: [
+                    {
+                        type: RT('number'),
+                        role: RR('minuend')
+                    },
+                    {
+                        type: RT('number'),
+                        role: RR('subtrahend')
+                    }
+                ],
+                outputs: [
+                    {
+                        type: RT('number'),
+                        role: RR('difference')
+                    }
+                ]
+            }
+        }],
     ['multiply_numbers', {
-        id: 'multiply_numbers',
-        name: 'multiply_numbers',
-        url: 'https://dummy-url.com/multiply_numbers',
-        semanticSpec: {
-            description: 'Multiply two numbers together.',
-            embedding: []
-        },
-        syntacticSpec: {
-            inputs: [
-                {
-                    type: RT('number'),
-                    role: RR('multiplicand')
-                },
-                {
-                    type: RT('number'),
-                    role: RR('multiplier')
-                }
-            ],
-            outputs: [
-                {
-                    type: RT('number'),
-                    role: RR('product')
-                }
-            ]
-        }
-    }],
+            id: 'multiply_numbers',
+            name: 'multiply_numbers',
+            url: 'https://dummy-url.com/multiply_numbers',
+            semanticSpec: {
+                description: 'Multiply two numbers together.',
+                embedding: []
+            },
+            syntacticSpec: {
+                inputs: [
+                    {
+                        type: RT('number'),
+                        role: RR('multiplicand')
+                    },
+                    {
+                        type: RT('number'),
+                        role: RR('multiplier')
+                    }
+                ],
+                outputs: [
+                    {
+                        type: RT('number'),
+                        role: RR('product')
+                    }
+                ]
+            }
+        }],
     ['divide_numbers', {
-        id: 'divide_numbers',
-        name: 'divide_numbers',
-        url: 'https://dummy-url.com/divide_numbers',
-        semanticSpec: {
-            description: 'Divide one number by another.',
-            embedding: []
-        },
-        syntacticSpec: {
-            inputs: [
-                {
-                    type: RT('number'),
-                    role: RR('dividend')
-                },
-                {
-                    type: RT('number'),
-                    role: RR('divisor')
-                }
-            ], // ATTENTION: division by zero
-            outputs: [
-                {
-                    type: RT('number'),
-                    role: RR('quotient')
-                }
-            ]
-        }
-    }]
-])
-
-
-export const numericalWorkflow_1: Workflow = {
+            id: 'divide_numbers',
+            name: 'divide_numbers',
+            url: 'https://dummy-url.com/divide_numbers',
+            semanticSpec: {
+                description: 'Divide one number by another.',
+                embedding: []
+            },
+            syntacticSpec: {
+                inputs: [
+                    {
+                        type: RT('number'),
+                        role: RR('dividend')
+                    },
+                    {
+                        type: RT('number'),
+                        role: RR('divisor')
+                    }
+                ], // ATTENTION: division by zero
+                outputs: [
+                    {
+                        type: RT('number'),
+                        role: RR('quotient')
+                    }
+                ]
+            }
+        }]
+]);
+export const numericalWorkflow_1 = {
     id: 'numerical_workflow_1',
     steps: [
         // Step 1: Initial addition from start_job
@@ -150,7 +143,6 @@ export const numericalWorkflow_1: Workflow = {
                 }
             }
         },
-
         // Step 2: Parallel block using output from step 1 (sum)
         {
             type: 'parallel',
@@ -191,7 +183,6 @@ export const numericalWorkflow_1: Workflow = {
                 ]
             ]
         },
-
         // Step 3: Use product in another addition (simulated loop)
         {
             type: 'simple',
@@ -207,7 +198,6 @@ export const numericalWorkflow_1: Workflow = {
                 }
             }
         },
-
         // Step 4: Final multiplication using last sum as multiplicand
         {
             type: 'simple',
@@ -224,10 +214,8 @@ export const numericalWorkflow_1: Workflow = {
             }
         }
     ]
-}
-
-
-export const numericalWorkflow_2: Workflow = {
+};
+export const numericalWorkflow_2 = {
     id: 'numerical_workflow_2',
     steps: [
         {
