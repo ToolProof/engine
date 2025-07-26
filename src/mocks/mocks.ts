@@ -2,23 +2,6 @@ import { RT, RR } from './registries.js';
 import { Job, Workflow } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
-export const fakeJobs: Map<string, Job> = new Map([
-    ['start_job', {
-        id: 'start_job',
-        name: 'start_job',
-        url: 'https://dummy-url.com/start_job   ',
-        semanticSpec: {
-            description: 'Starts a workflow.',
-            embedding: []
-        },
-        syntacticSpec: {
-            inputs: [
-            ],
-            outputs: [
-            ]
-        }
-    }]
-]);
 
 export const numericalJobs: Map<string, Job> = new Map([
     ['add_numbers', {
