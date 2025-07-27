@@ -22,7 +22,7 @@ export declare const graph: import("@langchain/langgraph").CompiledStateGraph<im
     }>;
     workflowSpec: import("@langchain/langgraph").LastValue<import("../types/typesWF").WorkflowSpec<import("../types/typesWF").InputMap>>;
     messages: import("@langchain/langgraph").BinaryOperatorAggregate<import("@langchain/core/messages").BaseMessage[], import("@langchain/langgraph").Messages>;
-}>, "__start__" | "nodeDown" | "nodeUp" | "nodeHigh" | "nodeLow", {
+}>, "__start__" | "nodeHigh", {
     dryModeManager: import("@langchain/langgraph").BinaryOperatorAggregate<{
         dryRunMode: boolean;
         delay: number;

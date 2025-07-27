@@ -4,7 +4,7 @@
         "."
     ],
     "graphs": {
-        "genericGraph": "./src/graphs/genericGraph.ts:graph"
+        "workflowRunner": "./src/graphs/workflowRunner.ts:graph"
     },
     "env": ".env"
 }

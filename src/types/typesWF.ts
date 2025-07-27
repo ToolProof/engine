@@ -3,11 +3,11 @@ export type InputMap = {
     [key: string]: string;
 }
 
-export interface ConceptBase {
+export interface Identifiable {
     id: string;
 }
 
-export interface Concept extends ConceptBase {
+export interface Concept extends Identifiable {
     name: string;
     semanticSpec: {
         description: string;
@@ -44,10 +44,10 @@ export interface DataExchange {
     targetInput: string; // Validator ensures that this input exists in the targetJob's inputs
 }
 
-export interface WorkflowStep extends ConceptBase {
+export interface WorkflowStep extends Identifiable {
     jobId: string; // The job that this step executes
     dataExchanges: DataExchange[]; // Validator ensures that the job gets the correct inputs from the links leading to it
-    resultBindings: {
+    outputBindings: {
         [outputRole: string]: string;
     };
 }
@@ -62,8 +62,8 @@ export type Condition =
     | { op: 'not'; condition: Condition }
     | { op: 'always' }; // Always true — fallback/default branch
 
-export interface SimpleWorkflowStep {
-    type: 'simple';
+export interface ActualWorkflowStep {
+    type: 'actual';
     step: WorkflowStep;
 }
 
@@ -82,7 +82,7 @@ export interface ConditionalWorkflowStep {
 
 export interface WhileLoopWorkflowStep {
     type: 'while';
-    condition: string;
+    condition: Condition;
     body: WorkflowStepUnion[];
 }
 
@@ -92,13 +92,15 @@ export interface ForLoopWorkflowStep {
     body: WorkflowStepUnion[];
 }
 
-export type WorkflowStepUnion = SimpleWorkflowStep | ParallelWorkflowStep | ConditionalWorkflowStep | WhileLoopWorkflowStep | ForLoopWorkflowStep;
+export type WorkflowStepUnion = ActualWorkflowStep | ParallelWorkflowStep | ConditionalWorkflowStep | WhileLoopWorkflowStep | ForLoopWorkflowStep;
 
-export interface Workflow extends ConceptBase {
-    steps: WorkflowStepUnion[];
+export interface Workflow extends Identifiable {
+    steps: ActualWorkflowStep[]; // WorkflowStepUnion[]; // ATTENTION: simplified for now
 }
 
 export interface WorkflowSpec<T extends InputMap = InputMap> {
     workflow: Workflow;
     inputMaps: T[]; // All items must be the same type T
+    // inputMaps.length encodes the number of parallel executions
+    counter: number; // ATTENTION: hack for simplified, sequential workflows
 }

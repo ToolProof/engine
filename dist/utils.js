@@ -32,7 +32,7 @@ export function validateWorkflow(availableJobs, workflow) {
                 initialInputs.add(exch.sourceOutput);
             }
         }
-        for (const outputRole of Object.keys(step.resultBindings)) {
+        for (const outputRole of Object.keys(step.outputBindings)) {
             if (!outputRoles.has(outputRole)) {
                 console.error(`[ERROR] Output role '${outputRole}' not found in job '${step.jobId}' outputs.`);
                 isValid = false;
@@ -43,14 +43,14 @@ export function validateWorkflow(availableJobs, workflow) {
                 }
                 definedOutputs.get(step.jobId).add(outputRole);
                 // Track the alias for this output
-                const alias = step.resultBindings[outputRole];
+                const alias = step.outputBindings[outputRole];
                 definedAliases.add(alias);
             }
         }
     }
     function walkSteps(steps) {
         for (const s of steps) {
-            if (s.type === 'simple') {
+            if (s.type === 'actual') {
                 validateStep(s.step);
             }
             else if (s.type === 'parallel') {
@@ -58,8 +58,8 @@ export function validateWorkflow(availableJobs, workflow) {
                 for (const branch of s.branches) {
                     const branchOutputs = new Set();
                     for (const bStep of branch) {
-                        if (bStep.type === 'simple') {
-                            for (const bound of Object.values(bStep.step.resultBindings)) {
+                        if (bStep.type === 'actual') {
+                            for (const bound of Object.values(bStep.step.outputBindings)) {
                                 if (branchOutputs.has(bound)) {
                                     console.error(`[ERROR] Duplicate output alias '${bound}' in same branch.`);
                                     isValid = false;

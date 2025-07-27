@@ -1,10 +1,10 @@
 export type InputMap = {
     [key: string]: string;
 };
-export interface ConceptBase {
+export interface Identifiable {
     id: string;
 }
-export interface Concept extends ConceptBase {
+export interface Concept extends Identifiable {
     name: string;
     semanticSpec: {
         description: string;
@@ -36,10 +36,10 @@ export interface DataExchange {
     targetJobId: string;
     targetInput: string;
 }
-export interface WorkflowStep extends ConceptBase {
+export interface WorkflowStep extends Identifiable {
     jobId: string;
     dataExchanges: DataExchange[];
-    resultBindings: {
+    outputBindings: {
         [outputRole: string]: string;
     };
 }
@@ -71,8 +71,8 @@ export type Condition = {
 } | {
     op: 'always';
 };
-export interface SimpleWorkflowStep {
-    type: 'simple';
+export interface ActualWorkflowStep {
+    type: 'actual';
     step: WorkflowStep;
 }
 export interface ParallelWorkflowStep {
@@ -88,7 +88,7 @@ export interface ConditionalWorkflowStep {
 }
 export interface WhileLoopWorkflowStep {
     type: 'while';
-    condition: string;
+    condition: Condition;
     body: WorkflowStepUnion[];
 }
 export interface ForLoopWorkflowStep {
@@ -96,11 +96,12 @@ export interface ForLoopWorkflowStep {
     iterations: number;
     body: WorkflowStepUnion[];
 }
-export type WorkflowStepUnion = SimpleWorkflowStep | ParallelWorkflowStep | ConditionalWorkflowStep | WhileLoopWorkflowStep | ForLoopWorkflowStep;
-export interface Workflow extends ConceptBase {
-    steps: WorkflowStepUnion[];
+export type WorkflowStepUnion = ActualWorkflowStep | ParallelWorkflowStep | ConditionalWorkflowStep | WhileLoopWorkflowStep | ForLoopWorkflowStep;
+export interface Workflow extends Identifiable {
+    steps: ActualWorkflowStep[];
 }
 export interface WorkflowSpec<T extends InputMap = InputMap> {
     workflow: Workflow;
     inputMaps: T[];
+    counter: number;
 }

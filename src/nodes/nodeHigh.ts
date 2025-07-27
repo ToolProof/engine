@@ -1,7 +1,7 @@
-import { NodeBase, GraphState, InputMap } from '../types/typesLG.js';
+import { numericalJobs } from '../mocks/mocks.js';
+import { NodeBase, GraphState } from '../types/typesLG.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
-import * as path from 'path';
 import axios from 'axios';
 import WebSocket from 'ws';
 
@@ -41,24 +41,30 @@ export class NodeHigh extends NodeBase {
 
         try {
 
-            const foo = async (url: string, inputs: string[], outputDir: string): Promise<string[]> => {
-                // Here we must invoke the service at the given URL
-                // This function cannot know about anything specific to Ligandokreado
-                // spec must specify all neccessary parameters
-                // Maybe the tool only needs to return the output keys...
+            const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter].step;
 
-                let payload: { [key: string]: string } = {};
+            const job = numericalJobs.get(workflowStep.jobId);
 
-                inputs.forEach((input) => {
-                    payload[input] = state.resourceMap[input].path;
-                });
+            if (!job) {
+                throw new Error(`Job with ID ${workflowStep.jobId} not found`);
+            }
 
-                payload = {
-                    ...payload,
-                    outputDir,
+            // Iterate over the Job's inputs and add them to the payload with paths from state.workflowSpec.inputMaps[0] that match input.role.name's entry in dataExchanges. This means that we should grab the sourceOutput that matches where input.role.name is the targetInput in dataExchanges and then use sourceOut to extract the path from state.workflowSpec.inputMaps[0].
+
+            const dataExchanges = workflowStep.dataExchanges;
+
+            let payload: { [key: string]: string } = {};
+
+            job.syntacticSpec.inputs.forEach((input) => {
+                const matchingExchange = dataExchanges.find(de => de.targetInput === input.role.name);
+                if (matchingExchange) {
+                    payload[input.role.name] = state.workflowSpec.inputMaps[0][matchingExchange.sourceOutput];
                 }
+            });
 
-                console.log('payload:', JSON.stringify(payload, null, 2));
+            console.log('payload:', JSON.stringify(payload, null, 2));
+
+            const foo = async (url: string): Promise<{ [key: string]: string }> => {
 
                 const response = await axios.post(
                     url,
@@ -73,39 +79,48 @@ export class NodeHigh extends NodeBase {
 
                 const result = response.data;
 
-                console.log('result tool:', JSON.stringify(result, null, 2));
+                console.log('result:', JSON.stringify(result, null, 2));
 
-                return result.result.outputs;
+                return result.outputs;
             }
 
-            const outputDir = path.dirname(state.resourceMap[this.spec.outputDir].path); // ATTENTION: convention: outputDir is a resource key, not a path 
+            const outputs = await foo(job.url);
 
-            const outputs = await foo(
-                this.spec.interMorphism(),
-                this.spec.inputs,
-                outputDir
-            );
+            const outputBindings = workflowStep.outputBindings;
 
-            const extraResources: InputMap = outputs.reduce((acc, file) => {
-                acc[file.split('.')[0]] = {
-                    path: path.join(outputDir, file),
-                    value: null,
-                };
-                return acc;
-            }, {} as InputMap);
+            // Create new entries for inputMaps[0] based on outputBindings
+            const newInputMapEntries: { [key: string]: string } = {};
+
+            // Map job output roles to bound keys using the result paths
+            Object.entries(outputBindings).forEach(([outputRole, boundKey]) => {
+                if (outputs[outputRole]) {
+                    newInputMapEntries[boundKey] = outputs[outputRole];
+                }
+            });
 
             return {
                 messages: [new AIMessage('NodeHigh completed')],
-                resourceMap: {
-                    ...state.resourceMap,
-                    ...extraResources,
-                }
+                workflowSpec: {
+                    ...state.workflowSpec,
+                    inputMaps: [
+                        {
+                            ...state.workflowSpec.inputMaps[0],
+                            ...newInputMapEntries
+                        },
+                        ...state.workflowSpec.inputMaps.slice(1)
+                    ],
+                    counter: state.workflowSpec.counter + 1
+                },
             };
 
         } catch (error: any) {
             console.error('Error in NodeHigh:', error);
             return {
                 messages: [new AIMessage('NodeHigh failed')],
+                workflowSpec: {
+                    ...state.workflowSpec,
+                    counter: state.workflowSpec.counter + 1
+                },
             };
         }
     }
