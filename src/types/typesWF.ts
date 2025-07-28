@@ -37,6 +37,7 @@ export interface Job extends Concept {
         inputs: ResourceSpec[];
         outputs: ResourceSpec[];
     }
+    // ATTENTION_RONAK: Note how a job must specify the metadata it produces. This is so that the workflow validator can ensure that conditions that are specified only refer to metadata that is produced by previous jobs. In adapterAutodockWorkflow_1, the validator can check that the 'score' metadata is produced by the 'basic_docking' job before it is used in the conditional step.
     metadata: {
         output: string;
         metadata: object;
