@@ -1,11 +1,12 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { calculatorWorkflow_1 } from '../mocks/calculator.js';
+import { adapterAutodockWorkflow_1 } from '../mocks/adapter_autodock.js';
 import { WorkflowSpec } from '../types/typesWF';
 import { Client } from '@langchain/langgraph-sdk';
 import { RemoteGraph } from '@langchain/langgraph/remote';
 import { HumanMessage } from '@langchain/core/messages';
-import { adapterAutodockWorkflow_1 } from 'src/mocks/adapter_autodock.js';
+
 
 const urlLocal = `http://localhost:8123`;
 const urlRemote = `https://deployment-typescript-48b9b40b9bac500f8fe557700e4c49d9.us.langgraph.app`;

@@ -1,6 +1,6 @@
 import { calculatorJobs } from '../mocks/calculator.js';
 import { NodeBase, GraphState } from '../types/typesLG.js';
-import { ActualWorkflowStep } from 'src/types/typesWF.js';
+import { ActualWorkflowStep } from '../types/typesWF.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import axios from 'axios';
