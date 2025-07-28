@@ -21,8 +21,8 @@ const workflowSpec: WorkflowSpec = {
         {
             'num_alpha': 'calculator/_inputs/num_5.json',
             'num_beta': 'calculator/_inputs/num_6.json',
-            'num_gamma': 'calculator/_inputs/num_7.json',
-            'num_delta': 'calculator/_inputs/num_9.json',
+            'num_gamma': 'calculator/_inputs/num_9.json',
+            'num_delta': 'calculator/_inputs/num_3.json',
         },
     ],
     counter: 0

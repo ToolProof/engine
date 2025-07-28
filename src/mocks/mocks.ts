@@ -7,7 +7,7 @@ export const numericalJobs: Map<string, Job> = new Map([
     ['add_numbers', {
         id: 'add_numbers',
         name: 'add_numbers',
-        url: 'https://calculator-384484325421.europe-west2.run.app/add_numbers',
+        url: 'http://34.88.173.92/add_numbers',
         semanticSpec: {
             description: 'Add two numbers together.',
             embedding: []
@@ -34,7 +34,7 @@ export const numericalJobs: Map<string, Job> = new Map([
     ['subtract_numbers', {
         id: 'subtract_numbers',
         name: 'subtract_numbers',
-        url: 'https://calculator-384484325421.europe-west2.run.app/subtract_numbers',
+        url: 'http://34.88.173.92/subtract_numbers',
         semanticSpec: {
             description: 'Subtract one number from another.',
             embedding: []
@@ -61,7 +61,7 @@ export const numericalJobs: Map<string, Job> = new Map([
     ['multiply_numbers', {
         id: 'multiply_numbers',
         name: 'multiply_numbers',
-        url: 'https://calculator-384484325421.europe-west2.run.app/multiply_numbers',
+        url: 'http://34.88.173.92/multiply_numbers',
         semanticSpec: {
             description: 'Multiply two numbers together.',
             embedding: []
@@ -88,7 +88,7 @@ export const numericalJobs: Map<string, Job> = new Map([
     ['divide_numbers', {
         id: 'divide_numbers',
         name: 'divide_numbers',
-        url: 'https://calculator-384484325421.europe-west2.run.app/divide_numbers',
+        url: 'http://34.88.173.92/divide_numbers',
         semanticSpec: {
             description: 'Divide one number by another.',
             embedding: []
