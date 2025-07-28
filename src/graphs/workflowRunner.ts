@@ -5,7 +5,7 @@ import { NodeUp } from '../nodes/nodeUp'; */
 import { NodeHigh } from '../nodes/nodeHigh';
 import { StateGraph, START, END } from '@langchain/langgraph';
 
-
+// ATTENTION_RONAK: Currently, edgeRouting is only capable of handling sequential steps in a workflow based on a counter. Later, it will be implemented to handle conditional steps based on metadata written by NodeHigh in GraphState. For now, it simply routes to NodeHigh for the next step if there are more steps in the workflow.
 const edgeRouting = (state: GraphState) => {
     if (state.workflowSpec.counter < state.workflowSpec.workflow.steps.length) {
         return 'nodeHigh';

@@ -35,7 +35,7 @@ const calculatorWorkflowSpec: WorkflowSpec = {
     counter: 0
 };
 
-// ATTENTION_RONAK: This workflow can't be run yet, as NodeHigh is not yet implemented for workflows with conditional steps.
+// ATTENTION_RONAK: This workflow can't be run yet, as edgeRouting and NodeHigh are not yet implemented for workflows with conditional steps.
 const adapterAutodockWorkflowSpec: WorkflowSpec = {
     workflow: adapterAutodockWorkflow_1,
     // start_job

@@ -1,10 +1,13 @@
 import { calculatorJobs } from '../mocks/calculator.js';
 import { NodeBase, GraphState } from '../types/typesLG.js';
+import { ActualWorkflowStep } from 'src/types/typesWF.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import axios from 'axios';
 import WebSocket from 'ws';
 
+
+// ATTENTION_RONAK: NodeHigh is responsible for executing jobs in a workflow. For each job it runs, it expands inputMaps to include the outputs the job produces. Later, it will be implemented to also write the job's metadata in GraphState for use in subsequent conditional steps of the workflow. edgeRouting will then be used to determine the next step based on this metadata.
 
 export class NodeHigh extends NodeBase {
 
@@ -40,8 +43,10 @@ export class NodeHigh extends NodeBase {
         }
 
         try {
-
-            const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter].step;
+            // ATTENTION_RONAK: We're asserting that the step is an ActualWorkflowStep for now. NodeHigh is currently not implemented to handle workflows with conditional steps.
+            const workflowStepUnion = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
+            const actualWorkflowStep = workflowStepUnion as ActualWorkflowStep;
+            const workflowStep = actualWorkflowStep.step;
 
             const job = calculatorJobs.get(workflowStep.jobId);
 
