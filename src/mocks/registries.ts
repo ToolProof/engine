@@ -2,7 +2,7 @@ import { ResourceType, ResourceRole, Concept } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
 
-// ATTENTION_RONAK: in this module, ResourceType and ResourceRole registries are defined for calculator and adapter_autodock jobs. These registries are used to define reusable semantic resource types and roles that can be shared across multiple jobs and workflows. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
+// ATTENTION_RONAK: In this module, ResourceType and ResourceRole registries are defined for calculator and adapter_autodock jobs. These registries are used to define reusable semantic resource types and roles that can be shared across multiple jobs and workflows. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
 
 /**
  * Base registry class for managing concepts with common functionality

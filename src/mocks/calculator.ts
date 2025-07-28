@@ -2,7 +2,7 @@ import { RT, RR } from './registries.js';
 import { Job, Workflow } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
-// ATTENTION_RONAK: in this module, jobs and workflows for calculator are hardcoded for demonstration purposes. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
+// ATTENTION_RONAK: In this module, jobs and workflows for calculator are hardcoded for demonstration purposes. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
 
 // Choose where to run the jobs
 const prefixCloudRun = 'https://calculator-384484325421.europe-west2.run.app/';

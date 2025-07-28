@@ -3,7 +3,7 @@ import { Job, Workflow } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
 
-// ATTENTION_RONAK: in this module, jobs and workflows for adapter_autodock are hardcoded for demonstration purposes. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
+// ATTENTION_RONAK: In this module, jobs and workflows for adapter_autodock are hardcoded for demonstration purposes. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
 
 // Choose where to run the jobs
 const prefixCloudRun = 'https://adapter-autodock-384484325421.europe-west2.run.app/';
@@ -51,7 +51,7 @@ export const adapterAutodockJobs: Map<string, Job> = new Map([
             ]
         },
         metadata: [
-            // ATTENTION_RONAK: the job hereby specifies that the output 'ligand_docking' will contain the docking score. This is what you need to extract from the file in basic_docking.py and return as metadata in the json response. NodeHigh will write the score to GraphState so that it can be used in the conditional step of the workflow below. You can look at how the calculator jobs do this in index.ts in the calculator repo. The difference is that here, the output is a file, so you need to read the file and extract the score from it.
+            // ATTENTION_RONAK: The job hereby specifies that the output 'ligand_docking' will contain the docking score. This is what you need to extract from the /tmp file and return as metadata in the json response in basic_docking.py in the adapter_autodock repo. NodeHigh will write the score to GraphState so that it can be used in the conditional step of the workflow below. You can look at how the calculator jobs do this in index.ts in the calculator repo. The difference is that here, the output is a file, so you need to read the file and extract the score from it.
             {
                 output: 'ligand_docking',
                 metadata: {
