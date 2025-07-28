@@ -29,6 +29,10 @@ export interface Job extends Concept {
         inputs: ResourceSpec[];
         outputs: ResourceSpec[];
     };
+    metadata: {
+        output: string;
+        metadata: object;
+    }[];
 }
 export interface DataExchange {
     sourceJobId: string;
@@ -89,7 +93,7 @@ export interface ConditionalWorkflowStep {
 export interface WhileLoopWorkflowStep {
     type: 'while';
     condition: Condition;
-    body: WorkflowStepUnion[];
+    body: ActualWorkflowStep[];
 }
 export interface ForLoopWorkflowStep {
     type: 'for';
@@ -98,7 +102,7 @@ export interface ForLoopWorkflowStep {
 }
 export type WorkflowStepUnion = ActualWorkflowStep | ParallelWorkflowStep | ConditionalWorkflowStep | WhileLoopWorkflowStep | ForLoopWorkflowStep;
 export interface Workflow extends Identifiable {
-    steps: ActualWorkflowStep[];
+    steps: (ActualWorkflowStep | ConditionalWorkflowStep)[];
 }
 export interface WorkflowSpec<T extends InputMap = InputMap> {
     workflow: Workflow;

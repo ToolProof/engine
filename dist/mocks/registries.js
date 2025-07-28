@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+// ATTENTION_RONAK: In this module, ResourceType and ResourceRole registries are defined for calculator and adapter_autodock jobs. These registries are used to define reusable semantic resource types and roles that can be shared across multiple jobs and workflows. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
 /**
  * Base registry class for managing concepts with common functionality
  */
@@ -118,11 +119,19 @@ const resourceRoleRegistry = new ResourceRoleRegistry();
 const RT = (name) => resourceTypeRegistry.get(name);
 const RR = (name) => resourceRoleRegistry.get(name);
 // Pre-define common reusable resource types
+// For calculator jobs
 resourceTypeRegistry.defineMany([
-    { name: 'number' },
-    { name: 'character' },
+    { name: 'number' }
+]);
+// For adapter_autodock jobs
+resourceTypeRegistry.defineMany([
+    { name: 'smiles' },
+    { name: 'pdb' },
+    { name: 'pdbqt' },
+    { name: 'sfd' }
 ]);
 // Pre-define common reusable resource roles
+// For calculator jobs
 resourceRoleRegistry.defineMany([
     { name: 'addend_1', description: 'First number to be added in an addition operation' },
     { name: 'addend_2', description: 'Second number to be added in an addition operation' },
@@ -136,5 +145,14 @@ resourceRoleRegistry.defineMany([
     { name: 'dividend', description: 'The number to be divided' },
     { name: 'divisor', description: 'The number by which another is divided' },
     { name: 'quotient', description: 'The result of a division operation' },
+]);
+// For adapter_autodock jobs
+resourceRoleRegistry.defineMany([
+    { name: 'ligand', description: 'The molecule to be docked' },
+    { name: 'receptor', description: 'The target molecule for docking' },
+    { name: 'box', description: 'The docking box specification' },
+    { name: 'ligand_docking', description: 'Docked ligand output' },
+    { name: 'ligand_pose', description: 'Pose of the ligand after docking' },
+    { name: 'receptor_pose', description: 'Pose of the receptor after preparation' }
 ]);
 export { BaseRegistry, ResourceTypeRegistry, ResourceRoleRegistry, resourceTypeRegistry, resourceRoleRegistry, RT, RR };
