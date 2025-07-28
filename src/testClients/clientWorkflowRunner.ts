@@ -16,6 +16,11 @@ const client = new Client({
 });
 const remoteGraph = new RemoteGraph({ graphId, url });
 
+// ATTENTION_RONAK: The calculatorWorkflowSpec and adapterAutodockWorkflowSpec are used to define the initial inputs to the workflows that will be run by the clientWorkflowRunner. These workflows are defined in the mocks/calculator.ts and mocks/adapter_autodock.ts files respectively. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
+
+// You can actually run this workflow (remember to deploy the workflowRunner graph locally first) and check the final result in tp_resources/calculator/multiply_numbers (as multiply_numbers is the last job in adapterAutodockWorkflow_1).
+// Can you guess what the final result will be?
+
 const calculatorWorkflowSpec: WorkflowSpec = {
     workflow: calculatorWorkflow_1,
     // start_job
@@ -30,6 +35,7 @@ const calculatorWorkflowSpec: WorkflowSpec = {
     counter: 0
 };
 
+// ATTENTION_RONAK: This workflow can't be run yet, as NodeHigh is not yet implemented for workflows with conditional steps.
 const adapterAutodockWorkflowSpec: WorkflowSpec = {
     workflow: adapterAutodockWorkflow_1,
     // start_job

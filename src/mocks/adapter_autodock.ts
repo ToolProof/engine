@@ -2,11 +2,20 @@ import { RT, RR } from './registries.js';
 import { Job, Workflow } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
+
+// ATTENTION_RONAK: in this module, jobs and workflows for adapter_autodock are hardcoded for demonstration purposes. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
+
+// Choose where to run the jobs
+const prefixCloudRun = 'https://adapter-autodock-384484325421.europe-west2.run.app/';
+const prefixKubernetes = 'http://34.88.46.28/';
+const prefix = prefixCloudRun;
+
+// ATTENTION_RONAK: I've only defined the basic_docking job here. I'll add reactive_docking later.
 export const adapterAutodockJobs: Map<string, Job> = new Map([
     ['basic_docking', {
         id: 'basic_docking',
         name: 'basic_docking',
-        url: 'http://34.88.46.28/basic_docking',
+        url: `${prefix}/basic_docking`,
         semanticSpec: {
             description: 'Perform basic docking.',
             embedding: []
@@ -42,6 +51,7 @@ export const adapterAutodockJobs: Map<string, Job> = new Map([
             ]
         },
         metadata: [
+            // ATTENTION_RONAK: the job hereby specifies that the output 'ligand_docking' will contain the docking score. This is what you need to extract from the file in basic_docking.py and return as metadata in the json response. NodeHigh will write the score to GraphState so that it can be used in the conditional step of the workflow below. You can look at how the calculator jobs do this in index.ts in the calculator repo. The difference is that here, the output is a file, so you need to read the file and extract the score from it.
             {
                 output: 'ligand_docking',
                 metadata: {
@@ -52,7 +62,7 @@ export const adapterAutodockJobs: Map<string, Job> = new Map([
     }],
 ])
 
-
+// ATTENTION_RONAK: The adapterAutodockWorkflow_1 is a workflow that uses the adapterAutodockJobs defined above (currently only basic_docking). It invokes the basic_docking job and checks the docking score to decide whether to proceed with docking or not.
 export const adapterAutodockWorkflow_1: Workflow = {
     id: 'adapter_autodock_workflow_1',
     steps: [
@@ -71,6 +81,7 @@ export const adapterAutodockWorkflow_1: Workflow = {
             }
         },
         {
+            // ATTENTION_RONAK: this is a conditional step that checks the docking score and decides whether to proceed with the docking or not. The score is written to GraphState by NodeHigh in the previous step.
             type: 'conditional',
             branches: [
                 {

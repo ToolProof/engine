@@ -2,12 +2,18 @@ import { RT, RR } from './registries.js';
 import { Job, Workflow } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
+// ATTENTION_RONAK: in this module, jobs and workflows for calculator are hardcoded for demonstration purposes. Later, UI/AI-agent + validator will take care of this.
+
+// Choose where to run the jobs
+const prefixCloudRun = 'https://calculator-384484325421.europe-west2.run.app/';
+const prefixKubernetes = 'http://34.88.173.92/'; // ATTENTION_RONAK: this isn't working yet, please look into it
+const prefix = prefixCloudRun;
 
 export const calculatorJobs: Map<string, Job> = new Map([
     ['add_numbers', {
         id: 'add_numbers',
         name: 'add_numbers',
-        url: 'http://34.88.173.92/add_numbers',
+        url: `${prefix}/add_numbers`,
         semanticSpec: {
             description: 'Add two numbers together.',
             embedding: []
@@ -32,6 +38,7 @@ export const calculatorJobs: Map<string, Job> = new Map([
         },
         metadata: [
             {
+                // ATTENTION_RONAK: the job hereby specifies that the output sum will contain the result of the addition and the inputs used. NodeHigh will write this to GraphState so that it can be used in conditions in subsequent steps of the workflow. For example, you can use this to check if the sum is greater than a certain value and then decide whether to proceed with the next step or not. You don't need to do anything here. I'm guiding you here just for your understanding.
                 output: 'sum',
                 metadata: {
                     result: 'number',
@@ -43,7 +50,7 @@ export const calculatorJobs: Map<string, Job> = new Map([
     ['subtract_numbers', {
         id: 'subtract_numbers',
         name: 'subtract_numbers',
-        url: 'http://34.88.173.92/subtract_numbers',
+        url: `${prefix}/subtract_numbers`,
         semanticSpec: {
             description: 'Subtract one number from another.',
             embedding: []
@@ -79,7 +86,7 @@ export const calculatorJobs: Map<string, Job> = new Map([
     ['multiply_numbers', {
         id: 'multiply_numbers',
         name: 'multiply_numbers',
-        url: 'http://34.88.173.92/multiply_numbers',
+        url: `${prefix}/multiply_numbers`,
         semanticSpec: {
             description: 'Multiply two numbers together.',
             embedding: []
@@ -115,7 +122,7 @@ export const calculatorJobs: Map<string, Job> = new Map([
     ['divide_numbers', {
         id: 'divide_numbers',
         name: 'divide_numbers',
-        url: 'http://34.88.173.92/divide_numbers',
+        url: `${prefix}/divide_numbers`,
         semanticSpec: {
             description: 'Divide one number by another.',
             embedding: []
