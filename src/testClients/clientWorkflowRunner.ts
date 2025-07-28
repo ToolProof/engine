@@ -19,10 +19,10 @@ const workflowSpec: WorkflowSpec = {
     workflow: numericalWorkflow_3,
     inputMaps: [
         {
-            'num_alpha': 'calculator/inputs/num_5.json',
-            'num_beta': 'calculator/inputs/num_6.json',
-            'num_gamma': 'calculator/inputs/num_7.json',
-            'num_delta': 'calculator/inputs/num_9.json',
+            'num_alpha': 'calculator/_inputs/num_5.json',
+            'num_beta': 'calculator/_inputs/num_6.json',
+            'num_gamma': 'calculator/_inputs/num_7.json',
+            'num_delta': 'calculator/_inputs/num_9.json',
         },
     ],
     counter: 0
