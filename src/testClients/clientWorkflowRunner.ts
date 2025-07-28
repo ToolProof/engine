@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { numericalWorkflow_3 } from '../mocks/mocks.js';
+import { calculatorWorkflow_1 } from '../mocks/calculator.js';
 import { WorkflowSpec } from '../types/typesWF';
 import { Client } from '@langchain/langgraph-sdk';
 import { RemoteGraph } from '@langchain/langgraph/remote';
 import { HumanMessage } from '@langchain/core/messages';
+import { adapterAutodockWorkflow_1 } from 'src/mocks/adapter_autodock.js';
 
 const urlLocal = `http://localhost:8123`;
 const urlRemote = `https://deployment-typescript-48b9b40b9bac500f8fe557700e4c49d9.us.langgraph.app`;
@@ -15,14 +16,28 @@ const client = new Client({
 });
 const remoteGraph = new RemoteGraph({ graphId, url });
 
-const workflowSpec: WorkflowSpec = {
-    workflow: numericalWorkflow_3,
+const calculatorWorkflowSpec: WorkflowSpec = {
+    workflow: calculatorWorkflow_1,
+    // start_job
     inputMaps: [
         {
             'num_alpha': 'calculator/_inputs/num_5.json',
             'num_beta': 'calculator/_inputs/num_6.json',
             'num_gamma': 'calculator/_inputs/num_9.json',
-            'num_delta': 'calculator/_inputs/num_3.json',
+            'num_delta': 'calculator/_inputs/num_3.json'
+        },
+    ],
+    counter: 0
+};
+
+const adapterAutodockWorkflowSpec: WorkflowSpec = {
+    workflow: adapterAutodockWorkflow_1,
+    // start_job
+    inputMaps: [
+        {
+            'ligand': 'adapter_autodock/_inputs/ligand.smi',
+            'receptor': 'adapter_autodock/_inputs/receptor.pdb',
+            'box': 'adapter_autodock/_inputs/box.pdb'
         },
     ],
     counter: 0
@@ -46,7 +61,7 @@ export async function runRemoteGraph() {
                     delay: 1000,
                     drySocketMode: true,
                 },
-                workflowSpec: workflowSpec,
+                workflowSpec: calculatorWorkflowSpec,
             }, {
                 configurable: { thread_id: thread.thread_id },
                 signal: controller.signal,

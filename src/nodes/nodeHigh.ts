@@ -1,4 +1,4 @@
-import { numericalJobs } from '../mocks/mocks.js';
+import { calculatorJobs } from '../mocks/calculator.js';
 import { NodeBase, GraphState } from '../types/typesLG.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
@@ -43,7 +43,7 @@ export class NodeHigh extends NodeBase {
 
             const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter].step;
 
-            const job = numericalJobs.get(workflowStep.jobId);
+            const job = calculatorJobs.get(workflowStep.jobId);
 
             if (!job) {
                 throw new Error(`Job with ID ${workflowStep.jobId} not found`);

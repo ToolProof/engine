@@ -1,6 +1,6 @@
 import { runRemoteGraph as runWorkflowRunner } from './testClients/clientWorkflowRunner.js';
 import { validateWorkflow } from './utils.js';
-import { numericalJobs, numericalWorkflow_3 } from './mocks/mocks.js';
+import { calculatorJobs, calculatorWorkflow_1 } from './mocks/calculator.js';
 
 if (true || process.env.NODE_ENV === 'workflowRunner') {
     runWorkflowRunner();
@@ -15,7 +15,7 @@ if (false && process.env.NODE_ENV === 'workflowValidator') { // ATTENTION: hack
         const result2 = validateWorkflow(Array.from(numericalJobs.values()), numericalWorkflow_2);
         console.log('Validation result 2:', result2);
         console.log('------------------------------------------------------------'); */
-        const result3 = validateWorkflow(Array.from(numericalJobs.values()), numericalWorkflow_3);
+        const result3 = validateWorkflow(Array.from(calculatorJobs.values()), calculatorWorkflow_1);
         console.log('Validation result 3:', result3);
     } catch (error) {
         console.error('Error during validation:', error);

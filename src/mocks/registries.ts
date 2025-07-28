@@ -176,12 +176,23 @@ const RT = (name: string) => resourceTypeRegistry.get(name);
 const RR = (name: string) => resourceRoleRegistry.get(name);
 
 // Pre-define common reusable resource types
+
+// For calculator jobs
 resourceTypeRegistry.defineMany([
-    { name: 'number' },
-    { name: 'character' },
+    { name: 'number' }
+]);
+
+// For adapter_autodock jobs
+resourceTypeRegistry.defineMany([
+    { name: 'smiles' },
+    { name: 'pdb' },
+    { name: 'pdbqt' },
+    { name: 'sfd' }
 ]);
 
 // Pre-define common reusable resource roles
+
+// For calculator jobs
 resourceRoleRegistry.defineMany([
     { name: 'addend_1', description: 'First number to be added in an addition operation' },
     { name: 'addend_2', description: 'Second number to be added in an addition operation' },
@@ -196,6 +207,17 @@ resourceRoleRegistry.defineMany([
     { name: 'divisor', description: 'The number by which another is divided' },
     { name: 'quotient', description: 'The result of a division operation' },
 ]);
+
+// For adapter_autodock jobs
+resourceRoleRegistry.defineMany([
+    { name: 'ligand', description: 'The molecule to be docked' },
+    { name: 'receptor', description: 'The target molecule for docking' },
+    { name: 'box', description: 'The docking box specification' },
+    { name: 'ligand_docking', description: 'Docked ligand output' },
+    { name: 'ligand_pose', description: 'Pose of the ligand after docking' },
+    { name: 'receptor_pose', description: 'Pose of the receptor after preparation' }
+]);
+
 
 export {
     BaseRegistry,
