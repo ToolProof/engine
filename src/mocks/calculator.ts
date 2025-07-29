@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Choose where to run the jobs
 const prefixCloudRun = 'https://calculator-384484325421.europe-west2.run.app/';
-const prefixKubernetes = 'http://34.88.173.92/'; // ATTENTION_RONAK_2: this isn't working yet, please look into it
+const prefixKubernetes = 'http://34.88.173.92/'; // ATTENTION_RONAK_2: this isn't working yet, so please look into it. It might be because of authentication issues with the Kubernetes cluster.
 const prefix = prefixCloudRun;
 
 export const calculatorJobs: Map<string, Job> = new Map([
