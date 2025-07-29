@@ -87,7 +87,7 @@ const adapterAutodockWorkflow_1: Workflow = {
 export const adapterAutodockWorkflowSpec: WorkflowSpec = {
     workflow: adapterAutodockWorkflow_1,
     // start_job
-    inputMaps: [
+    resourceMaps: [
         {
             'ligand': 'adapter_autodock/_inputs/ligand.smi',
             'receptor': 'adapter_autodock/_inputs/receptor.pdb',

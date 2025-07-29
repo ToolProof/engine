@@ -6,7 +6,7 @@ import axios from 'axios';
 import WebSocket from 'ws';
 
 
-// ATTENTION_RONAK: NodeHigh is responsible for executing jobs in a workflow. For each job it runs, it expands inputMaps to include the outputs the job produces. Later, it will be implemented to also write the job's metadata in GraphState for use in subsequent conditional steps of the workflow. edgeRouting will then be used to determine the next step based on this metadata.
+// ATTENTION_RONAK: NodeHigh is responsible for executing jobs in a workflow. For each job it runs, it expands resourceMaps to include the outputs the job produces. Later, it will be implemented to also write the job's metadata in GraphState for use in subsequent conditional steps of the workflow. edgeRouting will then be used to determine the next step based on this metadata.
 
 export class NodeHigh extends NodeBase {
 
@@ -51,16 +51,16 @@ export class NodeHigh extends NodeBase {
                 throw new Error(`Job with ID ${workflowStep.jobId} not found`);
             }
 
-            // ATTENTION_RONAK: Here, we iterate over the job's inputs and add them to the payload with paths from state.workflowSpec.inputMaps[0] that match input.role.name's entry in dataExchanges. This means that we should grab the sourceOutput that matches where input.role.name is the targetInput in dataExchanges and then use sourceOut to extract the path from state.workflowSpec.inputMaps[0].
+            // ATTENTION_RONAK: Here, we iterate over the job's specified inputs, and for each of them we add an object to the payload that includes the name of the input and its filepath, which is extracted from state.workflowSpec.resourceMaps[0].
 
-            const dataExchanges = workflowStep.dataExchanges;
+            const jobInputs = workflowStep.jobInputs;
 
             let payload: { [key: string]: string } = {};
 
             job.syntacticSpec.inputs.forEach((input) => {
-                const matchingExchange = dataExchanges.find(de => de.targetInput === input.role.name);
-                if (matchingExchange) {
-                    payload[input.role.name] = state.workflowSpec.inputMaps[0][matchingExchange.sourceOutput];
+                const matchingInput = jobInputs[input.role.name];
+                if (matchingInput) {
+                    payload[input.role.name] = state.workflowSpec.resourceMaps[0][matchingInput.name];
                 }
             });
 
@@ -90,13 +90,13 @@ export class NodeHigh extends NodeBase {
 
             const outputBindings = workflowStep.outputBindings;
 
-            // Create new entries for inputMaps[0] based on outputBindings
-            const newInputMapEntries: { [key: string]: string } = {};
+            // Create new entries for resourceMaps[0] based on outputBindings
+            const newResourceMapEntries: { [key: string]: string } = {};
 
             // Map job output roles to bound keys using the result paths
             Object.entries(outputBindings).forEach(([outputRole, boundKey]) => {
                 if (outputs[outputRole]) {
-                    newInputMapEntries[boundKey] = outputs[outputRole];
+                    newResourceMapEntries[boundKey] = outputs[outputRole];
                 }
             });
 
@@ -104,12 +104,12 @@ export class NodeHigh extends NodeBase {
                 messages: [new AIMessage('NodeHigh completed')],
                 workflowSpec: {
                     ...state.workflowSpec,
-                    inputMaps: [
+                    resourceMaps: [
                         {
-                            ...state.workflowSpec.inputMaps[0],
-                            ...newInputMapEntries
+                            ...state.workflowSpec.resourceMaps[0],
+                            ...newResourceMapEntries
                         },
-                        ...state.workflowSpec.inputMaps.slice(1)
+                        ...state.workflowSpec.resourceMaps.slice(1)
                     ],
                     counter: state.workflowSpec.counter + 1
                 },

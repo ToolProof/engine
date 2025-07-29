@@ -1,9 +1,12 @@
 
 // ATTENTION_RONAK: This file contains TypeScript types and interfaces for defining workflows, jobs, and resources in a system. It is used to structure the data and ensure type safety across the application. You don't need to do anything here. I'm guiding you here just for your understanding.
 
-export type InputMap = {
-    [key: string]: string;
+
+export type BaseResourceMap<T> = {
+    [key: string]: T;
 }
+
+export type WorkflowResourceMap = BaseResourceMap<string>;
 
 export interface Identifiable {
     id: string;
@@ -44,12 +47,12 @@ export interface Job extends Concept {
     }[];
 }
 
-export interface DataExchange {
-    sourceJobId: string;
-    sourceOutput: string; // Validator ensures that this output exists in sourceJob's outputs
-    targetJobId: string;
-    targetInput: string; // Validator ensures that this input exists in the targetJob's inputs
+export interface JobInput {
+    source: 'internal' | 'external';
+    name: string;
 }
+
+export type JobInputMap = BaseResourceMap<JobInput>;
 
 export type Condition =
     | { op: 'equals'; left: string; right: any }
@@ -63,7 +66,7 @@ export type Condition =
 
 export interface WorkflowStep extends Identifiable {
     jobId: string; // The job that this step executes
-    dataExchanges: DataExchange[]; // Validator ensures that the job gets the correct inputs from the links leading to it
+    jobInputs: JobInputMap; // Maps outputs from previous jobs to this job's inputs
     outputBindings: {
         [outputRole: string]: string;
     };
@@ -78,9 +81,9 @@ export interface Workflow extends Identifiable {
     steps: WorkflowStep[];
 }
 
-export interface WorkflowSpec<T extends InputMap = InputMap> {
+export interface WorkflowSpec<T extends WorkflowResourceMap = WorkflowResourceMap> {
     workflow: Workflow;
-    // ATTENTION_RONAK: This is an array to allow for parallel workflow executions in the future. This way, one can specify several sets of inputs, and inputMaps.length encodes the number of parallel executions. For now, we'll only use inputMaps[0].
-    inputMaps: T[]; // All items must be the same type T
+    // ATTENTION_RONAK: This is an array to allow for parallel workflow executions in the future. This way, one can specify several sets of inputs, and resourceMaps.length encodes the number of parallel executions. For now, we'll only use resourceMaps[0].
+    resourceMaps: T[]; // All items must be the same type T
     counter: number; // ATTENTION: hack for simplified, sequential workflows
 }

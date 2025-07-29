@@ -162,38 +162,56 @@ export const calculatorJobs: Map<string, Job> = new Map([
 const calculatorWorkflow_1: Workflow = {
     id: 'calculator_workflow_1',
     steps: [
-        // Use two numbers from outside in addition
+        // Use two external numbers in addition
         {
             id: uuidv4(),
             jobId: 'add_numbers',
-            dataExchanges: [
-                { sourceJobId: 'start_job', sourceOutput: 'num_alpha', targetJobId: 'add_numbers', targetInput: 'addend_1' },
-                { sourceJobId: 'start_job', sourceOutput: 'num_beta', targetJobId: 'add_numbers', targetInput: 'addend_2' }
-            ],
+            jobInputs: {
+                addend_1: {
+                    source: 'external',
+                    name: 'num_alpha'
+                },
+                addend_2: {
+                    source: 'external',
+                    name: 'num_beta'
+                }
+            },
             outputBindings: {
                 sum: 'sum_1'
             }
         },
-        // Use sum_1 from the previous step in addition with a number from outside
+        // Use sum_1 from the previous step in addition with an external number
         {
             id: uuidv4(),
             jobId: 'add_numbers',
-            dataExchanges: [
-                { sourceJobId: 'add_numbers', sourceOutput: 'sum_1', targetJobId: 'add_numbers', targetInput: 'addend_1' },
-                { sourceJobId: 'start_job', sourceOutput: 'num_gamma', targetJobId: 'add_numbers', targetInput: 'addend_2' }
-            ],
+            jobInputs: {
+                addend_1: {
+                    source: 'internal',
+                    name: 'sum_1'
+                },
+                addend_2: {
+                    source: 'external',
+                    name: 'num_gamma'
+                }
+            },
             outputBindings: {
                 sum: 'sum_2'
             }
         },
-        // Use sum_2 from the previous step in multiplication with a number from outside
+        // Use sum_2 from the previous step in multiplication with an external number
         {
             id: uuidv4(),
             jobId: 'multiply_numbers',
-            dataExchanges: [
-                { sourceJobId: 'add_numbers', sourceOutput: 'sum_2', targetJobId: 'multiply_numbers', targetInput: 'multiplicand' },
-                { sourceJobId: 'start_job', sourceOutput: 'num_delta', targetJobId: 'multiply_numbers', targetInput: 'multiplier' }
-            ],
+            jobInputs: {
+                multiplicand: {
+                    source: 'internal',
+                    name: 'sum_2'
+                },
+                multiplier: {
+                    source: 'external',
+                    name: 'num_delta'
+                }
+            },
             outputBindings: {
                 product: 'product'
             }
@@ -209,8 +227,8 @@ const calculatorWorkflow_1: Workflow = {
 
 export const calculatorWorkflowSpec_1: WorkflowSpec = {
     workflow: calculatorWorkflow_1,
-    // start_job
-    inputMaps: [
+    // external
+    resourceMaps: [
         {
             'num_alpha': 'calculator/_inputs/num_1.json',
             'num_beta': 'calculator/_inputs/num_2.json',
@@ -220,3 +238,34 @@ export const calculatorWorkflowSpec_1: WorkflowSpec = {
     ],
     counter: 0
 };
+
+
+const calculatorWorkflow_2: Workflow = {
+    id: 'calculator_workflow_2',
+    steps: [
+        // Initially, use two numbers from outside in addition, then use the result in a while loop to keep adding numbers until the sum is greater than 30.
+        {
+            id: uuidv4(),
+            jobId: 'add_numbers',
+            jobInputs: {
+                // For the first iteration, since 'sum' does not exist internally, the workflow engine will fall back to requesting an external input.
+                addend_1: {
+                    source: 'internal',
+                    name: 'sum'
+                },
+                addend_2: {
+                    source: 'external',
+                    name: 'num_beta'
+                }
+            },
+            outputBindings: {
+                sum: 'sum'
+            },
+            whileLoopCondition: {
+                op: 'less_than',
+                left: 'sum',
+                right: 30
+            }
+        }
+    ]
+}

@@ -23,7 +23,7 @@ const calculatorWorkflowSpec_1b = {
             'num_alpha': 'calculator/_inputs/num_5.json',
             'num_beta': 'calculator/_inputs/num_5.json',
             'num_gamma': 'calculator/_inputs/num_5.json',
-            'num_delta': 'calculator/_inputs/num_5.json'
+            'num_delta': 'calculator/_inputs/num_4.json'
         },
     ],
 }
