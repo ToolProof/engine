@@ -3,6 +3,7 @@ import { Job, Workflow } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
 // ATTENTION_RONAK: In this module, jobs and workflows for calculator are hardcoded for demonstration purposes. Later, UI/AI-agent + validator will take care of this. With a small exception (mentioned below), you don't need to do anything here. I'm guiding you here just for your understanding.
+// NB: The calculator is just a mock to test the workflow engine as it's very easy to check the results of the jobs. No one would implement a calculator like this.
 
 // Choose where to run the jobs
 const prefixCloudRun = 'https://calculator-384484325421.europe-west2.run.app/';
