@@ -69,32 +69,31 @@ export type Condition =
     | { op: 'not'; condition: Condition }
     | { op: 'always' }; // Always true — fallback/default branch
 
-export interface ActualWorkflowStep {
-    type: 'actual';
+interface DiscriminatedUnionHelper<T extends string> {
+    type: T;
+}
+
+export interface ActualWorkflowStep extends DiscriminatedUnionHelper<'actual'> {
     step: WorkflowStep;
 }
 
-export interface ParallelWorkflowStep {
-    type: 'parallel';
+export interface ParallelWorkflowStep extends DiscriminatedUnionHelper<'parallel'> {
     branches: WorkflowStepUnion[][];
 }
 
-export interface ConditionalWorkflowStep {
-    type: 'conditional';
+export interface ConditionalWorkflowStep extends DiscriminatedUnionHelper<'conditional'> {
     branches: {
         condition: Condition;
         steps: WorkflowStepUnion[];
     }[];
 }
 
-export interface WhileLoopWorkflowStep {
-    type: 'while';
+export interface WhileLoopWorkflowStep extends DiscriminatedUnionHelper<'while'> {
     condition: Condition;
     body: ActualWorkflowStep[]; // WorkflowStepUnion[]; // ATTENTION: simplified for now
 }
 
-export interface ForLoopWorkflowStep {
-    type: 'for';
+export interface ForLoopWorkflowStep extends DiscriminatedUnionHelper<'for'> {
     iterations: number;
     body: WorkflowStepUnion[];
 }
