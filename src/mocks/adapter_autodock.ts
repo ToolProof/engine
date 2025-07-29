@@ -1,5 +1,5 @@
 import { RT, RR } from './registries.js';
-import { Job, Workflow } from '../types/typesWF.js';
+import { Job, Workflow, WorkflowSpec } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -63,7 +63,7 @@ export const adapterAutodockJobs: Map<string, Job> = new Map([
 ])
 
 // ATTENTION_RONAK: The adapterAutodockWorkflow_1 is a workflow that uses the adapterAutodockJobs defined above (currently only basic_docking). It invokes the basic_docking job and checks the docking score to decide whether to proceed with docking or not.
-export const adapterAutodockWorkflow_1: Workflow = {
+const adapterAutodockWorkflow_1: Workflow = {
     id: 'adapter_autodock_workflow_1',
     steps: [
         {
@@ -81,3 +81,18 @@ export const adapterAutodockWorkflow_1: Workflow = {
 };
 
 // ATTENTION_RONAK: this is a conditional step that checks the docking score and decides whether to proceed with the docking or not. The score is written to GraphState by NodeHigh in the previous step.
+
+
+// ATTENTION_RONAK: This workflow can't be run yet, as edgeRouting and NodeHigh are not yet implemented for workflows with conditional steps.
+export const adapterAutodockWorkflowSpec: WorkflowSpec = {
+    workflow: adapterAutodockWorkflow_1,
+    // start_job
+    inputMaps: [
+        {
+            'ligand': 'adapter_autodock/_inputs/ligand.smi',
+            'receptor': 'adapter_autodock/_inputs/receptor.pdb',
+            'box': 'adapter_autodock/_inputs/box.pdb'
+        },
+    ],
+    counter: 0
+};

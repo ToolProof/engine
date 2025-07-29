@@ -1,5 +1,5 @@
 import { RT, RR } from './registries.js';
-import { Job, Workflow } from '../types/typesWF.js';
+import { Job, Workflow, WorkflowSpec } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
 // ATTENTION_RONAK: In this module, jobs and workflows for calculator are hardcoded for demonstration purposes. Later, UI/AI-agent + validator will take care of this. With a small exception (mentioned below), you don't need to do anything here. I'm guiding you here just for your understanding.
@@ -159,7 +159,7 @@ export const calculatorJobs: Map<string, Job> = new Map([
 ])
 
 
-export const calculatorWorkflow_1: Workflow = {
+const calculatorWorkflow_1: Workflow = {
     id: 'calculator_workflow_1',
     steps: [
         // Use two numbers from outside in addition
@@ -200,3 +200,23 @@ export const calculatorWorkflow_1: Workflow = {
         }
     ]
 }
+
+
+// ATTENTION_RONAK: calculatorWorkflowSpec is used to define the initial inputs to the workflow that will be run by the clientWorkflowRunner. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
+
+// You can actually run this workflow with 'npm run start:workflowRunner' (remember to deploy the workflowRunner graph locally first) and check the final result in tp_resources/calculator/multiply_numbers (as multiply_numbers is the last job in calculatorWorkflow_1).
+// Can you guess what the final result will be?
+
+export const calculatorWorkflowSpec_1: WorkflowSpec = {
+    workflow: calculatorWorkflow_1,
+    // start_job
+    inputMaps: [
+        {
+            'num_alpha': 'calculator/_inputs/num_1.json',
+            'num_beta': 'calculator/_inputs/num_2.json',
+            'num_gamma': 'calculator/_inputs/num_4.json',
+            'num_delta': 'calculator/_inputs/num_5.json'
+        },
+    ],
+    counter: 0
+};

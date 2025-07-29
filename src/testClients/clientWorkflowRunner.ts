@@ -1,8 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { calculatorWorkflow_1 } from '../mocks/calculator.js';
-import { adapterAutodockWorkflow_1 } from '../mocks/adapter_autodock.js';
-import { WorkflowSpec } from '../types/typesWF';
+import { calculatorWorkflowSpec_1 } from '../mocks/calculator.js';
 import { Client } from '@langchain/langgraph-sdk';
 import { RemoteGraph } from '@langchain/langgraph/remote';
 import { HumanMessage } from '@langchain/core/messages';
@@ -17,38 +15,18 @@ const client = new Client({
 });
 const remoteGraph = new RemoteGraph({ graphId, url });
 
-// ATTENTION_RONAK: The calculatorWorkflowSpec and adapterAutodockWorkflowSpec are used to define the initial inputs to the workflows that will be run by the clientWorkflowRunner. These workflows are defined in the mocks/calculator.ts and mocks/adapter_autodock.ts files respectively. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
-
-// You can actually run this workflow with 'npm run start:workflowRunner' (remember to deploy the workflowRunner graph locally first) and check the final result in tp_resources/calculator/multiply_numbers (as multiply_numbers is the last job in adapterAutodockWorkflow_1).
-// Can you guess what the final result will be?
-
-const calculatorWorkflowSpec: WorkflowSpec = {
-    workflow: calculatorWorkflow_1,
-    // start_job
+// ATTENTION_RONAK: Try overwriting the inputMaps in the workflowSpec to test different inputs.
+const calculatorWorkflowSpec_1b = {
+    ...calculatorWorkflowSpec_1,
     inputMaps: [
         {
-            'num_alpha': 'calculator/_inputs/num_1.json',
-            'num_beta': 'calculator/_inputs/num_2.json',
-            'num_gamma': 'calculator/_inputs/num_4.json',
+            'num_alpha': 'calculator/_inputs/num_5.json',
+            'num_beta': 'calculator/_inputs/num_5.json',
+            'num_gamma': 'calculator/_inputs/num_5.json',
             'num_delta': 'calculator/_inputs/num_5.json'
         },
     ],
-    counter: 0
-};
-
-// ATTENTION_RONAK: This workflow can't be run yet, as edgeRouting and NodeHigh are not yet implemented for workflows with conditional steps.
-const adapterAutodockWorkflowSpec: WorkflowSpec = {
-    workflow: adapterAutodockWorkflow_1,
-    // start_job
-    inputMaps: [
-        {
-            'ligand': 'adapter_autodock/_inputs/ligand.smi',
-            'receptor': 'adapter_autodock/_inputs/receptor.pdb',
-            'box': 'adapter_autodock/_inputs/box.pdb'
-        },
-    ],
-    counter: 0
-};
+}
 
 export async function runRemoteGraph() {
     try {
@@ -68,7 +46,7 @@ export async function runRemoteGraph() {
                     delay: 1000,
                     drySocketMode: true,
                 },
-                workflowSpec: calculatorWorkflowSpec,
+                workflowSpec: calculatorWorkflowSpec_1b,
             }, {
                 configurable: { thread_id: thread.thread_id },
                 signal: controller.signal,
