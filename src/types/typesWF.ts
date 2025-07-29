@@ -51,14 +51,6 @@ export interface DataExchange {
     targetInput: string; // Validator ensures that this input exists in the targetJob's inputs
 }
 
-export interface WorkflowStep extends Identifiable {
-    jobId: string; // The job that this step executes
-    dataExchanges: DataExchange[]; // Validator ensures that the job gets the correct inputs from the links leading to it
-    outputBindings: {
-        [outputRole: string]: string;
-    };
-}
-
 export type Condition =
     | { op: 'equals'; left: string; right: any }
     | { op: 'not_equals'; left: string; right: any }
@@ -69,39 +61,21 @@ export type Condition =
     | { op: 'not'; condition: Condition }
     | { op: 'always' }; // Always true — fallback/default branch
 
-interface DiscriminatedUnionHelper<T extends string> {
-    type: T;
-}
+export interface WorkflowStep extends Identifiable {
+    jobId: string; // The job that this step executes
+    dataExchanges: DataExchange[]; // Validator ensures that the job gets the correct inputs from the links leading to it
+    outputBindings: {
+        [outputRole: string]: string;
+    };
 
-export interface ActualWorkflowStep extends DiscriminatedUnionHelper<'actual'> {
-    step: WorkflowStep;
+    // Optional control flow:
+    branchingCondition?: Condition;
+    whileLoopCondition?: Condition;
+    forLoopIterations?: number;
 }
-
-export interface ParallelWorkflowStep extends DiscriminatedUnionHelper<'parallel'> {
-    branches: WorkflowStepUnion[][];
-}
-
-export interface ConditionalWorkflowStep extends DiscriminatedUnionHelper<'conditional'> {
-    branches: {
-        condition: Condition;
-        steps: WorkflowStepUnion[];
-    }[];
-}
-
-export interface WhileLoopWorkflowStep extends DiscriminatedUnionHelper<'while'> {
-    condition: Condition;
-    body: ActualWorkflowStep[]; // WorkflowStepUnion[]; // ATTENTION: simplified for now
-}
-
-export interface ForLoopWorkflowStep extends DiscriminatedUnionHelper<'for'> {
-    iterations: number;
-    body: WorkflowStepUnion[];
-}
-
-export type WorkflowStepUnion = ActualWorkflowStep | ParallelWorkflowStep | ConditionalWorkflowStep | WhileLoopWorkflowStep | ForLoopWorkflowStep;
 
 export interface Workflow extends Identifiable {
-    steps: (ActualWorkflowStep | ConditionalWorkflowStep)[]; // WorkflowStepUnion[]; // ATTENTION: simplified for now
+    steps: WorkflowStep[];
 }
 
 export interface WorkflowSpec<T extends InputMap = InputMap> {

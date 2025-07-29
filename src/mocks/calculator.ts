@@ -162,49 +162,40 @@ export const calculatorJobs: Map<string, Job> = new Map([
 export const calculatorWorkflow_1: Workflow = {
     id: 'calculator_workflow_1',
     steps: [
-        // Step 1: Initial addition from start_job
+        // Use two numbers from outside in addition
         {
-            type: 'actual',
-            step: {
-                id: uuidv4(),
-                jobId: 'add_numbers',
-                dataExchanges: [
-                    { sourceJobId: 'start_job', sourceOutput: 'num_alpha', targetJobId: 'add_numbers', targetInput: 'addend_1' },
-                    { sourceJobId: 'start_job', sourceOutput: 'num_beta', targetJobId: 'add_numbers', targetInput: 'addend_2' }
-                ],
-                outputBindings: {
-                    sum: 'sum_1'
-                }
+            id: uuidv4(),
+            jobId: 'add_numbers',
+            dataExchanges: [
+                { sourceJobId: 'start_job', sourceOutput: 'num_alpha', targetJobId: 'add_numbers', targetInput: 'addend_1' },
+                { sourceJobId: 'start_job', sourceOutput: 'num_beta', targetJobId: 'add_numbers', targetInput: 'addend_2' }
+            ],
+            outputBindings: {
+                sum: 'sum_1'
             }
         },
-        // Step 2: Use sum_1 in another addition (simulated loop)
+        // Use sum_1 from the previous step in addition with a number from outside
         {
-            type: 'actual',
-            step: {
-                id: uuidv4(),
-                jobId: 'add_numbers',
-                dataExchanges: [
-                    { sourceJobId: 'add_numbers', sourceOutput: 'sum_1', targetJobId: 'add_numbers', targetInput: 'addend_1' },
-                    { sourceJobId: 'start_job', sourceOutput: 'num_gamma', targetJobId: 'add_numbers', targetInput: 'addend_2' }
-                ],
-                outputBindings: {
-                    sum: 'sum_2'
-                }
+            id: uuidv4(),
+            jobId: 'add_numbers',
+            dataExchanges: [
+                { sourceJobId: 'add_numbers', sourceOutput: 'sum_1', targetJobId: 'add_numbers', targetInput: 'addend_1' },
+                { sourceJobId: 'start_job', sourceOutput: 'num_gamma', targetJobId: 'add_numbers', targetInput: 'addend_2' }
+            ],
+            outputBindings: {
+                sum: 'sum_2'
             }
         },
-        // Step 3: Final multiplication using sum_2 as multiplicand
+        // Use sum_2 from the previous step in multiplication with a number from outside
         {
-            type: 'actual',
-            step: {
-                id: uuidv4(),
-                jobId: 'multiply_numbers',
-                dataExchanges: [
-                    { sourceJobId: 'add_numbers', sourceOutput: 'sum_2', targetJobId: 'multiply_numbers', targetInput: 'multiplicand' },
-                    { sourceJobId: 'start_job', sourceOutput: 'num_delta', targetJobId: 'multiply_numbers', targetInput: 'multiplier' }
-                ],
-                outputBindings: {
-                    product: 'product'
-                }
+            id: uuidv4(),
+            jobId: 'multiply_numbers',
+            dataExchanges: [
+                { sourceJobId: 'add_numbers', sourceOutput: 'sum_2', targetJobId: 'multiply_numbers', targetInput: 'multiplicand' },
+                { sourceJobId: 'start_job', sourceOutput: 'num_delta', targetJobId: 'multiply_numbers', targetInput: 'multiplier' }
+            ],
+            outputBindings: {
+                product: 'product'
             }
         }
     ]
