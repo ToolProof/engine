@@ -67,43 +67,17 @@ export const adapterAutodockWorkflow_1: Workflow = {
     id: 'adapter_autodock_workflow_1',
     steps: [
         {
-            type: 'actual',
-            step: {
-                id: uuidv4(),
-                jobId: 'basic_docking',
-                dataExchanges: [
-                    { sourceJobId: 'start_job', sourceOutput: 'ligand', targetJobId: 'basic_docking', targetInput: 'ligand' },
-                    { sourceJobId: 'start_job', sourceOutput: 'receptor', targetJobId: 'basic_docking', targetInput: 'receptor' },
-                    { sourceJobId: 'start_job', sourceOutput: 'box', targetJobId: 'basic_docking', targetInput: 'box' }
-                ],
-                outputBindings: {
-                }
+            id: uuidv4(),
+            jobId: 'basic_docking',
+            dataExchanges: [
+                { sourceJobId: 'start_job', sourceOutput: 'ligand', targetJobId: 'basic_docking', targetInput: 'ligand' },
+                { sourceJobId: 'start_job', sourceOutput: 'receptor', targetJobId: 'basic_docking', targetInput: 'receptor' },
+                { sourceJobId: 'start_job', sourceOutput: 'box', targetJobId: 'basic_docking', targetInput: 'box' }
+            ],
+            outputBindings: {
             }
         },
-        {
-            // ATTENTION_RONAK: this is a conditional step that checks the docking score and decides whether to proceed with the docking or not. The score is written to GraphState by NodeHigh in the previous step.
-            type: 'conditional',
-            branches: [
-                {
-                    condition: { op: 'less_than', left: 'score', right: 15 },
-                    steps: [
-                        {
-                            type: 'actual',
-                            step: {
-                                id: uuidv4(),
-                                jobId: 'basic_docking',
-                                dataExchanges: [
-                                    { sourceJobId: 'basic_docking', sourceOutput: 'ligand_docking', targetJobId: 'basic_docking', targetInput: 'ligand' },
-                                    { sourceJobId: 'start_job', sourceOutput: 'receptor', targetJobId: 'basic_docking', targetInput: 'receptor' },
-                                    { sourceJobId: 'start_job', sourceOutput: 'box', targetJobId: 'basic_docking', targetInput: 'box' }
-                                ],
-                                outputBindings: {
-                                }
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
     ]
 };
+
+// ATTENTION_RONAK: this is a conditional step that checks the docking score and decides whether to proceed with the docking or not. The score is written to GraphState by NodeHigh in the previous step.
