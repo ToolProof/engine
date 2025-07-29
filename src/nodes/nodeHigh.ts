@@ -1,6 +1,5 @@
 import { calculatorJobs } from '../mocks/calculator.js';
 import { NodeBase, GraphState } from '../types/typesLG.js';
-import { ActualWorkflowStep } from '../types/typesWF.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import axios from 'axios';
@@ -43,11 +42,9 @@ export class NodeHigh extends NodeBase {
         }
 
         try {
-            // ATTENTION_RONAK: We're asserting that the step is an ActualWorkflowStep for now. NodeHigh is currently not implemented to handle workflows with conditional steps.
-            const workflowStepUnion = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
-            const actualWorkflowStep = workflowStepUnion as ActualWorkflowStep;
-            const workflowStep = actualWorkflowStep.step;
+            const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
 
+            // ATTENTION_RONAK: NodeHigh is currently hardcoded to use calculatorJobs.
             const job = calculatorJobs.get(workflowStep.jobId);
 
             if (!job) {
