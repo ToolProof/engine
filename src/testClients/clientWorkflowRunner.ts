@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { calculatorWorkflowSpec_1 } from '../mocks/calculator.js';
+import { calculatorWorkflowSpec_1, calculatorWorkflowSpec_2 } from '../mocks/calculator.js';
+import { WorkflowSpec } from '../types/typesWF.js';
 import { Client } from '@langchain/langgraph-sdk';
 import { RemoteGraph } from '@langchain/langgraph/remote';
 import { HumanMessage } from '@langchain/core/messages';
@@ -16,14 +17,26 @@ const client = new Client({
 const remoteGraph = new RemoteGraph({ graphId, url });
 
 // ATTENTION_RONAK: Try overwriting the inputMaps in the workflowSpec to test different inputs.
-const calculatorWorkflowSpec_1b = {
+const calculatorWorkflowSpec_1b: WorkflowSpec = {
     ...calculatorWorkflowSpec_1,
-    inputMaps: [
+    resourceMaps: [
         {
-            'num_alpha': 'calculator/_inputs/num_5.json',
-            'num_beta': 'calculator/_inputs/num_5.json',
-            'num_gamma': 'calculator/_inputs/num_5.json',
-            'num_delta': 'calculator/_inputs/num_4.json'
+            num_alpha: {
+                path: 'calculator/_inputs/num_5.json',
+                metadata: {}
+            },
+            num_beta: {
+                path: 'calculator/_inputs/num_5.json',
+                metadata: {}
+            },
+            num_gamma: {
+                path: 'calculator/_inputs/num_5.json',
+                metadata: {}
+            },
+            num_delta: {
+                path: 'calculator/_inputs/num_5.json',
+                metadata: {}
+            }
         },
     ],
 }
@@ -46,7 +59,7 @@ export async function runRemoteGraph() {
                     delay: 1000,
                     drySocketMode: true,
                 },
-                workflowSpec: calculatorWorkflowSpec_1b,
+                workflowSpec: calculatorWorkflowSpec_2,
             }, {
                 configurable: { thread_id: thread.thread_id },
                 signal: controller.signal,

@@ -6,7 +6,7 @@ export type BaseResourceMap<T> = {
     [key: string]: T;
 }
 
-export type WorkflowResourceMap = BaseResourceMap<string>;
+export type WorkflowResourceMap = BaseResourceMap<{ path: string, metadata: any }>;
 
 export interface Identifiable {
     id: string;
@@ -49,7 +49,7 @@ export interface Job extends Concept {
 
 export interface JobInput {
     source: 'internal' | 'external';
-    name: string;
+    alias: string;
 }
 
 export type JobInputMap = BaseResourceMap<JobInput>;

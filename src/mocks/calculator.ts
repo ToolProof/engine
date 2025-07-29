@@ -169,11 +169,11 @@ const calculatorWorkflow_1: Workflow = {
             jobInputs: {
                 addend_1: {
                     source: 'external',
-                    name: 'num_alpha'
+                    alias: 'num_alpha'
                 },
                 addend_2: {
                     source: 'external',
-                    name: 'num_beta'
+                    alias: 'num_beta'
                 }
             },
             outputBindings: {
@@ -187,11 +187,11 @@ const calculatorWorkflow_1: Workflow = {
             jobInputs: {
                 addend_1: {
                     source: 'internal',
-                    name: 'sum_1'
+                    alias: 'sum_1'
                 },
                 addend_2: {
                     source: 'external',
-                    name: 'num_gamma'
+                    alias: 'num_gamma'
                 }
             },
             outputBindings: {
@@ -205,11 +205,11 @@ const calculatorWorkflow_1: Workflow = {
             jobInputs: {
                 multiplicand: {
                     source: 'internal',
-                    name: 'sum_2'
+                    alias: 'sum_2'
                 },
                 multiplier: {
                     source: 'external',
-                    name: 'num_delta'
+                    alias: 'num_delta'
                 }
             },
             outputBindings: {
@@ -230,10 +230,22 @@ export const calculatorWorkflowSpec_1: WorkflowSpec = {
     // external
     resourceMaps: [
         {
-            'num_alpha': 'calculator/_inputs/num_1.json',
-            'num_beta': 'calculator/_inputs/num_2.json',
-            'num_gamma': 'calculator/_inputs/num_4.json',
-            'num_delta': 'calculator/_inputs/num_5.json'
+            num_alpha: {
+                path: 'calculator/_inputs/num_1.json',
+                metadata: {}
+            },
+            num_beta: {
+                path: 'calculator/_inputs/num_2.json',
+                metadata: {}
+            },
+            num_gamma: {
+                path: 'calculator/_inputs/num_4.json',
+                metadata: {}
+            },
+            num_delta: {
+                path: 'calculator/_inputs/num_5.json',
+                metadata: {}
+            }
         },
     ],
     counter: 0
@@ -251,11 +263,11 @@ const calculatorWorkflow_2: Workflow = {
                 // For the first iteration, since 'sum' does not exist internally, the workflow engine will fall back to requesting an external input.
                 addend_1: {
                     source: 'internal',
-                    name: 'sum'
+                    alias: 'sum'
                 },
                 addend_2: {
                     source: 'external',
-                    name: 'num_beta'
+                    alias: 'num_alpha'
                 }
             },
             outputBindings: {
@@ -269,3 +281,18 @@ const calculatorWorkflow_2: Workflow = {
         }
     ]
 }
+
+
+export const calculatorWorkflowSpec_2: WorkflowSpec = {
+    workflow: calculatorWorkflow_2,
+    // external
+    resourceMaps: [
+        {
+            num_alpha: {
+                path: 'calculator/_inputs/num_6.json',
+                metadata: {}
+            }
+        },
+    ],
+    counter: 0
+};
