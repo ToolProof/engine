@@ -107,7 +107,7 @@ export interface Workflow extends Identifiable {
 
 export interface WorkflowSpec<T extends InputMap = InputMap> {
     workflow: Workflow;
+    // ATTENTION_RONAK: This is an array to allow for parallel workflow executions in the future. This way, one can specify several sets of inputs, and inputMaps.length encodes the number of parallel executions. For now, we'll only use inputMaps[0].
     inputMaps: T[]; // All items must be the same type T
-    // inputMaps.length encodes the number of parallel executions
     counter: number; // ATTENTION: hack for simplified, sequential workflows
 }

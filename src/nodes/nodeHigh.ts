@@ -54,7 +54,7 @@ export class NodeHigh extends NodeBase {
                 throw new Error(`Job with ID ${workflowStep.jobId} not found`);
             }
 
-            // Iterate over the Job's inputs and add them to the payload with paths from state.workflowSpec.inputMaps[0] that match input.role.name's entry in dataExchanges. This means that we should grab the sourceOutput that matches where input.role.name is the targetInput in dataExchanges and then use sourceOut to extract the path from state.workflowSpec.inputMaps[0].
+            // ATTENTION_RONAK: Here, we iterate over the job's inputs and add them to the payload with paths from state.workflowSpec.inputMaps[0] that match input.role.name's entry in dataExchanges. This means that we should grab the sourceOutput that matches where input.role.name is the targetInput in dataExchanges and then use sourceOut to extract the path from state.workflowSpec.inputMaps[0].
 
             const dataExchanges = workflowStep.dataExchanges;
 
