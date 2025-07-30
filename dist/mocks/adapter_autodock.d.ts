@@ -1,3 +1,3 @@
-import { Job, Workflow } from '../types/typesWF.js';
+import { Job, WorkflowSpec } from '../types/typesWF.js';
 export declare const adapterAutodockJobs: Map<string, Job>;
-export declare const adapterAutodockWorkflow_1: Workflow;
+export declare const adapterAutodockWorkflowSpec_1: WorkflowSpec;

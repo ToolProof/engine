@@ -1,6 +1,15 @@
-export type InputMap = {
+export interface Metadata {
+    [key: string]: number | string | boolean;
+}
+export interface MetadataSpec {
     [key: string]: string;
-};
+}
+export interface ResourceMap {
+    [key: string]: {
+        path: string;
+        metadata?: Metadata;
+    };
+}
 export interface Identifiable {
     id: string;
 }
@@ -27,42 +36,34 @@ export interface Job extends Concept {
     url: string;
     syntacticSpec: {
         inputs: ResourceSpec[];
-        outputs: ResourceSpec[];
+        outputs: (ResourceSpec & {
+            metadataSpec?: MetadataSpec;
+        })[];
     };
-    metadata: {
-        output: string;
-        metadata: object;
-    }[];
 }
-export interface DataExchange {
-    sourceJobId: string;
-    sourceOutput: string;
-    targetJobId: string;
-    targetInput: string;
-}
-export interface WorkflowStep extends Identifiable {
-    jobId: string;
-    dataExchanges: DataExchange[];
-    outputBindings: {
-        [outputRole: string]: string;
-    };
+export interface ResourceBindings {
+    [role: string]: string;
 }
 export type Condition = {
     op: 'equals';
-    left: string;
-    right: any;
+    resource: string;
+    variable: string;
+    value: any;
 } | {
     op: 'not_equals';
-    left: string;
-    right: any;
+    resource: string;
+    variable: string;
+    value: any;
 } | {
     op: 'greater_than';
-    left: string;
-    right: number;
+    resource: string;
+    variable: string;
+    value: number;
 } | {
     op: 'less_than';
-    left: string;
-    right: number;
+    resource: string;
+    variable: string;
+    value: number;
 } | {
     op: 'and';
     conditions: Condition[];
@@ -75,37 +76,19 @@ export type Condition = {
 } | {
     op: 'always';
 };
-export interface ActualWorkflowStep {
-    type: 'actual';
-    step: WorkflowStep;
+export interface WorkflowStep extends Identifiable {
+    jobId: string;
+    inputBindings: ResourceBindings;
+    outputBindings: ResourceBindings;
+    branchingCondition?: Condition;
+    whileLoopCondition?: Condition;
+    forLoopIterations?: number;
 }
-export interface ParallelWorkflowStep {
-    type: 'parallel';
-    branches: WorkflowStepUnion[][];
-}
-export interface ConditionalWorkflowStep {
-    type: 'conditional';
-    branches: {
-        condition: Condition;
-        steps: WorkflowStepUnion[];
-    }[];
-}
-export interface WhileLoopWorkflowStep {
-    type: 'while';
-    condition: Condition;
-    body: ActualWorkflowStep[];
-}
-export interface ForLoopWorkflowStep {
-    type: 'for';
-    iterations: number;
-    body: WorkflowStepUnion[];
-}
-export type WorkflowStepUnion = ActualWorkflowStep | ParallelWorkflowStep | ConditionalWorkflowStep | WhileLoopWorkflowStep | ForLoopWorkflowStep;
 export interface Workflow extends Identifiable {
-    steps: (ActualWorkflowStep | ConditionalWorkflowStep)[];
+    steps: WorkflowStep[];
 }
-export interface WorkflowSpec<T extends InputMap = InputMap> {
+export interface WorkflowSpec<T extends ResourceMap = ResourceMap> {
     workflow: Workflow;
-    inputMaps: T[];
+    resourceMaps: T[];
     counter: number;
 }

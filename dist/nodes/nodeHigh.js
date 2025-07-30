@@ -1,9 +1,10 @@
 import { calculatorJobs } from '../mocks/calculator.js';
+import { adapterAutodockJobs } from '../mocks/adapter_autodock.js';
 import { NodeBase } from '../types/typesLG.js';
 import { AIMessage } from '@langchain/core/messages';
 import axios from 'axios';
 import WebSocket from 'ws';
-// ATTENTION_RONAK: NodeHigh is responsible for executing jobs in a workflow. For each job it runs, it expands inputMaps to include the outputs the job produces. Later, it will be implemented to also write the job's metadata in GraphState for use in subsequent conditional steps of the workflow. edgeRouting will then be used to determine the next step based on this metadata.
+// ATTENTION_RONAK: NodeHigh is responsible for executing jobs in a workflow. For each job it runs, it expands resourceMaps to include the outputs the job produces. Later, it will be implemented to also write the job's metadata in GraphState for use in subsequent conditional steps of the workflow. edgeRouting will then be used to determine the next step based on this metadata.
 export class NodeHigh extends NodeBase {
     constructor() {
         super();
@@ -29,21 +30,25 @@ export class NodeHigh extends NodeBase {
             };
         }
         try {
-            // ATTENTION_RONAK: We're asserting that the step is an ActualWorkflowStep for now. NodeHigh is currently not implemented to handle workflows with conditional steps.
-            const workflowStepUnion = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
-            const actualWorkflowStep = workflowStepUnion;
-            const workflowStep = actualWorkflowStep.step;
-            const job = calculatorJobs.get(workflowStep.jobId);
+            const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
+            //  Currently, NodeHigh is hardcoded to only handle calculatorJobs and adapterAutodockJobs.
+            const availableJobs = new Map([...calculatorJobs, ...adapterAutodockJobs]);
+            const job = availableJobs.get(workflowStep.jobId);
             if (!job) {
                 throw new Error(`Job with ID ${workflowStep.jobId} not found`);
             }
-            // ATTENTION_RONAK: Here, we iterate over the job's inputs and add them to the payload with paths from state.workflowSpec.inputMaps[0] that match input.role.name's entry in dataExchanges. This means that we should grab the sourceOutput that matches where input.role.name is the targetInput in dataExchanges and then use sourceOut to extract the path from state.workflowSpec.inputMaps[0].
-            const dataExchanges = workflowStep.dataExchanges;
+            // ATTENTION_RONAK: Here, we iterate over the job's specified inputs, and for each of them we find an matching entry in jobInputs. We then use matchingInput.alias to extract the filepath from state.workflowSpec.resourceMaps[0].
+            const inputBindings = workflowStep.inputBindings;
             let payload = {};
             job.syntacticSpec.inputs.forEach((input) => {
-                const matchingExchange = dataExchanges.find(de => de.targetInput === input.role.name);
-                if (matchingExchange) {
-                    payload[input.role.name] = state.workflowSpec.inputMaps[0][matchingExchange.sourceOutput];
+                const matchingInput = inputBindings[input.role.name];
+                if (matchingInput) {
+                    if (state.workflowSpec.resourceMaps[0][matchingInput]) {
+                        payload[input.role.name] = state.workflowSpec.resourceMaps[0][matchingInput].path;
+                    }
+                    else {
+                        payload[input.role.name] = 'calculator/_inputs/num_1.json'; // ATTENTION_RONAK: For now, we use this as a placeholder. Later, the workflow engine will request an external input if the input is not found in resourceMaps[0].
+                    }
                 }
             });
             console.log('payload:', JSON.stringify(payload, null, 2));
@@ -60,26 +65,28 @@ export class NodeHigh extends NodeBase {
             };
             const outputs = await foo(job.url);
             const outputBindings = workflowStep.outputBindings;
-            // Create new entries for inputMaps[0] based on outputBindings
-            const newInputMapEntries = {};
+            // Create new entries for resourceMaps[0] based on outputBindings
+            const newResourceMapEntries = {};
             // Map job output roles to bound keys using the result paths
+            // ATTENTION: This is vulnerable if outputBindings are not specified. Should default to original output role names.
             Object.entries(outputBindings).forEach(([outputRole, boundKey]) => {
                 if (outputs[outputRole]) {
-                    newInputMapEntries[boundKey] = outputs[outputRole];
+                    newResourceMapEntries[boundKey] = outputs[outputRole];
                 }
             });
             return {
                 messages: [new AIMessage('NodeHigh completed')],
                 workflowSpec: {
                     ...state.workflowSpec,
-                    inputMaps: [
+                    resourceMaps: [
                         {
-                            ...state.workflowSpec.inputMaps[0],
-                            ...newInputMapEntries
+                            ...state.workflowSpec.resourceMaps[0],
+                            ...newResourceMapEntries
                         },
-                        ...state.workflowSpec.inputMaps.slice(1)
+                        ...state.workflowSpec.resourceMaps.slice(1)
                     ],
-                    counter: state.workflowSpec.counter + 1
+                    // We update the counter only if the step does not have a whileLoopCondition. If it does, we keep the counter the same so that the loop can continue.
+                    counter: workflowStep.whileLoopCondition ? state.workflowSpec.counter : state.workflowSpec.counter + 1
                 },
             };
         }

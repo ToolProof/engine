@@ -33,7 +33,10 @@ export const adapterAutodockJobs = new Map([
                 outputs: [
                     {
                         type: RT('pdbqt'),
-                        role: RR('ligand_docking')
+                        role: RR('ligand_docking'),
+                        metadataSpec: {
+                            score: 'number', // ATTENTION_RONAK: The job hereby specifies that its metadata object will contain the docking score represented as a number. NodeHigh will write this to GraphState so that it can be used in conditions in subsequent steps of the workflow.
+                        }
                     },
                     {
                         type: RT('sfd'),
@@ -44,58 +47,46 @@ export const adapterAutodockJobs = new Map([
                         role: RR('receptor_pose')
                     }
                 ]
-            },
-            metadata: [
-                // ATTENTION_RONAK: The job hereby specifies that the output 'ligand_docking' will contain the docking score. This is what you need to extract from the /tmp file and return as metadata in the json response in basic_docking.py in the adapter_autodock repo. NodeHigh will write the score to GraphState so that it can be used in the conditional step of the workflow below. You can look at how the calculator jobs do this in index.ts in the calculator repo. The difference is that here, the output is a file, so you need to read the file and extract the score from it.
-                {
-                    output: 'ligand_docking',
-                    metadata: {
-                        score: 'number',
-                    }
-                }
-            ]
+            }
         }],
 ]);
 // ATTENTION_RONAK: The adapterAutodockWorkflow_1 is a workflow that uses the adapterAutodockJobs defined above (currently only basic_docking). It invokes the basic_docking job and checks the docking score to decide whether to proceed with docking or not.
-export const adapterAutodockWorkflow_1 = {
+const adapterAutodockWorkflow_1 = {
     id: 'adapter_autodock_workflow_1',
     steps: [
         {
-            type: 'actual',
-            step: {
-                id: uuidv4(),
-                jobId: 'basic_docking',
-                dataExchanges: [
-                    { sourceJobId: 'start_job', sourceOutput: 'ligand', targetJobId: 'basic_docking', targetInput: 'ligand' },
-                    { sourceJobId: 'start_job', sourceOutput: 'receptor', targetJobId: 'basic_docking', targetInput: 'receptor' },
-                    { sourceJobId: 'start_job', sourceOutput: 'box', targetJobId: 'basic_docking', targetInput: 'box' }
-                ],
-                outputBindings: {}
-            }
+            id: uuidv4(),
+            jobId: 'basic_docking',
+            inputBindings: {
+                ligand: 'ligand',
+                receptor: 'receptor',
+                box: 'box'
+            },
+            outputBindings: {
+                ligand_docking: 'ligand_docking',
+                ligand_pose: 'ligand_pose',
+                receptor_pose: 'receptor_pose',
+                // ATTENTION: If they were of the same ResourceType, we could bind the ligand_docking output to the name 'ligand', so that it could be used as input in the next iteration.
+                // 'ligand_docking': 'ligand',
+            },
+            /* whileLoopCondition: {
+                op: 'less_than',
+                resource: 'ligand_docking',
+                variable: 'score',
+                value: 15
+            } */
         },
-        {
-            // ATTENTION_RONAK: this is a conditional step that checks the docking score and decides whether to proceed with the docking or not. The score is written to GraphState by NodeHigh in the previous step.
-            type: 'conditional',
-            branches: [
-                {
-                    condition: { op: 'less_than', left: 'score', right: 15 },
-                    steps: [
-                        {
-                            type: 'actual',
-                            step: {
-                                id: uuidv4(),
-                                jobId: 'basic_docking',
-                                dataExchanges: [
-                                    { sourceJobId: 'basic_docking', sourceOutput: 'ligand_docking', targetJobId: 'basic_docking', targetInput: 'ligand' },
-                                    { sourceJobId: 'start_job', sourceOutput: 'receptor', targetJobId: 'basic_docking', targetInput: 'receptor' },
-                                    { sourceJobId: 'start_job', sourceOutput: 'box', targetJobId: 'basic_docking', targetInput: 'box' }
-                                ],
-                                outputBindings: {}
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
     ]
+};
+export const adapterAutodockWorkflowSpec_1 = {
+    workflow: adapterAutodockWorkflow_1,
+    // Initial inputs for the workflow
+    resourceMaps: [
+        {
+            'ligand': { path: 'adapter_autodock/_inputs/ligand.smi', metadata: {} },
+            'receptor': { path: 'adapter_autodock/_inputs/receptor.pdb', metadata: {} },
+            'box': { path: 'adapter_autodock/_inputs/box.pdb', metadata: {} }
+        },
+    ],
+    counter: 0
 };

@@ -4,12 +4,35 @@ import { NodeLow } from '../nodes/nodeLow';
 import { NodeUp } from '../nodes/nodeUp'; */
 import { NodeHigh } from '../nodes/nodeHigh';
 import { StateGraph, START, END } from '@langchain/langgraph';
-// ATTENTION_RONAK: Currently, edgeRouting is only capable of handling sequential steps in a workflow based on a counter. Later, it will be implemented to handle conditional steps based on metadata written by NodeHigh in GraphState. For now, it simply routes to NodeHigh for the next step if there are more steps in the workflow.
+// ATTENTION_RONAK: Currently, edgeRouting is not fully implemented. It can only handle purely sequential workflows and workflows with 'less_than' conditioned while loops.
 const edgeRouting = (state) => {
-    if (state.workflowSpec.counter < state.workflowSpec.workflow.steps.length) {
-        return 'nodeHigh';
+    // ATTENTION_RONAK: This is just a temporary hack to check that the docking score is actually written to GraphState.
+    if (state.workflowSpec.counter === 1) {
+        const score = state.workflowSpec.resourceMaps[0].ligand_docking.metadata.score;
+        console.log('docking_score:', JSON.stringify(score, null, 2));
     }
-    return END;
+    if (state.workflowSpec.counter >= state.workflowSpec.workflow.steps.length) {
+        return END;
+    }
+    const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
+    const whileLoopCondition = workflowStep.whileLoopCondition;
+    if (!whileLoopCondition) {
+        return 'nodeHigh'; // If no while loop condition is specified, we assume the step should be executed
+    }
+    const resource = whileLoopCondition.resource;
+    const variable = whileLoopCondition.variable;
+    if (state.workflowSpec.resourceMaps[0][resource]) {
+        const value = state.workflowSpec.resourceMaps[0][resource].metadata[variable]; // ATTENTION: temporary hack
+        if (whileLoopCondition.op === 'less_than' && value < whileLoopCondition.value) {
+            return 'nodeHigh';
+        }
+        else {
+            return END;
+        }
+    }
+    else {
+        return 'nodeHigh'; // If resource is not defined, we assume we're at the start of a new loop
+    }
 };
 const stateGraph = new StateGraph(GraphStateAnnotationRoot)
     /* .addNode(
