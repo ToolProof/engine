@@ -46,7 +46,7 @@ export class NodeHigh extends NodeBase {
         try {
             const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
 
-            // NodeHigh is currently hardcoded to only hanle calculatorJobs and adapterAutodockJobs.
+            //  Currently, NodeHigh is hardcoded to only handle calculatorJobs and adapterAutodockJobs.
             const availableJobs = new Map([...calculatorJobs, ...adapterAutodockJobs]);
             const job = availableJobs.get(workflowStep.jobId);
 
