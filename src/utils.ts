@@ -5,6 +5,7 @@ interface ValidationResult {
     initialInputs: string[];
 }
 
+// ATTENTION_RONAK_#: This function validates a workflow against a set of available jobs. While defined here, it's imported by the WorkflowBuilder in the toolproof_core repo to facilitate the validation of workflows while building them. It checks if the jobs specified in the workflow exist in the available jobs, validates input and output bindings, and ensures that all conditions are met. It also tracks initial inputs that are not defined by any previous step. Feel free to copy it over to the toolproof_core repo if you need it there.
 export function validateWorkflow(availableJobs: Job[], workflow: Workflow): ValidationResult {
     const jobMap = new Map<string, Job>();
     for (const job of availableJobs) {

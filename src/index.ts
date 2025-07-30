@@ -8,6 +8,7 @@ if (process.env.NODE_ENV === 'workflowRunner') {
     runWorkflowRunner();
 }
 
+// ATTENTION_RONAK_#: Run 'npm run start:workflowValidator' to see the validation results of the hardcoded workflows. The results will tell you whether the workflows are valid and list the initial inputs they need. Note that 'sum' isn't needed as an initial input for calculatorWorkflowSpec_2, which is a workflow with a while loop. Since it isn't provided for the first iteration, NodeHigh will use 'num_one.json' as a placeholder.
 if (process.env.NODE_ENV === 'workflowValidator') {
     try {
         console.log('Starting workflow validation...');

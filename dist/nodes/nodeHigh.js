@@ -47,7 +47,7 @@ export class NodeHigh extends NodeBase {
                         payload[input.role.name] = state.workflowSpec.resourceMaps[0][matchingInput].path;
                     }
                     else {
-                        payload[input.role.name] = 'calculator/_inputs/num_1.json'; // ATTENTION_RONAK: For now, we use this as a placeholder. Later, the workflow engine will request an external input if the input is not found in resourceMaps[0].
+                        payload[input.role.name] = 'calculator/_inputs/num_1.json'; // ATTENTION_RONAK_#: For now, we use this as a placeholder. Later, the workflow engine will request an external input if the input is not found in resourceMaps[0].
                     }
                 }
             });
