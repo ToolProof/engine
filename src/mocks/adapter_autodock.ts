@@ -82,27 +82,12 @@ const adapterAutodockWorkflow_1: Workflow = {
                 value: 15
             } */
         },
-        // ATTENTION: Running the same step again just for testing.
-        {
-            id: uuidv4(),
-            jobId: 'basic_docking',
-            inputBindings: {
-                ligand: 'ligand',
-                receptor: 'receptor',
-                box: 'box'
-            },
-            outputBindings: {
-                ligand_docking: 'ligand_docking',
-                ligand_pose: 'ligand_pose',
-                receptor_pose: 'receptor_pose',
-            },
-        },
     ]
 };
 
 
-// ATTENTION_RONAK: This workflow can't be run yet, as edgeRouting and NodeHigh are not yet implemented for workflows with conditional steps.
-export const adapterAutodockWorkflowSpec: WorkflowSpec = {
+
+export const adapterAutodockWorkflowSpec_1: WorkflowSpec = {
     workflow: adapterAutodockWorkflow_1,
     // Initial inputs for the workflow
     resourceMaps: [

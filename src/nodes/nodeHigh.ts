@@ -1,4 +1,5 @@
 import { calculatorJobs } from '../mocks/calculator.js';
+import { adapterAutodockJobs } from '../mocks/adapter_autodock.js';
 import { NodeBase, GraphState } from '../types/typesLG.js';
 import { ResourceMap } from '../types/typesWF.js';
 import { RunnableConfig } from '@langchain/core/runnables';
@@ -45,8 +46,9 @@ export class NodeHigh extends NodeBase {
         try {
             const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
 
-            // ATTENTION_RONAK: NodeHigh is currently hardcoded to use calculatorJobs.
-            const job = calculatorJobs.get(workflowStep.jobId);
+            // NodeHigh is currently hardcoded to only hanle calculatorJobs and adapterAutodockJobs.
+            const availableJobs = new Map([...calculatorJobs, ...adapterAutodockJobs]);
+            const job = availableJobs.get(workflowStep.jobId);
 
             if (!job) {
                 throw new Error(`Job with ID ${workflowStep.jobId} not found`);

@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { calculatorWorkflowSpec_1, calculatorWorkflowSpec_2 } from '../mocks/calculator.js';
+import { adapterAutodockWorkflowSpec_1 } from '../mocks/adapter_autodock.js';
 import { WorkflowSpec } from '../types/typesWF.js';
 import { Client } from '@langchain/langgraph-sdk';
 import { RemoteGraph } from '@langchain/langgraph/remote';
@@ -22,19 +23,19 @@ const calculatorWorkflowSpec_1b: WorkflowSpec = {
     resourceMaps: [
         {
             num_alpha: {
-                path: 'calculator/_inputs/num_7.json',
+                path: 'calculator/_inputs/num_4.json',
                 metadata: {}
             },
             num_beta: {
-                path: 'calculator/_inputs/num_2.json',
+                path: 'calculator/_inputs/num_7.json',
                 metadata: {}
             },
             num_gamma: {
-                path: 'calculator/_inputs/num_8.json',
+                path: 'calculator/_inputs/num_4.json',
                 metadata: {}
             },
             num_delta: {
-                path: 'calculator/_inputs/num_8.json',
+                path: 'calculator/_inputs/num_9.json',
                 metadata: {}
             }
         },
@@ -46,7 +47,7 @@ const calculatorWorkflowSpec_2b: WorkflowSpec = {
     resourceMaps: [
         {
             num_alpha: {
-                path: 'calculator/_inputs/num_4.json',
+                path: 'calculator/_inputs/num_7.json',
                 metadata: {}
             }
         },
@@ -71,7 +72,7 @@ export async function runRemoteGraph() {
                     delay: 1000,
                     drySocketMode: true,
                 },
-                workflowSpec: calculatorWorkflowSpec_2b,
+                workflowSpec: adapterAutodockWorkflowSpec_1,
             }, {
                 configurable: { thread_id: thread.thread_id },
                 signal: controller.signal,
