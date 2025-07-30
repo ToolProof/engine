@@ -183,6 +183,8 @@ const calculatorWorkflow_1: Workflow = {
 // You can actually run this workflow with 'npm run start:workflowRunner' (remember to deploy the workflowRunner graph locally first) and check the final result in tp_resources/calculator/multiply_numbers (as multiply_numbers is the last job in calculatorWorkflow_1).
 // Can you guess what the final result will be?
 
+// ATTENTION_RONAK_#: The compiler output should look like this (including the workflow itself of course):
+
 export const calculatorWorkflowSpec_1: WorkflowSpec = {
     workflow: calculatorWorkflow_1,
     // Initial inputs for the workflow
