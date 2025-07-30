@@ -9,10 +9,11 @@ import { StateGraph, START, END } from '@langchain/langgraph';
 const edgeRouting = (state: GraphState) => {
 
     // ATTENTION_RONAK: This is just a temporary hack to check that the docking score is actually written to GraphState.
-    if (state.workflowSpec.counter === 1) {
+    // Uncomment when running the adapterAutodockWorkflow_1 workflow.
+    /* if (state.workflowSpec.counter === 1) {
         const score = state.workflowSpec.resourceMaps[0].ligand_docking.metadata.score as number;
         console.log('docking_score:', JSON.stringify(score, null, 2));
-    }
+    } */
 
     if (state.workflowSpec.counter >= state.workflowSpec.workflow.steps.length) {
         return END;
