@@ -185,7 +185,7 @@ const calculatorWorkflow_1: Workflow = {
 
 export const calculatorWorkflowSpec_1: WorkflowSpec = {
     workflow: calculatorWorkflow_1,
-    // external
+    // Initial inputs for the workflow
     resourceMaps: [
         {
             num_alpha: {
@@ -237,7 +237,7 @@ const calculatorWorkflow_2: Workflow = {
 
 export const calculatorWorkflowSpec_2: WorkflowSpec = {
     workflow: calculatorWorkflow_2,
-    // external
+    // Initial inputs for the workflow
     resourceMaps: [
         {
             num_alpha: {

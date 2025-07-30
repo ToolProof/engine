@@ -69,6 +69,13 @@ const adapterAutodockWorkflow_1: Workflow = {
                 box: 'box'
             },
             outputBindings: {
+                // Here, we bind the ligand_docking output to the name 'ligand', so that it can be used as input in the next iteration.
+                'ligand_docking': 'ligand',
+            },
+            whileLoopCondition: {
+                op: 'less_than',
+                left: 'score',
+                right: 15
             }
         },
     ]
@@ -78,7 +85,7 @@ const adapterAutodockWorkflow_1: Workflow = {
 // ATTENTION_RONAK: This workflow can't be run yet, as edgeRouting and NodeHigh are not yet implemented for workflows with conditional steps.
 export const adapterAutodockWorkflowSpec: WorkflowSpec = {
     workflow: adapterAutodockWorkflow_1,
-    // start_job
+    // Initial inputs for the workflow
     resourceMaps: [
         {
             'ligand': { path: 'adapter_autodock/_inputs/ligand.smi', metadata: {} },
