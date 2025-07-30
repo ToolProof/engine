@@ -10,7 +10,7 @@ export interface MetadataSpec {
 }
 
 export interface ResourceMap {
-    [key: string]: { path: string, metadata: Metadata };
+    [key: string]: { path: string, metadata?: Metadata };
 }
 
 export interface Identifiable {
@@ -53,14 +53,48 @@ export interface ResourceBindings {
 };
 
 export type Condition =
-    | { op: 'equals'; left: string; right: any }
-    | { op: 'not_equals'; left: string; right: any }
-    | { op: 'greater_than'; left: string; right: number }
-    | { op: 'less_than'; left: string; right: number }
-    | { op: 'and'; conditions: Condition[] }
-    | { op: 'or'; conditions: Condition[] }
-    | { op: 'not'; condition: Condition }
-    | { op: 'always' }; // Always true — fallback/default branch
+    // Comparison operators
+    | {
+        op: 'equals';
+        resource: string;
+        variable: string;
+        value: any
+    }
+    | {
+        op: 'not_equals';
+        resource: string;
+        variable: string;
+        value: any
+    }
+    | {
+        op: 'greater_than';
+        resource: string;
+        variable: string;
+        value: number
+    }
+    | {
+        op: 'less_than';
+        resource: string;
+        variable: string;
+        value: number
+    }
+    // Logical operators
+    | {
+        op: 'and';
+        conditions: Condition[]
+    }
+    | {
+        op: 'or';
+        conditions: Condition[]
+    }
+    | {
+        op: 'not';
+        condition: Condition
+    }
+    // Default/fallback
+    | {
+        op: 'always'
+    }; // Always true — fallback/default branch
 
 export interface WorkflowStep extends Identifiable {
     jobId: string; // The job that this step executes

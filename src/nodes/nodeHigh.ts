@@ -100,6 +100,7 @@ export class NodeHigh extends NodeBase {
             const newResourceMapEntries: ResourceMap = {};
 
             // Map job output roles to bound keys using the result paths
+            // ATTENTION: This is vulnerable if outputBindings are not specified. Should default to original output role names.
             Object.entries(outputBindings).forEach(([outputRole, boundKey]) => {
                 if (outputs[outputRole]) {
                     newResourceMapEntries[boundKey] = outputs[outputRole];

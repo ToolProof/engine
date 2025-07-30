@@ -18,17 +18,18 @@ const edgeRouting = (state: GraphState) => {
         return 'nodeHigh'; // If no while loop condition is specified, we assume the step should be executed
     }
 
-    const leftVariable = whileLoopCondition.left;
-    if (state.workflowSpec.resourceMaps[0][leftVariable]) {
-        const result = state.workflowSpec.resourceMaps[0][leftVariable].metadata.result as number; // ATTENTION
+    const resource = whileLoopCondition.resource;
+    const variable = whileLoopCondition.variable;
+    if (state.workflowSpec.resourceMaps[0][resource]) {
+        const value = state.workflowSpec.resourceMaps[0][resource].metadata![variable] as number; // ATTENTION: temporary hack
 
-        if (whileLoopCondition.op === 'less_than' && result < whileLoopCondition.right) {
+        if (whileLoopCondition.op === 'less_than' && value < whileLoopCondition.value) {
             return 'nodeHigh';
         } else {
             return END;
         }
     } else {
-        return 'nodeHigh'; // If leftVariable is not defined, we assume we're at the start of a new loop
+        return 'nodeHigh'; // If resource is not defined, we assume we're at the start of a new loop
     }
 
 };

@@ -69,14 +69,33 @@ const adapterAutodockWorkflow_1: Workflow = {
                 box: 'box'
             },
             outputBindings: {
-                // Here, we bind the ligand_docking output to the name 'ligand', so that it can be used as input in the next iteration.
-                'ligand_docking': 'ligand',
+                ligand_docking: 'ligand_docking',
+                ligand_pose: 'ligand_pose',
+                receptor_pose: 'receptor_pose',
+                // ATTENTION: If they were of the same ResourceType, we could bind the ligand_docking output to the name 'ligand', so that it could be used as input in the next iteration.
+                // 'ligand_docking': 'ligand',
             },
-            whileLoopCondition: {
+            /* whileLoopCondition: {
                 op: 'less_than',
-                left: 'score',
-                right: 15
-            }
+                resource: 'ligand_docking',
+                variable: 'score',
+                value: 15
+            } */
+        },
+        // ATTENTION: Running the same step again just for testing.
+        {
+            id: uuidv4(),
+            jobId: 'basic_docking',
+            inputBindings: {
+                ligand: 'ligand',
+                receptor: 'receptor',
+                box: 'box'
+            },
+            outputBindings: {
+                ligand_docking: 'ligand_docking',
+                ligand_pose: 'ligand_pose',
+                receptor_pose: 'receptor_pose',
+            },
         },
     ]
 };
