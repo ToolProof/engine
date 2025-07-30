@@ -1,9 +1,16 @@
 
 // ATTENTION_RONAK: This file contains TypeScript types and interfaces for defining workflows, jobs, and resources in a system. It is used to structure the data and ensure type safety across the application. You don't need to do anything here. I'm guiding you here just for your understanding.
 
+export interface Metadata {
+    [key: string]: number | string | boolean;
+}
 
-export type ResourceMap = {
-    [key: string]: { path: string, metadata: any }
+export interface MetadataSpec {
+    [key: string]: string;
+}
+
+export interface ResourceMap {
+    [key: string]: { path: string, metadata: Metadata };
 }
 
 export interface Identifiable {
@@ -36,16 +43,12 @@ export interface Job extends Concept {
     url: string;
     syntacticSpec: {
         inputs: ResourceSpec[];
-        outputs: ResourceSpec[];
+        // ATTENTION_RONAK: Note how a job must specify the metadata it produces per output. This is so that the workflow validator can ensure that conditions that are specified only refer to metadata that is produced by previous jobs. In adapterAutodockWorkflow_1, the validator can check that the 'score' metadata is produced by the 'basic_docking' job before it is used in the conditional step.
+        outputs: (ResourceSpec & { metadataSpec: MetadataSpec })[];
     }
-    // ATTENTION_RONAK: Note how a job must specify the metadata it produces. This is so that the workflow validator can ensure that conditions that are specified only refer to metadata that is produced by previous jobs. In adapterAutodockWorkflow_1, the validator can check that the 'score' metadata is produced by the 'basic_docking' job before it is used in the conditional step.
-    metadata: {
-        output: string;
-        metadata: object;
-    }[];
 }
 
-export type ResourceBindings = {
+export interface ResourceBindings {
     [role: string]: string;
 };
 

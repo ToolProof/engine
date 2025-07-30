@@ -33,20 +33,14 @@ export const calculatorJobs: Map<string, Job> = new Map([
             outputs: [
                 {
                     type: RT('number'),
-                    role: RR('sum')
+                    role: RR('sum'),
+                    // ATTENTION_RONAK: The job hereby specifies that its metadata object will contain the result of the addition represented as a number. NodeHigh will write this to GraphState so that it can be used in conditions in subsequent steps of the workflow. For example, you can use this to check if the result is greater than a certain value and then decide whether to proceed with the next step or not.
+                    metadataSpec: {
+                        result: 'number',
+                    }
                 }
             ]
         },
-        metadata: [
-            {
-                // ATTENTION_RONAK: the job hereby specifies that the output sum will contain the result of the addition and the inputs used. NodeHigh will write this to GraphState so that it can be used in conditions in subsequent steps of the workflow. For example, you can use this to check if the sum is greater than a certain value and then decide whether to proceed with the next step or not.
-                output: 'sum',
-                metadata: {
-                    result: 'number',
-                    inputs: ['number', 'number']
-                }
-            }
-        ]
     }],
     ['subtract_numbers', {
         id: 'subtract_numbers',
@@ -70,19 +64,13 @@ export const calculatorJobs: Map<string, Job> = new Map([
             outputs: [
                 {
                     type: RT('number'),
-                    role: RR('difference')
+                    role: RR('difference'),
+                    metadataSpec: {
+                        result: 'number',
+                    }
                 }
             ]
         },
-        metadata: [
-            {
-                output: 'difference',
-                metadata: {
-                    result: 'number',
-                    inputs: ['number', 'number']
-                }
-            }
-        ]
     }],
     ['multiply_numbers', {
         id: 'multiply_numbers',
@@ -106,19 +94,13 @@ export const calculatorJobs: Map<string, Job> = new Map([
             outputs: [
                 {
                     type: RT('number'),
-                    role: RR('product')
+                    role: RR('product'),
+                    metadataSpec: {
+                        result: 'number',
+                    }
                 }
             ]
-        },
-        metadata: [
-            {
-                output: 'product',
-                metadata: {
-                    result: 'number',
-                    inputs: ['number', 'number']
-                }
-            }
-        ]
+        }
     }],
     ['divide_numbers', {
         id: 'divide_numbers',
@@ -142,19 +124,13 @@ export const calculatorJobs: Map<string, Job> = new Map([
             outputs: [
                 {
                     type: RT('number'),
-                    role: RR('quotient')
+                    role: RR('quotient'),
+                    metadataSpec: {
+                        result: 'number',
+                    }
                 }
             ]
-        },
-        metadata: [
-            {
-                output: 'quotient',
-                metadata: {
-                    result: 'number',
-                    inputs: ['number', 'number']
-                }
-            }
-        ]
+        }
     }]
 ])
 

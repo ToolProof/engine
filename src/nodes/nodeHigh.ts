@@ -101,7 +101,7 @@ export class NodeHigh extends NodeBase {
 
             // Map job output roles to bound keys using the result paths
             Object.entries(outputBindings).forEach(([outputRole, boundKey]) => {
-                if (outputs[outputRole].path) {
+                if (outputs[outputRole]) {
                     newResourceMapEntries[boundKey] = outputs[outputRole];
                 }
             });
