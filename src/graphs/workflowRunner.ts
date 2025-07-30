@@ -5,39 +5,30 @@ import { NodeUp } from '../nodes/nodeUp'; */
 import { NodeHigh } from '../nodes/nodeHigh';
 import { StateGraph, START, END } from '@langchain/langgraph';
 
-// ATTENTION_RONAK: Currently, edgeRouting is only capable of handling sequential steps in a workflow based on a counter. Later, it will be implemented to handle conditional steps based on metadata written by NodeHigh in GraphState. For now, it simply routes to NodeHigh for the next step if there are more steps in the workflow.
+// ATTENTION_RONAK: Currently, edgeRouting is not fully implemented. It can only handle purely sequential workflows and workflows with 'less_than' conditioned while loops.
 const edgeRouting = (state: GraphState) => {
-    /* if (state.workflowSpec.counter < state.workflowSpec.workflow.steps.length) {
-        return 'nodeHigh';
+    if (state.workflowSpec.counter >= state.workflowSpec.workflow.steps.length) {
+        return END;
     }
-    return END; */
 
     const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
 
     const whileLoopCondition = workflowStep.whileLoopCondition;
     if (!whileLoopCondition) {
-        return END;
+        return 'nodeHigh'; // If no while loop condition is specified, we assume the step should be executed
     }
 
-    /* 
-    whileLoopCondition looks like this: 
-        {
-            op: 'less_than',
-            left: 'sum',
-            right: 30
-        }
-    */
+    const leftVariable = whileLoopCondition.left;
+    if (state.workflowSpec.resourceMaps[0][leftVariable]) {
+        const result = state.workflowSpec.resourceMaps[0][leftVariable].metadata.result;
 
-    if (state.workflowSpec.resourceMaps[0].sum) {
-        const sum = state.workflowSpec.resourceMaps[0].sum.metadata.result;
-
-        if (whileLoopCondition.op === 'less_than' && sum < whileLoopCondition.right) {
+        if (whileLoopCondition.op === 'less_than' && result < whileLoopCondition.right) {
             return 'nodeHigh';
         } else {
             return END;
         }
     } else {
-        return 'nodeHigh'; // If sum is not defined, we assume the condition is true and continue the loop
+        return 'nodeHigh'; // If leftVariable is not defined, we assume we're at the start of a new loop
     }
 
 };

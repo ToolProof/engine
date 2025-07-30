@@ -1,6 +1,6 @@
 import { calculatorJobs } from '../mocks/calculator.js';
 import { NodeBase, GraphState } from '../types/typesLG.js';
-import { WorkflowResourceMap } from '../types/typesWF.js';
+import { ResourceMap } from '../types/typesWF.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import axios from 'axios';
@@ -54,18 +54,18 @@ export class NodeHigh extends NodeBase {
 
             // ATTENTION_RONAK: Here, we iterate over the job's specified inputs, and for each of them we find an matching entry in jobInputs. We then use matchingInput.alias to extract the filepath from state.workflowSpec.resourceMaps[0].
 
-            const jobInputs = workflowStep.jobInputs;
+            const inputBindings = workflowStep.inputBindings;
 
             let payload: { [key: string]: string } = {};
 
             job.syntacticSpec.inputs.forEach((input) => {
-                const matchingInput = jobInputs[input.role.name];
+                const matchingInput = inputBindings[input.role.name];
                 if (matchingInput) {
 
-                    if (state.workflowSpec.resourceMaps[0][matchingInput.alias]) {
-                        payload[input.role.name] = state.workflowSpec.resourceMaps[0][matchingInput.alias].path;
+                    if (state.workflowSpec.resourceMaps[0][matchingInput]) {
+                        payload[input.role.name] = state.workflowSpec.resourceMaps[0][matchingInput].path;
                     } else {
-                        payload[input.role.name] = 'calculator/_inputs/num_1.json'; // ATTENTION
+                        payload[input.role.name] = 'calculator/_inputs/num_1.json'; // ATTENTION_RONAK: For now, we use this as a placeholder. Later, the workflow engine will request an external input if the input is not found in resourceMaps[0].
                     }
                 }
             });
@@ -97,7 +97,7 @@ export class NodeHigh extends NodeBase {
             const outputBindings = workflowStep.outputBindings;
 
             // Create new entries for resourceMaps[0] based on outputBindings
-            const newResourceMapEntries: WorkflowResourceMap = {};
+            const newResourceMapEntries: ResourceMap = {};
 
             // Map job output roles to bound keys using the result paths
             Object.entries(outputBindings).forEach(([outputRole, boundKey]) => {
@@ -117,7 +117,8 @@ export class NodeHigh extends NodeBase {
                         },
                         ...state.workflowSpec.resourceMaps.slice(1)
                     ],
-                    // counter: state.workflowSpec.counter + 1 // ATTENTION
+                    // We update the counter only if the step does not have a whileLoopCondition. If it does, we keep the counter the same so that the loop can continue.
+                    counter: workflowStep.whileLoopCondition ? state.workflowSpec.counter : state.workflowSpec.counter + 1
                 },
             };
 

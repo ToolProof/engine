@@ -166,15 +166,9 @@ const calculatorWorkflow_1: Workflow = {
         {
             id: uuidv4(),
             jobId: 'add_numbers',
-            jobInputs: {
-                addend_1: {
-                    source: 'external',
-                    alias: 'num_alpha'
-                },
-                addend_2: {
-                    source: 'external',
-                    alias: 'num_beta'
-                }
+            inputBindings: {
+                addend_1: 'num_alpha',
+                addend_2: 'num_beta'
             },
             outputBindings: {
                 sum: 'sum_1'
@@ -184,15 +178,9 @@ const calculatorWorkflow_1: Workflow = {
         {
             id: uuidv4(),
             jobId: 'add_numbers',
-            jobInputs: {
-                addend_1: {
-                    source: 'internal',
-                    alias: 'sum_1'
-                },
-                addend_2: {
-                    source: 'external',
-                    alias: 'num_gamma'
-                }
+            inputBindings: {
+                addend_1: 'sum_1',
+                addend_2: 'num_gamma'
             },
             outputBindings: {
                 sum: 'sum_2'
@@ -202,15 +190,9 @@ const calculatorWorkflow_1: Workflow = {
         {
             id: uuidv4(),
             jobId: 'multiply_numbers',
-            jobInputs: {
-                multiplicand: {
-                    source: 'internal',
-                    alias: 'sum_2'
-                },
-                multiplier: {
-                    source: 'external',
-                    alias: 'num_delta'
-                }
+            inputBindings: {
+                multiplicand: 'sum_2',
+                multiplier: 'num_delta'
             },
             outputBindings: {
                 product: 'product'
@@ -259,16 +241,10 @@ const calculatorWorkflow_2: Workflow = {
         {
             id: uuidv4(),
             jobId: 'add_numbers',
-            jobInputs: {
-                // For the first iteration, since 'sum' does not exist internally, the workflow engine will fall back to requesting an external input.
-                addend_1: {
-                    source: 'internal',
-                    alias: 'sum'
-                },
-                addend_2: {
-                    source: 'external',
-                    alias: 'num_alpha'
-                }
+            inputBindings: {
+                // For the first iteration, since 'sum' does not exist in resourceMaps[0], the workflow engine will fall back to requesting an external input.
+                addend_1: 'sum',
+                addend_2: 'num_alpha'
             },
             outputBindings: {
                 sum: 'sum'
@@ -276,7 +252,7 @@ const calculatorWorkflow_2: Workflow = {
             whileLoopCondition: {
                 op: 'less_than',
                 left: 'sum',
-                right: 30
+                right: 50
             }
         }
     ]

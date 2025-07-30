@@ -2,11 +2,9 @@
 // ATTENTION_RONAK: This file contains TypeScript types and interfaces for defining workflows, jobs, and resources in a system. It is used to structure the data and ensure type safety across the application. You don't need to do anything here. I'm guiding you here just for your understanding.
 
 
-export type BaseResourceMap<T> = {
-    [key: string]: T;
+export type ResourceMap = {
+    [key: string]: { path: string, metadata: any }
 }
-
-export type WorkflowResourceMap = BaseResourceMap<{ path: string, metadata: any }>;
 
 export interface Identifiable {
     id: string;
@@ -47,12 +45,9 @@ export interface Job extends Concept {
     }[];
 }
 
-export interface JobInput {
-    source: 'internal' | 'external';
-    alias: string;
-}
-
-export type JobInputMap = BaseResourceMap<JobInput>;
+export type ResourceBindings = {
+    [role: string]: string;
+};
 
 export type Condition =
     | { op: 'equals'; left: string; right: any }
@@ -66,10 +61,8 @@ export type Condition =
 
 export interface WorkflowStep extends Identifiable {
     jobId: string; // The job that this step executes
-    jobInputs: JobInputMap; // Maps outputs from previous jobs to this job's inputs
-    outputBindings: {
-        [outputRole: string]: string;
-    };
+    inputBindings: ResourceBindings; // Maps outputs from previous jobs to this job's inputs
+    outputBindings: ResourceBindings; // Maps this job's outputs to the workflow's resource map
 
     // Optional control flow:
     branchingCondition?: Condition;
@@ -81,7 +74,7 @@ export interface Workflow extends Identifiable {
     steps: WorkflowStep[];
 }
 
-export interface WorkflowSpec<T extends WorkflowResourceMap = WorkflowResourceMap> {
+export interface WorkflowSpec<T extends ResourceMap = ResourceMap> {
     workflow: Workflow;
     // ATTENTION_RONAK: This is an array to allow for parallel workflow executions in the future. This way, one can specify several sets of inputs, and resourceMaps.length encodes the number of parallel executions. For now, we'll only use resourceMaps[0].
     resourceMaps: T[]; // All items must be the same type T

@@ -22,7 +22,7 @@ const calculatorWorkflowSpec_1b: WorkflowSpec = {
     resourceMaps: [
         {
             num_alpha: {
-                path: 'calculator/_inputs/num_5.json',
+                path: 'calculator/_inputs/num_6.json',
                 metadata: {}
             },
             num_beta: {
@@ -30,11 +30,23 @@ const calculatorWorkflowSpec_1b: WorkflowSpec = {
                 metadata: {}
             },
             num_gamma: {
-                path: 'calculator/_inputs/num_5.json',
+                path: 'calculator/_inputs/num_3.json',
                 metadata: {}
             },
             num_delta: {
-                path: 'calculator/_inputs/num_5.json',
+                path: 'calculator/_inputs/num_4.json',
+                metadata: {}
+            }
+        },
+    ],
+}
+
+const calculatorWorkflowSpec_2b: WorkflowSpec = {
+    ...calculatorWorkflowSpec_2,
+    resourceMaps: [
+        {
+            num_alpha: {
+                path: 'calculator/_inputs/num_9.json',
                 metadata: {}
             }
         },
@@ -59,7 +71,7 @@ export async function runRemoteGraph() {
                     delay: 1000,
                     drySocketMode: true,
                 },
-                workflowSpec: calculatorWorkflowSpec_2,
+                workflowSpec: calculatorWorkflowSpec_1b,
             }, {
                 configurable: { thread_id: thread.thread_id },
                 signal: controller.signal,
