@@ -23,33 +23,27 @@ export const adapterAutodockJobs: Map<string, Job> = new Map([
         syntacticSpec: {
             inputs: [
                 {
-                    type: RT('smiles'),
-                    role: RR('ligand')
+                    role: RR('ligand', RT('smiles'))
                 },
                 {
-                    type: RT('pdb'),
-                    role: RR('receptor')
+                    role: RR('receptor', RT('pdb'))
                 },
                 {
-                    type: RT('pdb'),
-                    role: RR('box')
+                    role: RR('box', RT('pdb'))
                 }
             ],
             outputs: [
                 {
-                    type: RT('pdbqt'),
-                    role: RR('ligand_docking'),
+                    role: RR('ligand_docking', RT('pdbqt')),
                     metadataSpec: {
                         score: 'number', // ATTENTION_RONAK: The job hereby specifies that its metadata object will contain the docking score represented as a number. NodeHigh will write this to GraphState so that it can be used in conditions in subsequent steps of the workflow.
                     }
                 },
                 {
-                    type: RT('sfd'),
-                    role: RR('ligand_pose')
+                    role: RR('ligand_pose', RT('sfd'))
                 },
                 {
-                    type: RT('pdb'),
-                    role: RR('receptor_pose')
+                    role: RR('receptor_pose', RT('pdb'))
                 }
             ]
         }

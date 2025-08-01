@@ -121,7 +121,9 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceType> {
  * Centralized registry for reusable semantic resource roles.
  * Resource roles define the purpose or function of a resource in a workflow.
  */
-class ResourceRoleRegistry extends BaseRegistry<ResourceRole> {
+type ResourceRoleWithoutType = Omit<ResourceRole, 'type'>;
+
+class ResourceRoleRegistry extends BaseRegistry<ResourceRoleWithoutType> {
     protected getItemTypeName(): string {
         return 'ResourceRole';
     }
@@ -133,14 +135,14 @@ class ResourceRoleRegistry extends BaseRegistry<ResourceRole> {
         name: string,
         description: string,
         embedding: number[] = [],
-    ): ResourceRole {
+    ): ResourceRoleWithoutType {
         if (this.items.has(name)) {
             return this.items.get(name)!;
         }
 
-        const resourceRole: ResourceRole = {
+        const resourceRole: ResourceRoleWithoutType = {
             id: uuidv4(),
-            name: name,
+            name,
             semanticSpec: {
                 description,
                 embedding
@@ -148,7 +150,6 @@ class ResourceRoleRegistry extends BaseRegistry<ResourceRole> {
         };
 
         this.items.set(name, resourceRole);
-
         return resourceRole;
     }
 
@@ -159,12 +160,12 @@ class ResourceRoleRegistry extends BaseRegistry<ResourceRole> {
         name: string;
         description?: string;
         embedding?: number[];
-    }>): ResourceRole[] {
+    }>): ResourceRoleWithoutType[] {
         return definitions.map(def =>
             this.define(
                 def.name,
                 def.description || 'dummy description',
-                def.embedding || [],
+                def.embedding || []
             )
         );
     }
@@ -176,7 +177,15 @@ const resourceRoleRegistry = new ResourceRoleRegistry();
 
 // Convenience functions for getting items
 const RT = (name: string) => resourceTypeRegistry.get(name);
-const RR = (name: string) => resourceRoleRegistry.get(name);
+const RR = (name: string, type: ResourceType): ResourceRole => {
+    const role = resourceRoleRegistry.get(name);
+
+    return {
+        ...role,
+        type, // ✅ inject the ResourceType here
+    };
+};
+
 
 // Pre-define common reusable resource types
 
@@ -196,20 +205,19 @@ resourceTypeRegistry.defineMany([
 // Pre-define common reusable resource roles
 
 // For calculator jobs
+
+// Define roles using that type
 resourceRoleRegistry.defineMany([
-    { name: 'addend_1', description: 'First number to be added in an addition operation' },
-    { name: 'addend_2', description: 'Second number to be added in an addition operation' },
-    { name: 'sum', description: 'The result of an addition operation' },
-    { name: 'minuend', description: 'The number from which another is subtracted' },
-    { name: 'subtrahend', description: 'The number to be subtracted' },
-    { name: 'difference', description: 'The result of a subtraction operation' },
-    { name: 'multiplicand', description: 'First number to be multiplied' },
-    { name: 'multiplier', description: 'Second number to be multiplied' },
-    { name: 'product', description: 'The result of a multiplication operation' },
-    { name: 'dividend', description: 'The number to be divided' },
-    { name: 'divisor', description: 'The number by which another is divided' },
-    { name: 'quotient', description: 'The result of a division operation' },
+    { name: 'addend_1', description: 'First number to be added' },
+    { name: 'addend_2', description: 'Second number to be added' },
+    { name: 'sum', description: 'Sum result' },
+    { name: 'minuend', description: 'Number to subtract from' },
+    { name: 'subtrahend', description: 'Number to subtract' },
+    { name: 'difference', description: 'Subtraction result' },
+    // etc...
 ]);
+
+
 
 // For adapter_autodock jobs
 resourceRoleRegistry.defineMany([

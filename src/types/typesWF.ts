@@ -32,10 +32,11 @@ export interface ResourceType extends Concept {
     }
 }
 
-export interface ResourceRole extends Concept { }
+export interface ResourceRole extends Concept {
+    type: ResourceType;
+}
 
 export interface ResourceSpec {
-    type: ResourceType;
     role: ResourceRole;
 }
 

@@ -1,5 +1,5 @@
 import { RT, RR } from './registries.js';
-import { Job, Workflow, WorkflowSpec } from '../types/typesWF.js';
+import { Job, Workflow, WorkflowSpec, ResourceSpec } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
 // ATTENTION_RONAK: In this module, jobs and workflows for calculator are hardcoded for demonstration purposes. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
@@ -9,6 +9,13 @@ import { v4 as uuidv4 } from 'uuid';
 const prefixCloudRun = 'https://calculator-384484325421.europe-west2.run.app/';
 const prefixKubernetes = 'http://34.88.173.92';
 const prefix = prefixKubernetes;
+
+
+const testInput: ResourceSpec = {
+    role: RR('addend_1', RT('number')),
+};
+
+const testType = testInput.role.type;
 
 export const calculatorJobs: Map<string, Job> = new Map([
     ['add_numbers', {
@@ -22,18 +29,15 @@ export const calculatorJobs: Map<string, Job> = new Map([
         syntacticSpec: {
             inputs: [
                 {
-                    type: RT('number'),
-                    role: RR('addend_1')
+                    role: RR('addend_1', RT('number')),
                 },
                 {
-                    type: RT('number'),
-                    role: RR('addend_2')
+                    role: RR('addend_2', RT('number')),
                 }
             ],
             outputs: [
                 {
-                    type: RT('number'),
-                    role: RR('sum'),
+                    role: RR('sum', RT('number')),
                     // ATTENTION_RONAK: The job hereby specifies that its metadata object will contain the result of the addition represented as a number. NodeHigh will write this to GraphState so that it can be used in conditions in subsequent steps of the workflow. For example, you can use this to check if the result is greater than a certain value and then decide whether to proceed with the next step or not.
                     metadataSpec: {
                         result: 'number',
@@ -53,18 +57,15 @@ export const calculatorJobs: Map<string, Job> = new Map([
         syntacticSpec: {
             inputs: [
                 {
-                    type: RT('number'),
-                    role: RR('minuend')
+                    role: RR('minuend', RT('number'))
                 },
                 {
-                    type: RT('number'),
-                    role: RR('subtrahend')
+                    role: RR('subtrahend', RT('number'))
                 }
             ],
             outputs: [
                 {
-                    type: RT('number'),
-                    role: RR('difference'),
+                    role: RR('difference', RT('number')),
                     metadataSpec: {
                         result: 'number',
                     }
@@ -83,18 +84,15 @@ export const calculatorJobs: Map<string, Job> = new Map([
         syntacticSpec: {
             inputs: [
                 {
-                    type: RT('number'),
-                    role: RR('multiplicand')
+                    role: RR('multiplicand', RT('number'))
                 },
                 {
-                    type: RT('number'),
-                    role: RR('multiplier')
+                    role: RR('multiplier', RT('number'))
                 }
             ],
             outputs: [
                 {
-                    type: RT('number'),
-                    role: RR('product'),
+                    role: RR('product', RT('number')),
                     metadataSpec: {
                         result: 'number',
                     }
@@ -113,18 +111,15 @@ export const calculatorJobs: Map<string, Job> = new Map([
         syntacticSpec: {
             inputs: [
                 {
-                    type: RT('number'),
-                    role: RR('dividend')
+                    role: RR('dividend', RT('number'))
                 },
                 {
-                    type: RT('number'),
-                    role: RR('divisor')
+                    role: RR('divisor', RT('number'))
                 }
             ], // ATTENTION: division by zero
             outputs: [
                 {
-                    type: RT('number'),
-                    role: RR('quotient'),
+                    role: RR('quotient', RT('number')),
                     metadataSpec: {
                         result: 'number',
                     }
