@@ -6,7 +6,7 @@ export interface Metadata {
 }
 
 export interface MetadataSpec {
-    [key: string]: string;
+    [key: string]: 'number' | 'string' | 'boolean'; // Defines the expected types of metadata
 }
 
 export interface ResourceMap {
