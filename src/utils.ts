@@ -27,8 +27,8 @@ export function validateWorkflow(availableJobs: Job[], workflow: Workflow): Vali
             return;
         }
 
-        const inputRoles = new Set(job.syntacticSpec.inputs.map(i => i.role.name));
-        const outputRoles = new Set(job.syntacticSpec.outputs.map(o => o.role.name));
+        const inputRoles = new Set(job.resources.inputs.map(i => i.role.name));
+        const outputRoles = new Set(job.resources.outputs.map(o => o.role.name));
 
         // Validate input bindings
         for (const [inputRole, sourceOutput] of Object.entries(step.inputBindings)) {

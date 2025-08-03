@@ -60,7 +60,7 @@ export class NodeHigh extends NodeBase {
 
             let payload: { [key: string]: string } = {};
 
-            job.syntacticSpec.inputs.forEach((input) => {
+            job.resources.inputs.forEach((input) => {
                 const matchingInput = inputBindings[input.role.name];
                 if (matchingInput) {
 
