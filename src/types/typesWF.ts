@@ -32,7 +32,6 @@ export type ResourceRoleName = 'addend_1' | 'addend_2' | 'sum' | 'minuend' | 'su
 export interface ResourceType extends Concept<ResourceTypeName> {
     format: ResourceFormat;
     schema?: string; // URL to schema definition
-    extractedDataSpec?: ExtractedDataSpec; // Type of extracted data
     validator?: string; // URL to validator job
     extractor?: string; // URL to extractor job
 }

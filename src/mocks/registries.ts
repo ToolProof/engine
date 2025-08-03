@@ -63,8 +63,7 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceTypeName, ResourceType> 
         name: ResourceTypeName,
         description: string,
         format: ResourceFormat = 'json',
-        schema: string,
-        metadataSpec: ExtractedDataSpec,
+        schema: string = 'default-schema',
         validator: string = 'default-validator',
         extractor: string = 'default-extractor'
     ): ResourceType {
@@ -78,7 +77,6 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceTypeName, ResourceType> 
             description,
             format,
             schema,
-            extractedDataSpec: metadataSpec,
             validator,
             extractor
         };
@@ -96,7 +94,6 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceTypeName, ResourceType> 
         description: string;
         format?: ResourceFormat;
         schema?: string;
-        extractedDataSpec?: ExtractedDataSpec;
         validator?: string;
         extractor?: string;
     }>): ResourceType[] {
@@ -106,7 +103,6 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceTypeName, ResourceType> 
                 def.description,
                 def.format || 'json',
                 def.schema || 'default-schema',
-                def.extractedDataSpec || {},
                 def.validator || 'default-validator',
                 def.extractor || 'default-extractor'
             )
@@ -195,7 +191,6 @@ resourceTypeRegistry.defineMany([
         description: 'A numeric value.',
         format: 'json',
         schema: 'default-schema',
-        extractedDataSpec: {},
         validator: 'default-validator',
         extractor: 'default-extractor'
     },
@@ -208,7 +203,6 @@ resourceTypeRegistry.defineMany([
         description: 'SMILES representation of a molecule.',
         format: 'txt',
         schema: 'default-schema',
-        extractedDataSpec: {},
         validator: 'default-validator',
         extractor: 'default-extractor'
     },
@@ -217,7 +211,6 @@ resourceTypeRegistry.defineMany([
         description: 'PDB representation of a molecule.',
         format: 'pdb',
         schema: 'default-schema',
-        extractedDataSpec: {},
         validator: 'default-validator',
         extractor: 'default-extractor'
     },
@@ -226,7 +219,6 @@ resourceTypeRegistry.defineMany([
         description: 'PDBQT representation of a molecule.',
         format: 'pdbqt',
         schema: 'default-schema',
-        extractedDataSpec: {},
         validator: 'default-validator',
         extractor: 'default-extractor'
     },
@@ -235,7 +227,6 @@ resourceTypeRegistry.defineMany([
         description: 'SDF representation of a molecule.',
         format: 'sdf',
         schema: 'default-schema',
-        extractedDataSpec: {},
         validator: 'default-validator',
         extractor: 'default-extractor'
     }
