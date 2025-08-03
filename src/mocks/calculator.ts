@@ -174,7 +174,7 @@ const calculatorWorkflow_2: Workflow = {
             whileLoopCondition: {
                 op: 'less_than',
                 resource: 'sum',
-                variable: 'result',
+                variable: 'value',
                 value: 50
             }
         }

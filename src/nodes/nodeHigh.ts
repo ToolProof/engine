@@ -113,7 +113,7 @@ export class NodeHigh extends NodeBase {
 
                     // Call the extractor URL with output.path
                     const response = await axios.post(extractorUrl, {
-                        path: output.path
+                        resourcePath: output.path
                     });
                     const extractedData = response.data;
                     // Merge the extracted data with the output
