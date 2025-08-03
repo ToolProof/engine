@@ -1,7 +1,7 @@
 import { calculatorJobs } from '../mocks/calculator.js';
 import { adapterAutodockJobs } from '../mocks/adapter_autodock.js';
 import { NodeBase, GraphState } from '../types/typesLG.js';
-import { ResourceMap } from '../types/typesWF.js';
+import { ExtractedData, ResourceMap } from '../types/typesWF.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import axios from 'axios';
@@ -61,20 +61,20 @@ export class NodeHigh extends NodeBase {
             let payload: { [key: string]: string } = {};
 
             job.resources.inputs.forEach((input) => {
-                const matchingInput = inputBindings[input.role.name];
+                const matchingInput = inputBindings[input.name];
                 if (matchingInput) {
 
                     if (state.workflowSpec.resourceMaps[0][matchingInput]) {
-                        payload[input.role.name] = state.workflowSpec.resourceMaps[0][matchingInput].path;
+                        payload[input.name] = state.workflowSpec.resourceMaps[0][matchingInput].path;
                     } else {
-                        payload[input.role.name] = 'calculator/_inputs/num_1.json'; // ATTENTION_RONAK_#: For now, we use this as a placeholder. Later, the workflow engine will request an external input if the input is not found in resourceMaps[0].
+                        payload[input.name] = 'calculator/_inputs/num_1.json'; // ATTENTION_RONAK_#: For now, we use this as a placeholder. Later, the workflow engine will request an external input if the input is not found in resourceMaps[0].
                     }
                 }
             });
 
             console.log('payload:', JSON.stringify(payload, null, 2));
 
-            const foo = async (url: string): Promise<{ [key: string]: { path: string, metadata: any } }> => {
+            const foo = async (url: string): Promise<{ [key: string]: { path: string, extractedData?: ExtractedData } }> => {
 
                 const response = await axios.post(
                     url,
@@ -96,10 +96,42 @@ export class NodeHigh extends NodeBase {
 
             const outputs = await foo(job.url);
 
+
+            // Here, for each output we must invoke the respective ResourceType's extractor job
+            await Promise.all(Object.entries(outputs).map(async ([outputRole, output]) => {
+                // Find the ResourceRole that matches the outputRole string
+                const resourceRole = job.resources.outputs.find(output => output.name === outputRole);
+
+                if (resourceRole) {
+                    const extractorUrl = resourceRole.type.extractor;
+                    console.log('Extractor URL:', extractorUrl);
+
+                    if (!extractorUrl) {
+                        console.error(`Extractor URL for output role '${outputRole}' is not defined`);
+                        return;
+                    }
+
+                    // Call the extractor URL with output.path
+                    const response = await axios.post(extractorUrl, {
+                        path: output.path
+                    });
+                    const extractedData = response.data;
+                    // Merge the extracted data with the output
+                    outputs[outputRole] = {
+                        ...output,
+                        extractedData: extractedData as ExtractedData
+                    };
+                } else {
+                    console.error(`Output role '${outputRole}' not found in job outputs`);
+                }
+            }));
+
+            // Now outputs has the extractedData property added
+
             const outputBindings = workflowStep.outputBindings;
 
             // Create new entries for resourceMaps[0] based on outputBindings
-            const newResourceMapEntries: ResourceMap = {};
+            const newResourceMapEntries: ResourceMap<string> = {};
 
             // Map job output roles to bound keys using the result paths
             // ATTENTION: This is vulnerable if outputBindings are not specified. Should default to original output role names.

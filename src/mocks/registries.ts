@@ -1,4 +1,4 @@
-import { ResourceFormat, ResourceTypeName, ResourceRoleName, ResourceType, ResourceRole, ExtractedDataSpec, Concept } from '../types/typesWF.js';
+import { ResourceFormat, ResourceTypeName, ResourceRoleName, ResourceType, ResourceRole, Concept } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -192,7 +192,7 @@ resourceTypeRegistry.defineMany([
         format: 'json',
         schema: 'default-schema',
         validator: 'default-validator',
-        extractor: 'default-extractor'
+        extractor: 'https://number-384484325421.europe-west2.run.app/extractor'
     },
 ]);
 
