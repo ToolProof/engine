@@ -1,4 +1,4 @@
-import { ResourceFormat, ResourceTypeName, ResourceRoleName, ResourceType, ResourceRole, Concept } from '../types/typesWF.js';
+import { ResourceFormat, ResourceRoleName, ResourceType, ResourceRole, Concept } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -189,12 +189,12 @@ export const resourceTypesCalculator = [
     {
         name: 'number',
         description: 'A number resource type.',
-        format: 'json',
+        format: 'json' as ResourceFormat,
         schemaUrl: 'default-schemaUrl',
         validatorUrl: 'default-validatorUrl',
         extractorUrl: 'default-extractorUrl'
     }
-] satisfies Omit<ResourceType, 'id'>[];
+];
 
 type CalculatorResourceTypeName = typeof resourceTypesCalculator[number]['name'];
 
@@ -205,7 +205,7 @@ export const resourceTypesAutodockAdapter = [
     {
         name: 'smiles',
         description: 'SMILES representation of a molecule.',
-        format: 'txt',
+        format: 'txt' as ResourceFormat,
         schemaUrl: 'default-schemaUrl',
         validatorUrl: 'default-validatorUrl',
         extractorUrl: 'default-extractorUrl'
@@ -213,7 +213,7 @@ export const resourceTypesAutodockAdapter = [
     {
         name: 'pdb',
         description: 'PDB representation of a molecule.',
-        format: 'pdb',
+        format: 'pdb' as ResourceFormat,
         schemaUrl: 'default-schemaUrl',
         validatorUrl: 'default-validatorUrl',
         extractorUrl: 'default-extractorUrl'
@@ -221,7 +221,7 @@ export const resourceTypesAutodockAdapter = [
     {
         name: 'pdbqt_autodock',
         description: 'PDBQT representation of a molecule.',
-        format: 'pdbqt',
+        format: 'pdbqt' as ResourceFormat,
         schemaUrl: 'default-schemaUrl',
         validatorUrl: 'default-validatorUrl',
         extractorUrl: 'default-extractorUrl'
@@ -229,18 +229,18 @@ export const resourceTypesAutodockAdapter = [
     {
         name: 'sdf',
         description: 'SDF representation of a molecule.',
-        format: 'sdf',
+        format: 'sdf' as ResourceFormat,
         schemaUrl: 'default-schemaUrl',
         validatorUrl: 'default-validatorUrl',
         extractorUrl: 'default-extractorUrl'
     }
-] satisfies Omit<ResourceType, 'id'>[];
+];
 
 type AutodockAdapterResourceTypeName = typeof resourceTypesAutodockAdapter[number]['name'];
 
 resourceTypeRegistry.defineMany(resourceTypesAutodockAdapter);
 
-// export type ResourceTypeName = CalculatorResourceTypeName | AutodockAdapterResourceTypeName;
+export type ResourceTypeName = CalculatorResourceTypeName | AutodockAdapterResourceTypeName;
 
 // Pre-define common reusable resources
 

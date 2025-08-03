@@ -1,4 +1,4 @@
-// import { ResourceTypeName } from 'src/mocks/registries';
+import { ResourceTypeName } from 'src/mocks/registries';
 // This file contains TypeScript types and interfaces for defining workflows, jobs, and resources.
 
 export interface Identifiable {
@@ -11,8 +11,6 @@ export interface Concept<T extends string> extends Identifiable {
 }
 
 export type ResourceFormat = 'json' | 'txt' | 'pdb' | 'pdbqt' | 'sdf';
-
-export type ResourceTypeName = 'number' | 'smiles' | 'pdb' | 'pdbqt_autodock' | 'sdf';
 
 export type ResourceRoleName = 'addend_1' | 'addend_2' | 'sum' | 'minuend' | 'subtrahend' | 'difference' | 'multiplicand' | 'multiplier' | 'product' | 'divisor' | 'dividend' | 'quotient' |
     'ligand' | 'receptor' | 'box' | 'ligand_docking' | 'ligand_pose' | 'receptor_pose';
