@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Choose where to run the jobs
 const prefixCloudRun = 'https://calculator-384484325421.europe-west2.run.app/';
-const prefixKubernetes = 'http://34.88.173.92'; // ATTENTION: extra /
+const prefixKubernetes = 'http://34.88.173.92/';
 const prefix = prefixCloudRun;
 
 
@@ -20,7 +20,7 @@ export const calculatorJobs: Map<string, Job> = new Map([
         id: 'add_numbers',
         name: 'add_numbers',
         description: 'Add two numbers together.',
-        url: `${prefix}/add_numbers`,
+        url: `${prefix}add_numbers`,
         resources: {
             inputs: [
                 RR('addend_1', RT('number')),

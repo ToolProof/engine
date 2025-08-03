@@ -16,7 +16,7 @@ export const adapterAutodockJobs: Map<string, Job> = new Map([
         id: 'basic_docking',
         name: 'basic_docking',
         description: 'Perform basic docking.',
-        url: `${prefix}/basic_docking`,
+        url: `${prefix}basic_docking`,
         resources: {
             inputs: [
                 RR('ligand', RT('smiles')),
