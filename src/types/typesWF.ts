@@ -1,3 +1,4 @@
+
 // This file contains TypeScript types and interfaces for defining workflows, jobs, and resources in a system.
 
 
@@ -14,8 +15,8 @@ export interface Concept<T extends string> extends Identifiable {
     description: string; // ATTENTION: SemanticString?
 }
 
-export type ResourceMap<V extends string> = {
-    [K in V]?: { path: string, extractedData?: ExtractedData };
+export interface ResourceMap {
+    [key: string]: { path: string, extractedData?: ExtractedData };
 }
 
 export type ResourceFormat = 'json' | 'txt' | 'pdb' | 'pdbqt' | 'sdf';
@@ -110,6 +111,6 @@ export interface Workflow extends Identifiable {
 export interface WorkflowSpec {
     workflow: Workflow;
     // ATTENTION_RONAK: This is an array to allow for parallel workflow executions in the future. This way, one can specify several sets of inputs, and resourceMaps.length encodes the number of parallel executions. For now, we'll only use resourceMaps[0].
-    resourceMaps: ResourceMap<string>[]; // ATTENTION: For the same Workflow, all items must be the same type
+    resourceMaps: ResourceMap[]; // ATTENTION: For the same Workflow, all items must be the same type
     counter: number; // ATTENTION: hack for simplified, sequential workflows
 }

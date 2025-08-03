@@ -131,7 +131,7 @@ export class NodeHigh extends NodeBase {
             const outputBindings = workflowStep.outputBindings;
 
             // Create new entries for resourceMaps[0] based on outputBindings
-            const newResourceMapEntries: ResourceMap<string> = {};
+            const newResourceMapEntries: ResourceMap = {};
 
             // Map job output roles to bound keys using the result paths
             // ATTENTION: This is vulnerable if outputBindings are not specified. Should default to original output role names.
