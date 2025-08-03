@@ -1,15 +1,12 @@
-// ATTENTION_RONAK: This file contains TypeScript types and interfaces for defining workflows, jobs, and resources in a system. It is used to structure the data and ensure type safety across the application. You don't need to do anything here. I'm guiding you here just for your understanding.
+// This file contains TypeScript types and interfaces for defining workflows, jobs, and resources in a system.
 
 
-
-
-
-export interface Metadata {
+export interface ExtractedData {
     [key: string]: number | string | boolean;
 }
 
-export interface MetadataSpec {
-    [key: string]: 'number' | 'string' | 'boolean'; // Defines the expected types of metadata
+export interface ExtractedDataSpec {
+    [key: string]: 'number' | 'string' | 'boolean';
 }
 
 export interface Identifiable {
@@ -22,27 +19,33 @@ export interface Concept<T extends string> extends Identifiable {
 }
 
 export type ResourceMap<V extends string> = {
-    [K in V]?: { path: string, metadata?: Metadata };
+    [K in V]?: { path: string, extractedData?: ExtractedData };
 }
 
-export interface ResourceType extends Concept<string> {
-    validator: string; // ATTENTION: Represents a special type of Job
+export type ResourceFormat = 'json' | 'txt' | 'pdb' | 'pdbqt' | 'sdf';
+
+export type ResourceTypeName = 'number' | 'pdb' | 'pdbqt_autodock' | 'sdf' | 'smiles';
+
+export type ResourceRoleName = 'addend_1' | 'addend_2' | 'sum' | 'minuend' | 'subtrahend' | 'difference' | 'multiplicand' | 'multiplier' | 'product' | 'divisor' | 'dividend' | 'quotient' |
+    'ligand' | 'receptor' | 'box' | 'ligand_docking' | 'ligand_pose' | 'receptor_pose';
+
+export interface ResourceType extends Concept<ResourceTypeName> {
+    format: ResourceFormat;
+    schema?: string; // URL to schema definition
+    extractedDataSpec?: ExtractedDataSpec; // Type of extracted data
+    validator?: string; // URL to validator job
+    extractor?: string; // URL to extractor job
 }
 
-export interface ResourceRole extends Concept<string> {
+export interface ResourceRole extends Concept<ResourceRoleName> {
     type: ResourceType;
-}
-
-export interface Resource {
-    role: ResourceRole;
 }
 
 export interface Job extends Concept<string> {
     url: string;
     resources: {
-        inputs: Resource[];
-        // ATTENTION_RONAK: Note how a job must specify the metadata it produces per output. This is so that the workflow validator can ensure that conditions that are specified only refer to metadata that is produced by previous jobs. In adapterAutodockWorkflow_1, the validator can check that the 'score' metadata is produced by the 'basic_docking' job before it is used in the conditional step.
-        outputs: (Resource & { metadataSpec?: MetadataSpec })[];
+        inputs: ResourceRole[];
+        outputs: ResourceRole[];
     }
 }
 
@@ -109,9 +112,9 @@ export interface Workflow extends Identifiable {
     steps: WorkflowStep[];
 }
 
-export interface WorkflowSpec<V extends string> {
+export interface WorkflowSpec {
     workflow: Workflow;
     // ATTENTION_RONAK: This is an array to allow for parallel workflow executions in the future. This way, one can specify several sets of inputs, and resourceMaps.length encodes the number of parallel executions. For now, we'll only use resourceMaps[0].
-    resourceMaps: ResourceMap<V>[]; // For the same Workflow, all items must be the same type V
+    resourceMaps: ResourceMap<string>[]; // ATTENTION: For the same Workflow, all items must be the same type
     counter: number; // ATTENTION: hack for simplified, sequential workflows
 }

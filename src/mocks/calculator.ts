@@ -1,5 +1,5 @@
 import { RT, RR } from './registries.js';
-import { Job, Workflow, WorkflowSpec, Resource } from '../types/typesWF.js';
+import { Job, Workflow, WorkflowSpec, ResourceRole } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
 // ATTENTION_RONAK: In this module, jobs and workflows for calculator are hardcoded for demonstration purposes. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
@@ -11,121 +11,70 @@ const prefixKubernetes = 'http://34.88.173.92';
 const prefix = prefixKubernetes;
 
 
-const testInput: Resource = {
-    role: RR('addend_1', RT('number')),
-};
+const testInput: ResourceRole = RR('addend_1', RT('number'));
 
-const testType = testInput.role.type;
+const testType = testInput.type;
 
 export const calculatorJobs: Map<string, Job> = new Map([
     ['add_numbers', {
         id: 'add_numbers',
         name: 'add_numbers',
+        description: 'Add two numbers together.',
         url: `${prefix}/add_numbers`,
-        semanticSpec: {
-            description: 'Add two numbers together.',
-            embedding: []
-        },
-        syntacticSpec: {
+        resources: {
             inputs: [
-                {
-                    role: RR('addend_1', RT('number')),
-                },
-                {
-                    role: RR('addend_2', RT('number')),
-                }
+                RR('addend_1', RT('number')),
+                RR('addend_2', RT('number'))
             ],
             outputs: [
-                {
-                    role: RR('sum', RT('number')),
-                    // ATTENTION_RONAK: The job hereby specifies that its metadata object will contain the result of the addition represented as a number. NodeHigh will write this to GraphState so that it can be used in conditions in subsequent steps of the workflow. For example, you can use this to check if the result is greater than a certain value and then decide whether to proceed with the next step or not.
-                    metadataSpec: {
-                        result: 'number',
-                    }
-                }
+                RR('sum', RT('number')),
             ]
         },
     }],
     ['subtract_numbers', {
         id: 'subtract_numbers',
         name: 'subtract_numbers',
+        description: 'Subtract one number from another.',
         url: `${prefix}/subtract_numbers`,
-        semanticSpec: {
-            description: 'Subtract one number from another.',
-            embedding: []
-        },
-        syntacticSpec: {
+        resources: {
             inputs: [
-                {
-                    role: RR('minuend', RT('number'))
-                },
-                {
-                    role: RR('subtrahend', RT('number'))
-                }
+                RR('minuend', RT('number')),
+                RR('subtrahend', RT('number'))
             ],
             outputs: [
-                {
-                    role: RR('difference', RT('number')),
-                    metadataSpec: {
-                        result: 'number',
-                    }
-                }
+                RR('difference', RT('number')),
             ]
         },
     }],
     ['multiply_numbers', {
         id: 'multiply_numbers',
         name: 'multiply_numbers',
+        description: 'Multiply two numbers together.',
         url: `${prefix}/multiply_numbers`,
-        semanticSpec: {
-            description: 'Multiply two numbers together.',
-            embedding: []
-        },
-        syntacticSpec: {
+        resources: {
             inputs: [
-                {
-                    role: RR('multiplicand', RT('number'))
-                },
-                {
-                    role: RR('multiplier', RT('number'))
-                }
+                RR('multiplicand', RT('number')),
+                RR('multiplier', RT('number'))
             ],
             outputs: [
-                {
-                    role: RR('product', RT('number')),
-                    metadataSpec: {
-                        result: 'number',
-                    }
-                }
+                RR('product', RT('number')),
             ]
-        }
+        },
     }],
     ['divide_numbers', {
         id: 'divide_numbers',
         name: 'divide_numbers',
+        description: 'Divide one number by another.',
         url: `${prefix}/divide_numbers`,
-        semanticSpec: {
-            description: 'Divide one number by another.',
-            embedding: []
-        },
-        syntacticSpec: {
+        resources: {
             inputs: [
-                {
-                    role: RR('dividend', RT('number'))
-                },
-                {
-                    role: RR('divisor', RT('number'))
-                }
-            ], // ATTENTION: division by zero
+                RR('dividend', RT('number')),
+                RR('divisor', RT('number'))
+            ],
             outputs: [
-                {
-                    role: RR('quotient', RT('number')),
-                    metadataSpec: {
-                        result: 'number',
-                    }
-                }
+                RR('quotient', RT('number')),
             ]
-        }
+        },
     }]
 ])
 
@@ -187,19 +136,19 @@ export const calculatorWorkflowSpec_1: WorkflowSpec = {
         {
             num_alpha: {
                 path: 'calculator/_inputs/num_1.json',
-                metadata: {}
+                extractedData: {}
             },
             num_beta: {
                 path: 'calculator/_inputs/num_2.json',
-                metadata: {}
+                extractedData: {}
             },
             num_gamma: {
                 path: 'calculator/_inputs/num_4.json',
-                metadata: {}
+                extractedData: {}
             },
             num_delta: {
                 path: 'calculator/_inputs/num_5.json',
-                metadata: {}
+                extractedData: {}
             }
         },
     ],
@@ -240,7 +189,7 @@ export const calculatorWorkflowSpec_2: WorkflowSpec = {
         {
             num_alpha: {
                 path: 'calculator/_inputs/num_6.json',
-                metadata: {}
+                extractedData: {}
             }
         },
     ],

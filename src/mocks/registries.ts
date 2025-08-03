@@ -1,4 +1,4 @@
-import { ResourceType, ResourceRole, Concept } from '../types/typesWF.js';
+import { ResourceFormat, ResourceTypeName, ResourceRoleName, ResourceType, ResourceRole, ExtractedDataSpec, Concept } from '../types/typesWF.js';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -7,16 +7,16 @@ import { v4 as uuidv4 } from 'uuid';
 /**
  * Base registry class for managing concepts with common functionality
  */
-abstract class BaseRegistry<T extends Concept> {
-    protected items = new Map<string, T>();
+abstract class BaseRegistry<T extends string, C extends Concept<T>> {
+    protected items = new Map<T, C>();
 
     /**
-     * Get an item by display name
+     * Get an item by name
      */
-    get(name: string): T {
+    get(name: T): C {
         const item = this.items.get(name);
         if (!item) {
-            throw new Error(`${this.getItemTypeName()} '${name}' not found in registry. Did you forget to define it?`);
+            throw new Error(`${this.getSubClassName()} '${name}' not found in registry. Did you forget to define it?`);
         }
         return item;
     }
@@ -24,35 +24,35 @@ abstract class BaseRegistry<T extends Concept> {
     /**
      * Check if an item exists
      */
-    has(name: string): boolean {
+    has(name: T): boolean {
         return this.items.has(name);
     }
 
     /**
      * Get all items
      */
-    getAll(): T[] {
+    getAll(): C[] {
         return Array.from(this.items.values());
     }
 
     /**
      * Find items by partial name match
      */
-    findByName(partialName: string): T[] {
+    findByName(partialName: string): C[] {
         return this.getAll().filter(item =>
             item.name.toLowerCase().includes(partialName.toLowerCase())
         );
     }
 
-    protected abstract getItemTypeName(): string;
+    protected abstract getSubClassName(): string;
 }
 
 /**
- * Centralized registry for reusable semantic resource types.
+ * Centralized registry for resource types.
  * Resource types are defined once and reused across all jobs and workflows.
  */
-class ResourceTypeRegistry extends BaseRegistry<ResourceType> {
-    protected getItemTypeName(): string {
+class ResourceTypeRegistry extends BaseRegistry<ResourceTypeName, ResourceType> {
+    protected getSubClassName(): string {
         return 'ResourceType';
     }
 
@@ -60,11 +60,13 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceType> {
      * Define a new resource type in the registry
      */
     define(
-        name: string,
+        name: ResourceTypeName,
         description: string,
-        embedding: number[] = [],
-        format: string = 'json',
-        schema: object | null = null,
+        format: ResourceFormat = 'json',
+        schema: string,
+        metadataSpec: ExtractedDataSpec,
+        validator: string = 'default-validator',
+        extractor: string = 'default-extractor'
     ): ResourceType {
         if (this.items.has(name)) {
             return this.items.get(name)!;
@@ -72,15 +74,13 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceType> {
 
         const resourceType: ResourceType = {
             id: uuidv4(),
-            name: name,
-            semanticSpec: {
-                description,
-                embedding
-            },
-            syntacticSpec: {
-                format,
-                schema
-            }
+            name,
+            description,
+            format,
+            schema,
+            extractedDataSpec: metadataSpec,
+            validator,
+            extractor
         };
 
         this.items.set(name, resourceType);
@@ -89,83 +89,82 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceType> {
     }
 
     /**
-     * Find resource types by format
-     */
-    findByFormat(format: string): ResourceType[] {
-        return this.getAll().filter(resourceType => resourceType.syntacticSpec.format === format);
-    }
-
-    /**
      * Bulk define resource types with a fluent API
      */
     defineMany(definitions: Array<{
-        name: string;
-        description?: string;
-        embedding?: number[];
-        format?: string;
-        schema?: object | null;
+        name: ResourceTypeName;
+        description: string;
+        format?: ResourceFormat;
+        schema?: string;
+        extractedDataSpec?: ExtractedDataSpec;
+        validator?: string;
+        extractor?: string;
     }>): ResourceType[] {
         return definitions.map(def =>
             this.define(
                 def.name,
-                def.description || 'dummy description',
-                def.embedding || [],
+                def.description,
                 def.format || 'json',
-                def.schema || null,
+                def.schema || 'default-schema',
+                def.extractedDataSpec || {},
+                def.validator || 'default-validator',
+                def.extractor || 'default-extractor'
             )
         );
     }
+
+    /**
+     * Find resource types by format
+     */
+    findByFormat(format: string): ResourceType[] {
+        return this.getAll().filter(resourceType => resourceType.format === format);
+    }
+
 }
 
 /**
- * Centralized registry for reusable semantic resource roles.
- * Resource roles define the purpose or function of a resource in a workflow.
+ * Centralized registry for reusable resources.
+ * Resources define the purpose or function of a resource in a workflow.
  */
 type ResourceRoleWithoutType = Omit<ResourceRole, 'type'>;
 
-class ResourceRoleRegistry extends BaseRegistry<ResourceRoleWithoutType> {
-    protected getItemTypeName(): string {
+class ResourceRoleRegistry extends BaseRegistry<ResourceRoleName, ResourceRoleWithoutType> {
+    protected getSubClassName(): string {
         return 'ResourceRole';
     }
 
     /**
-     * Define a new resource role in the registry
+     * Define a new resource in the registry
      */
     define(
-        name: string,
+        name: ResourceRoleName,
         description: string,
-        embedding: number[] = [],
     ): ResourceRoleWithoutType {
         if (this.items.has(name)) {
             return this.items.get(name)!;
         }
 
-        const resourceRole: ResourceRoleWithoutType = {
+        const resource: ResourceRoleWithoutType = {
             id: uuidv4(),
             name,
-            semanticSpec: {
-                description,
-                embedding
-            }
+            description,
         };
 
-        this.items.set(name, resourceRole);
-        return resourceRole;
+        this.items.set(name, resource);
+        return resource;
     }
 
     /**
-     * Bulk define resource roles with a fluent API
+     * Bulk define resources with a fluent API
      */
     defineMany(definitions: Array<{
-        name: string;
-        description?: string;
-        embedding?: number[];
+        name: ResourceRoleName;
+        description: string;
     }>): ResourceRoleWithoutType[] {
         return definitions.map(def =>
             this.define(
                 def.name,
-                def.description || 'dummy description',
-                def.embedding || []
+                def.description
             )
         );
     }
@@ -176,12 +175,12 @@ const resourceTypeRegistry = new ResourceTypeRegistry();
 const resourceRoleRegistry = new ResourceRoleRegistry();
 
 // Convenience functions for getting items
-const RT = (name: string) => resourceTypeRegistry.get(name);
-const RR = (name: string, type: ResourceType): ResourceRole => {
-    const role = resourceRoleRegistry.get(name);
+const RT = (name: ResourceTypeName) => resourceTypeRegistry.get(name);
+const RR = (name: ResourceRoleName, type: ResourceType): ResourceRole => {
+    const resource = resourceRoleRegistry.get(name);
 
     return {
-        ...role,
+        ...resource,
         type, // ✅ inject the ResourceType here
     };
 };
@@ -191,42 +190,137 @@ const RR = (name: string, type: ResourceType): ResourceRole => {
 
 // For calculator jobs
 resourceTypeRegistry.defineMany([
-    { name: 'number' }
+    {
+        name: 'number',
+        description: 'A numeric value.',
+        format: 'json',
+        schema: 'default-schema',
+        extractedDataSpec: {},
+        validator: 'default-validator',
+        extractor: 'default-extractor'
+    },
 ]);
 
 // For adapter_autodock jobs
 resourceTypeRegistry.defineMany([
-    { name: 'smiles' },
-    { name: 'pdb' },
-    { name: 'pdbqt' },
-    { name: 'sfd' }
+    {
+        name: 'smiles',
+        description: 'SMILES representation of a molecule.',
+        format: 'txt',
+        schema: 'default-schema',
+        extractedDataSpec: {},
+        validator: 'default-validator',
+        extractor: 'default-extractor'
+    },
+    {
+        name: 'pdb',
+        description: 'PDB representation of a molecule.',
+        format: 'pdb',
+        schema: 'default-schema',
+        extractedDataSpec: {},
+        validator: 'default-validator',
+        extractor: 'default-extractor'
+    },
+    {
+        name: 'pdbqt_autodock',
+        description: 'PDBQT representation of a molecule.',
+        format: 'pdbqt',
+        schema: 'default-schema',
+        extractedDataSpec: {},
+        validator: 'default-validator',
+        extractor: 'default-extractor'
+    },
+    {
+        name: 'sdf',
+        description: 'SDF representation of a molecule.',
+        format: 'sdf',
+        schema: 'default-schema',
+        extractedDataSpec: {},
+        validator: 'default-validator',
+        extractor: 'default-extractor'
+    }
 ]);
 
-// Pre-define common reusable resource roles
+// Pre-define common reusable resources
 
 // For calculator jobs
-
-// Define roles using that type
 resourceRoleRegistry.defineMany([
-    { name: 'addend_1', description: 'First number to be added' },
-    { name: 'addend_2', description: 'Second number to be added' },
-    { name: 'sum', description: 'Sum result' },
-    { name: 'minuend', description: 'Number to subtract from' },
-    { name: 'subtrahend', description: 'Number to subtract' },
-    { name: 'difference', description: 'Subtraction result' },
-    // etc...
+    {
+        name: 'addend_1',
+        description: 'First number to be added'
+    },
+    {
+        name: 'addend_2',
+        description: 'Second number to be added'
+    },
+    {
+        name: 'sum',
+        description: 'Sum result'
+    },
+    {
+        name: 'minuend',
+        description: 'Number to subtract from'
+    },
+    {
+        name: 'subtrahend',
+        description: 'Number to subtract'
+    },
+    {
+        name: 'difference',
+        description: 'Subtraction result'
+    },
+    {
+        name: 'multiplicand',
+        description: 'First number to be multiplied'
+    },
+    {
+        name: 'multiplier',
+        description: 'Second number to be multiplied'
+    },
+    {
+        name: 'product',
+        description: 'Multiplication result'
+    },
+    {
+        name: 'dividend',
+        description: 'Number to be divided'
+    },
+    {
+        name: 'divisor',
+        description: 'Number to divide by'
+    },
+    {
+        name: 'quotient',
+        description: 'Division result'
+    },
 ]);
-
-
 
 // For adapter_autodock jobs
 resourceRoleRegistry.defineMany([
-    { name: 'ligand', description: 'The molecule to be docked' },
-    { name: 'receptor', description: 'The target molecule for docking' },
-    { name: 'box', description: 'The docking box specification' },
-    { name: 'ligand_docking', description: 'Docked ligand output' },
-    { name: 'ligand_pose', description: 'Pose of the ligand after docking' },
-    { name: 'receptor_pose', description: 'Pose of the receptor after preparation' }
+    {
+        name: 'ligand',
+        description: 'The molecule to be docked'
+    },
+    {
+        name: 'receptor',
+        description: 'The target molecule for docking'
+    },
+    {
+        name: 'box',
+        description: 'The docking box specification'
+    },
+    {
+        name: 'ligand_docking',
+        description: 'Docked ligand output'
+    },
+    {
+        name: 'ligand_pose',
+        description: 'Pose of the ligand after docking'
+    },
+    {
+        name: 'receptor_pose',
+        description: 'Pose of the receptor after preparation'
+    }
 ]);
 
 

@@ -15,38 +15,20 @@ export const adapterAutodockJobs: Map<string, Job> = new Map([
     ['basic_docking', {
         id: 'basic_docking',
         name: 'basic_docking',
+        description: 'Perform basic docking.',
         url: `${prefix}/basic_docking`,
-        semanticSpec: {
-            description: 'Perform basic docking.',
-            embedding: []
-        },
-        syntacticSpec: {
+        resources: {
             inputs: [
-                {
-                    role: RR('ligand', RT('smiles'))
-                },
-                {
-                    role: RR('receptor', RT('pdb'))
-                },
-                {
-                    role: RR('box', RT('pdb'))
-                }
+                RR('ligand', RT('smiles')),
+                RR('receptor', RT('pdb')),
+                RR('box', RT('pdb'))
             ],
             outputs: [
-                {
-                    role: RR('ligand_docking', RT('pdbqt')),
-                    metadataSpec: {
-                        score: 'number', // ATTENTION_RONAK: The job hereby specifies that its metadata object will contain the docking score represented as a number. NodeHigh will write this to GraphState so that it can be used in conditions in subsequent steps of the workflow.
-                    }
-                },
-                {
-                    role: RR('ligand_pose', RT('sfd'))
-                },
-                {
-                    role: RR('receptor_pose', RT('pdb'))
-                }
+                RR('ligand_docking', RT('pdbqt_autodock')),
+                RR('ligand_pose', RT('sdf')),
+                RR('receptor_pose', RT('pdb'))
             ]
-        }
+        },
     }],
 ])
 
@@ -86,9 +68,9 @@ export const adapterAutodockWorkflowSpec_1: WorkflowSpec = {
     // Initial inputs for the workflow
     resourceMaps: [
         {
-            'ligand': { path: 'adapter_autodock/_inputs/ligand.smi', metadata: {} },
-            'receptor': { path: 'adapter_autodock/_inputs/receptor.pdb', metadata: {} },
-            'box': { path: 'adapter_autodock/_inputs/box.pdb', metadata: {} }
+            'ligand': { path: 'adapter_autodock/_inputs/ligand.smi', extractedData: {} },
+            'receptor': { path: 'adapter_autodock/_inputs/receptor.pdb', extractedData: {} },
+            'box': { path: 'adapter_autodock/_inputs/box.pdb', extractedData: {} }
         },
     ],
     counter: 0

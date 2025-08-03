@@ -29,7 +29,7 @@ const edgeRouting = (state: GraphState) => {
     const resource = whileLoopCondition.resource;
     const variable = whileLoopCondition.variable;
     if (state.workflowSpec.resourceMaps[0][resource]) {
-        const value = state.workflowSpec.resourceMaps[0][resource].metadata![variable] as number; // ATTENTION: temporary hack
+        const value = state.workflowSpec.resourceMaps[0][resource].extractedData![variable] as number; // ATTENTION: temporary hack
 
         if (whileLoopCondition.op === 'less_than' && value < whileLoopCondition.value) {
             return 'nodeHigh';

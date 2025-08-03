@@ -24,19 +24,19 @@ const calculatorWorkflowSpec_1b: WorkflowSpec = {
         {
             num_alpha: {
                 path: 'calculator/_inputs/num_3.json',
-                metadata: {}
+                extractedData: {}
             },
             num_beta: {
                 path: 'calculator/_inputs/num_9.json',
-                metadata: {}
+                extractedData: {}
             },
             num_gamma: {
                 path: 'calculator/_inputs/num_7.json',
-                metadata: {}
+                extractedData: {}
             },
             num_delta: {
                 path: 'calculator/_inputs/num_4.json',
-                metadata: {}
+                extractedData: {}
             }
         },
     ],
@@ -48,7 +48,7 @@ const calculatorWorkflowSpec_2b: WorkflowSpec = {
         {
             num_alpha: {
                 path: 'calculator/_inputs/num_5.json',
-                metadata: {}
+                extractedData: {}
             }
         },
     ],
