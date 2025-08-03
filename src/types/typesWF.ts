@@ -21,8 +21,8 @@ export interface Concept<T extends string> extends Identifiable {
     description: string; // ATTENTION: SemanticString?
 }
 
-export interface ResourceMap {
-    [key: string]: { path: string, metadata?: Metadata };
+export type ResourceMap<V extends string> = {
+    [K in V]?: { path: string, metadata?: Metadata };
 }
 
 export interface ResourceType extends Concept<string> {
@@ -109,9 +109,9 @@ export interface Workflow extends Identifiable {
     steps: WorkflowStep[];
 }
 
-export interface WorkflowSpec<T extends string> {
+export interface WorkflowSpec<V extends string> {
     workflow: Workflow;
     // ATTENTION_RONAK: This is an array to allow for parallel workflow executions in the future. This way, one can specify several sets of inputs, and resourceMaps.length encodes the number of parallel executions. For now, we'll only use resourceMaps[0].
-    resourceMaps: ResourceMap<T>[]; // For the same Workflow, all items must be the same type T
+    resourceMaps: ResourceMap<V>[]; // For the same Workflow, all items must be the same type V
     counter: number; // ATTENTION: hack for simplified, sequential workflows
 }
