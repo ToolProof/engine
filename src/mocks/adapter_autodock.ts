@@ -62,7 +62,6 @@ const adapterAutodockWorkflow_1: Workflow = {
 };
 
 
-
 export const adapterAutodockWorkflowSpec_1: WorkflowSpec = {
     workflow: adapterAutodockWorkflow_1,
     // Initial inputs for the workflow

@@ -72,7 +72,7 @@ export class NodeHigh extends NodeBase {
                 }
             });
 
-            console.log('payload:', JSON.stringify(payload, null, 2));
+            // console.log('payload:', JSON.stringify(payload, null, 2));
 
             const foo = async (url: string): Promise<{ [key: string]: { path: string, extractedData?: ExtractedData } }> => {
 
@@ -89,7 +89,7 @@ export class NodeHigh extends NodeBase {
 
                 const result = response.data;
 
-                console.log('result:', JSON.stringify(result, null, 2));
+                // console.log('result:', JSON.stringify(result, null, 2));
 
                 return result.outputs;
             }
