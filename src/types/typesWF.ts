@@ -5,10 +5,6 @@ export interface ExtractedData {
     [key: string]: number | string | boolean;
 }
 
-/* export interface ExtractedDataSpec {
-    [key: string]: 'number' | 'string' | 'boolean';
-} */
-
 export interface Identifiable {
     id: string;
 }
