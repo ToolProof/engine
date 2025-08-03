@@ -1,10 +1,5 @@
-
-// This file contains TypeScript types and interfaces for defining workflows, jobs, and resources in a system.
-
-
-export interface ExtractedData {
-    [key: string]: number | string | boolean;
-}
+// import { ResourceTypeName } from 'src/mocks/registries';
+// This file contains TypeScript types and interfaces for defining workflows, jobs, and resources.
 
 export interface Identifiable {
     id: string;
@@ -15,22 +10,18 @@ export interface Concept<T extends string> extends Identifiable {
     description: string; // ATTENTION: SemanticString?
 }
 
-export interface ResourceMap {
-    [key: string]: { path: string, extractedData?: ExtractedData };
-}
-
 export type ResourceFormat = 'json' | 'txt' | 'pdb' | 'pdbqt' | 'sdf';
 
-export type ResourceTypeName = 'number' | 'pdb' | 'pdbqt_autodock' | 'sdf' | 'smiles';
+export type ResourceTypeName = 'number' | 'smiles' | 'pdb' | 'pdbqt_autodock' | 'sdf';
 
 export type ResourceRoleName = 'addend_1' | 'addend_2' | 'sum' | 'minuend' | 'subtrahend' | 'difference' | 'multiplicand' | 'multiplier' | 'product' | 'divisor' | 'dividend' | 'quotient' |
     'ligand' | 'receptor' | 'box' | 'ligand_docking' | 'ligand_pose' | 'receptor_pose';
 
 export interface ResourceType extends Concept<ResourceTypeName> {
     format: ResourceFormat;
-    schema?: string; // URL to schema definition
-    validator?: string; // URL to validator job
-    extractor?: string; // URL to extractor job
+    schemaUrl?: string;
+    validatorUrl?: string;
+    extractorUrl?: string;
 }
 
 export interface ResourceRole extends Concept<ResourceRoleName> {
@@ -108,9 +99,17 @@ export interface Workflow extends Identifiable {
     steps: WorkflowStep[];
 }
 
+export interface ExtractedData {
+    [key: string]: number | string | boolean;
+}
+
+export interface ResourceMap {
+    [key: string]: { path: string, extractedData?: ExtractedData };
+}
+
 export interface WorkflowSpec {
     workflow: Workflow;
     // ATTENTION_RONAK: This is an array to allow for parallel workflow executions in the future. This way, one can specify several sets of inputs, and resourceMaps.length encodes the number of parallel executions. For now, we'll only use resourceMaps[0].
-    resourceMaps: ResourceMap[]; // ATTENTION: For the same Workflow, all items must be the same type
+    resourceMaps: ResourceMap[]; // ATTENTION: For the same Workflow, all elements must be the same type
     counter: number; // ATTENTION: hack for simplified, sequential workflows
 }

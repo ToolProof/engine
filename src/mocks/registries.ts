@@ -2,7 +2,7 @@ import { ResourceFormat, ResourceTypeName, ResourceRoleName, ResourceType, Resou
 import { v4 as uuidv4 } from 'uuid';
 
 
-// ATTENTION_RONAK: In this module, ResourceType and ResourceRole registries are defined for calculator and adapter_autodock jobs. These registries are used to define reusable semantic resource types and roles that can be shared across multiple jobs and workflows. Later, UI/AI-agent + validator will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
+// ATTENTION_RONAK: In this module, ResourceType and ResourceRole registries are defined for calculator and adapter_autodock jobs. These registries are used to define reusable semantic resource types and roles that can be shared across multiple jobs and workflows. Later, UI/AI-agent + validatorUrl will take care of this. You don't need to do anything here. I'm guiding you here just for your understanding.
 
 /**
  * Base registry class for managing concepts with common functionality
@@ -63,9 +63,9 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceTypeName, ResourceType> 
         name: ResourceTypeName,
         description: string,
         format: ResourceFormat = 'json',
-        schema: string = 'default-schema',
-        validator: string = 'default-validator',
-        extractor: string = 'default-extractor'
+        schemaUrl: string = 'default-schemaUrl',
+        validatorUrl: string = 'default-validatorUrl',
+        extractorUrl: string = 'default-extractorUrl'
     ): ResourceType {
         if (this.items.has(name)) {
             return this.items.get(name)!;
@@ -76,9 +76,9 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceTypeName, ResourceType> 
             name,
             description,
             format,
-            schema,
-            validator,
-            extractor
+            schemaUrl: schemaUrl,
+            validatorUrl: validatorUrl,
+            extractorUrl: extractorUrl
         };
 
         this.items.set(name, resourceType);
@@ -93,18 +93,18 @@ class ResourceTypeRegistry extends BaseRegistry<ResourceTypeName, ResourceType> 
         name: ResourceTypeName;
         description: string;
         format?: ResourceFormat;
-        schema?: string;
-        validator?: string;
-        extractor?: string;
+        schemaUrl?: string;
+        validatorUrl?: string;
+        extractorUrl?: string;
     }>): ResourceType[] {
         return definitions.map(def =>
             this.define(
                 def.name,
                 def.description,
                 def.format || 'json',
-                def.schema || 'default-schema',
-                def.validator || 'default-validator',
-                def.extractor || 'default-extractor'
+                def.schemaUrl || 'default-schemaUrl',
+                def.validatorUrl || 'default-validatorUrl',
+                def.extractorUrl || 'default-extractorUrl'
             )
         );
     }
@@ -185,52 +185,62 @@ const RR = (name: ResourceRoleName, type: ResourceType): ResourceRole => {
 // Pre-define common reusable resource types
 
 // For calculator jobs
-resourceTypeRegistry.defineMany([
+export const resourceTypesCalculator = [
     {
         name: 'number',
-        description: 'A numeric value.',
+        description: 'A number resource type.',
         format: 'json',
-        schema: 'default-schema',
-        validator: 'default-validator',
-        extractor: 'https://number-384484325421.europe-west2.run.app/extractor'
-    },
-]);
+        schemaUrl: 'default-schemaUrl',
+        validatorUrl: 'default-validatorUrl',
+        extractorUrl: 'default-extractorUrl'
+    }
+] satisfies Omit<ResourceType, 'id'>[];
+
+type CalculatorResourceTypeName = typeof resourceTypesCalculator[number]['name'];
+
+resourceTypeRegistry.defineMany(resourceTypesCalculator);
 
 // For adapter_autodock jobs
-resourceTypeRegistry.defineMany([
+export const resourceTypesAutodockAdapter = [
     {
         name: 'smiles',
         description: 'SMILES representation of a molecule.',
         format: 'txt',
-        schema: 'default-schema',
-        validator: 'default-validator',
-        extractor: 'default-extractor'
+        schemaUrl: 'default-schemaUrl',
+        validatorUrl: 'default-validatorUrl',
+        extractorUrl: 'default-extractorUrl'
     },
     {
         name: 'pdb',
         description: 'PDB representation of a molecule.',
         format: 'pdb',
-        schema: 'default-schema',
-        validator: 'default-validator',
-        extractor: 'default-extractor'
+        schemaUrl: 'default-schemaUrl',
+        validatorUrl: 'default-validatorUrl',
+        extractorUrl: 'default-extractorUrl'
     },
     {
         name: 'pdbqt_autodock',
         description: 'PDBQT representation of a molecule.',
         format: 'pdbqt',
-        schema: 'default-schema',
-        validator: 'default-validator',
-        extractor: 'default-extractor'
+        schemaUrl: 'default-schemaUrl',
+        validatorUrl: 'default-validatorUrl',
+        extractorUrl: 'default-extractorUrl'
     },
     {
         name: 'sdf',
         description: 'SDF representation of a molecule.',
         format: 'sdf',
-        schema: 'default-schema',
-        validator: 'default-validator',
-        extractor: 'default-extractor'
+        schemaUrl: 'default-schemaUrl',
+        validatorUrl: 'default-validatorUrl',
+        extractorUrl: 'default-extractorUrl'
     }
-]);
+] satisfies Omit<ResourceType, 'id'>[];
+
+type AutodockAdapterResourceTypeName = typeof resourceTypesAutodockAdapter[number]['name'];
+
+resourceTypeRegistry.defineMany(resourceTypesAutodockAdapter);
+
+// export type ResourceTypeName = CalculatorResourceTypeName | AutodockAdapterResourceTypeName;
 
 // Pre-define common reusable resources
 

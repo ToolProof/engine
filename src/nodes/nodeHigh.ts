@@ -103,7 +103,7 @@ export class NodeHigh extends NodeBase {
                 const resourceRole = job.resources.outputs.find(output => output.name === outputRole);
 
                 if (resourceRole) {
-                    const extractorUrl = resourceRole.type.extractor;
+                    const extractorUrl = resourceRole.type.extractorUrl;
                     console.log('Extractor URL:', extractorUrl);
 
                     if (!extractorUrl) {
