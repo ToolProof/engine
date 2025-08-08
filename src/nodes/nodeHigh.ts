@@ -1,5 +1,6 @@
 import { calculatorJobs } from '../mocks/calculator.js';
 import { adapterAutodockJobs } from '../mocks/adapter_autodock.js';
+import { bar } from '../ajvWrapper.js';
 import { NodeBase, GraphState } from '../types/typesLG.js';
 import { ExtractedData, ResourceMap } from '../types/typesWF.js';
 import { RunnableConfig } from '@langchain/core/runnables';
@@ -99,31 +100,9 @@ export class NodeHigh extends NodeBase {
 
             // Here, for each output we must invoke the respective ResourceType's extractor job
             await Promise.all(Object.entries(outputs).map(async ([outputRole, output]) => {
-                // Find the ResourceRole that matches the outputRole string
-                const resourceRole = job.resources.outputs.find(output => output.name === outputRole);
 
-                if (resourceRole) {
-                    const extractorUrl = resourceRole.type.extractorUrl;
-                    console.log('Extractor URL:', extractorUrl);
+                bar(output.path);
 
-                    if (!extractorUrl) {
-                        console.error(`Extractor URL for output role '${outputRole}' is not defined`);
-                        return;
-                    }
-
-                    // Call the extractor URL with output.path
-                    const response = await axios.post(extractorUrl, {
-                        resourcePath: output.path
-                    });
-                    const extractedData = response.data;
-                    // Merge the extracted data with the output
-                    outputs[outputRole] = {
-                        ...output,
-                        extractedData: extractedData as ExtractedData
-                    };
-                } else {
-                    console.error(`Output role '${outputRole}' not found in job outputs`);
-                }
             }));
 
             // Now outputs has the extractedData property added
