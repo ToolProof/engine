@@ -47,7 +47,7 @@ const calculatorWorkflowSpec_2b: WorkflowSpec = {
     resourceMaps: [
         {
             num_alpha: {
-                path: 'calculator/_inputs/num_9.json',
+                path: 'calculator/_inputs/num_8.json',
                 extractedData: {}
             }
         },
