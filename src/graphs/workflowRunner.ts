@@ -1,5 +1,5 @@
 import { GraphStateAnnotationRoot, GraphState } from '../types/typesLG';
-import { NodeHigh } from '../nodes/nodeHigh';
+import { JobRunner } from '../nodes/jobRunner';
 import { StateGraph, START, END } from '@langchain/langgraph';
 
 // ATTENTION_RONAK: Currently, edgeRouting is not fully implemented. It can only handle purely sequential workflows and workflows with 'less_than' conditioned while loops.
@@ -20,7 +20,7 @@ const edgeRouting = (state: GraphState) => {
 
     const whileLoopCondition = workflowStep.whileLoopCondition;
     if (!whileLoopCondition) {
-        return 'nodeHigh'; // If no while loop condition is specified, we assume the step should be executed
+        return 'jobRunner'; // If no while loop condition is specified, we assume the step should be executed
     }
 
     const resource = whileLoopCondition.resource;
@@ -30,12 +30,12 @@ const edgeRouting = (state: GraphState) => {
         const value = state.workflowSpec.resourceMaps[0][resource].extractedData![variable] as number; // ATTENTION: temporary hack
 
         if (whileLoopCondition.op === 'less_than' && value < whileLoopCondition.value) {
-            return 'nodeHigh';
+            return 'jobRunner';
         } else {
             return END;
         }
     } else {
-        return 'nodeHigh'; // If resource is not defined, we assume we're at the start of a new loop
+        return 'jobRunner'; // If resource is not defined, we assume we're at the start of a new loop
     }
 
 };
@@ -43,11 +43,11 @@ const edgeRouting = (state: GraphState) => {
 
 const stateGraph = new StateGraph(GraphStateAnnotationRoot)
     .addNode(
-        'nodeHigh',
-        new NodeHigh()
+        'jobRunner',
+        new JobRunner()
     )
     .addConditionalEdges(START, edgeRouting)
-    .addConditionalEdges('nodeHigh', edgeRouting)
+    .addConditionalEdges('jobRunner', edgeRouting)
 
 
 export const graph = stateGraph.compile();

@@ -1,24 +1,24 @@
 import { calculatorJobs } from '../mocks/calculator.js';
 import { adapterAutodockJobs } from '../mocks/adapter_autodock.js';
 import { bar } from '../lib/ajvWrapper.js';
-import { NodeBase, GraphState } from '../types/typesLG.js';
+import { BaseNode, GraphState } from '../types/typesLG.js';
 import { ExtractedData, ResourceMap } from '../types/typesWF.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import axios from 'axios';
 
-export class NodeHigh extends NodeBase {
+export class JobRunner extends BaseNode {
 
     constructor() {
-        super('NodeHigh'); // Pass node name to base class
+        super('JobRunner'); // Pass node name to base class
     }
 
-    // Implement the specific business logic for NodeHigh
+    // Implement the specific business logic for JobRunner
     protected async executeNode(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>> {
         try {
             const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
 
-            //  Currently, NodeHigh is hardcoded to only handle calculatorJobs and adapterAutodockJobs.
+            //  Currently, JobRunner is hardcoded to only handle calculatorJobs and adapterAutodockJobs.
             const availableJobs = new Map([...calculatorJobs, ...adapterAutodockJobs]);
             const job = availableJobs.get(workflowStep.jobId);
 
@@ -98,7 +98,7 @@ export class NodeHigh extends NodeBase {
             });
 
             return {
-                messages: [new AIMessage('NodeHigh completed')],
+                messages: [new AIMessage('JobRunner completed')],
                 workflowSpec: {
                     ...state.workflowSpec,
                     resourceMaps: [
@@ -114,9 +114,9 @@ export class NodeHigh extends NodeBase {
             };
 
         } catch (error: any) {
-            console.error('Error in NodeHigh:', error);
+            console.error('Error in JobRunner:', error);
             return {
-                messages: [new AIMessage('NodeHigh failed')],
+                messages: [new AIMessage('JobRunner failed')],
                 workflowSpec: {
                     ...state.workflowSpec,
                     counter: state.workflowSpec.counter + 1

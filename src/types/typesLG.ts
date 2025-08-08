@@ -26,7 +26,7 @@ export const GraphStateAnnotationRoot = Annotation.Root({
 
 export type GraphState = typeof GraphStateAnnotationRoot.State;
 
-export abstract class NodeBase extends Runnable {
+export abstract class BaseNode extends Runnable {
     protected nodeName: string;
 
     constructor(nodeName: string) {
