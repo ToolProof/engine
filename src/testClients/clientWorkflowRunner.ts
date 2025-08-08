@@ -72,7 +72,7 @@ export async function runRemoteGraph() {
                     delay: 1000,
                     drySocketMode: true,
                 },
-                workflowSpec: calculatorWorkflowSpec_2b,
+                workflowSpec: calculatorWorkflowSpec_1b,
             }, {
                 configurable: { thread_id: thread.thread_id },
                 signal: controller.signal,
