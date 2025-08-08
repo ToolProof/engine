@@ -101,7 +101,13 @@ export class NodeHigh extends NodeBase {
             // Here, for each output we must invoke the respective ResourceType's extractor job
             await Promise.all(Object.entries(outputs).map(async ([outputRole, output]) => {
 
-                bar(output.path);
+                const extractedData = await bar(output.path);
+
+                // Merge the extracted data with the output
+                outputs[outputRole] = {
+                    ...output,
+                    extractedData: extractedData as ExtractedData
+                };
 
             }));
 

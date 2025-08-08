@@ -38,7 +38,14 @@ function getAtPointer(root: any, ptr: string) {
         );
 }
 
-export const bar = (data: {}) => {
+export const bar = async (path: string) => {
+    // Fetch data from the provided path
+    const response = await fetch(path);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from ${path}: ${response.statusText}`);
+    }
+    const data = await response.json();
+
     // ---- Example usage ----
     const schema = {
         $schema: "https://json-schema.org/draft/2020-12/schema",
@@ -68,6 +75,8 @@ export const bar = (data: {}) => {
     );
 
     console.log(extracted); // If property-level: [3] ; If object-level: [{ value: 3 }]
+
+    return extracted[0]; // Return the first extracted value
 }
 
 
