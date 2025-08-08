@@ -2,6 +2,8 @@ import Ajv, { DefinedError } from "ajv";
 // Optional nicer types:
 // import type { KeywordDefinition } from "ajv";
 
+const prefix = "https://storage.googleapis.com/tp_resources/"; // ATTENTION: hardcoded
+
 type ExtractHit = { instancePath: string; what: "value" | "self" };
 
 function addExtractKeyword(ajv: Ajv) {
@@ -40,7 +42,7 @@ function getAtPointer(root: any, ptr: string) {
 
 export const bar = async (path: string) => {
     // Fetch data from the provided path
-    const response = await fetch(path);
+    const response = await fetch(`${prefix}${path}`);
     if (!response.ok) {
         throw new Error(`Failed to fetch data from ${path}: ${response.statusText}`);
     }
@@ -48,7 +50,6 @@ export const bar = async (path: string) => {
 
     // ---- Example usage ----
     const schema = {
-        $schema: "https://json-schema.org/draft/2020-12/schema",
         type: "object",
         "x-extract": "value",
         properties: {
