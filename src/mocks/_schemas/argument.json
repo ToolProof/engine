@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/argument-graph.schema.json",
+  "title": "Argument Graph",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "graphId": { "type": "string", "description": "Unique identifier for this argument set / debate." },
+    "context": {
+      "type": "object",
+      "description": "Context for the graph (topic, event, schema versions).",
+      "additionalProperties": false,
+      "properties": {
+        "topic": { "type": "string" },
+        "debateId": { "type": "string" },
+        "argumentSchemaVersion": { "type": "string" }
+      }
+    },
+    "arguments": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Argument" }
+    },
+    "validationReport": {
+      "description": "Optional semantic validation results for this graph.",
+      "$ref": "#/$defs/ValidationReport"
+    }
+  },
+  "required": ["graphId", "arguments"],
+
+  "$defs": {
+    "Argument": {
+      "title": "Logical Argument",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this argument."
+        },
+        "claim": {
+          "type": "string",
+          "description": "The main conclusion or statement being argued for."
+        },
+        "premises": {
+          "type": "array",
+          "description": "Supporting statements or evidence.",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/Premise" }
+        },
+        "targets": {
+          "type": "array",
+          "description": "Per-target relations from this argument to others.",
+          "items": { "$ref": "#/$defs/TargetRef" }
+        },
+        "context": {
+          "type": "string",
+          "description": "Topic/debate context where this argument appears."
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["id", "claim", "premises"]
+    },
+
+    "Premise": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string", "description": "Premise text." },
+        "source": { "type": "string", "description": "Citation or reference." },
+        "type": {
+          "type": "string",
+          "enum": ["fact", "opinion", "example", "analogy", "definition", "statistic"],
+          "description": "Premise classification."
+        }
+      },
+      "required": ["text"]
+    },
+
+    "TargetRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "Target argument ID." },
+        "relation": {
+          "type": "string",
+          "enum": ["supports", "opposes", "rebuts"],
+          "description": "How this argument relates to that target."
+        }
+      },
+      "required": ["id", "relation"]
+    },
+
+    "ValidatorInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "runId": { "type": "string", "description": "Trace/run identifier." }
+      },
+      "required": ["name"]
+    },
+
+    "Finding": {
+      "title": "Argument Validation Finding",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "validator": { "$ref": "#/$defs/ValidatorInfo" },
+
+        "scope": {
+          "type": "string",
+          "enum": ["argument", "edge", "premise"],
+          "description": "What this finding refers to."
+        },
+
+        "ref": {
+          "type": "object",
+          "description": "Reference to the element under evaluation.",
+          "oneOf": [
+            {
+              "title": "Argument-scope",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "argumentId": { "type": "string" }
+              },
+              "required": ["argumentId"]
+            },
+            {
+              "title": "Edge-scope",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "sourceArgumentId": { "type": "string" },
+                "targetArgumentId": { "type": "string" }
+              },
+              "required": ["sourceArgumentId", "targetArgumentId"]
+            },
+            {
+              "title": "Premise-scope",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "argumentId": { "type": "string" },
+                "premiseIndex": { "type": "integer", "minimum": 0 }
+              },
+              "required": ["argumentId", "premiseIndex"]
+            }
+          ]
+        },
+
+        "category": {
+          "type": "string",
+          "enum": [
+            "logic",
+            "relevance",
+            "support-strength",
+            "consistency",
+            "evidence",
+            "fallacy",
+            "cohesion",
+            "language",
+            "policy"
+          ]
+        },
+        "ruleId": { "type": "string" },
+        "label": { "type": "string" },
+        "message": { "type": "string" },
+
+        "severity": {
+          "type": "string",
+          "enum": ["error", "warning", "info", "pass"]
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+
+        "metrics": {
+          "type": "object",
+          "additionalProperties": { "type": ["number", "string", "boolean"] }
+        },
+
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["citation", "quote", "source", "document", "url", "exhibit"]
+              },
+              "value": { "type": "string" },
+              "note": { "type": "string" }
+            },
+            "required": ["type", "value"]
+          }
+        },
+
+        "suggestion": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "id",
+        "timestamp",
+        "validator",
+        "scope",
+        "ref",
+        "category",
+        "ruleId",
+        "severity"
+      ]
+    },
+
+    "ArgumentScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "argumentId": { "type": "string" },
+        "overall": { "type": "number", "minimum": 0, "maximum": 1 },
+        "dimensions": {
+          "type": "object",
+          "additionalProperties": { "type": "number" },
+          "description": "Breakdown by dimension (e.g., logic, evidence, relevance)."
+        }
+      },
+      "required": ["argumentId", "overall"]
+    },
+
+    "EdgeScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceArgumentId": { "type": "string" },
+        "targetArgumentId": { "type": "string" },
+        "supportStrength": { "type": "number", "minimum": 0, "maximum": 1 },
+        "consistency": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "required": ["sourceArgumentId", "targetArgumentId"]
+    },
+
+    "ValidationReport": {
+      "title": "Argument Validation Report",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reportId": { "type": "string" },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "context": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "debateId": { "type": "string" },
+            "argumentSetId": { "type": "string" },
+            "argumentSchemaVersion": { "type": "string" }
+          }
+        },
+        "validator": { "$ref": "#/$defs/ValidatorInfo" },
+
+        "summary": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "total": { "type": "integer", "minimum": 0 },
+            "errors": { "type": "integer", "minimum": 0 },
+            "warnings": { "type": "integer", "minimum": 0 },
+            "infos": { "type": "integer", "minimum": 0 },
+            "passes": { "type": "integer", "minimum": 0 }
+          }
+        },
+
+        "findings": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/Finding" }
+        },
+
+        "scores": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "arguments": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/ArgumentScore" }
+            },
+            "edges": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/EdgeScore" }
+            }
+          }
+        },
+
+        "ruleCatalog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ruleId": { "type": "string" },
+              "category": { "type": "string" },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "severityDefault": {
+                "type": "string",
+                "enum": ["error", "warning", "info"]
+              }
+            },
+            "required": ["ruleId", "category", "name"]
+          }
+        }
+      },
+      "required": ["reportId", "generatedAt", "validator", "findings"]
+    }
+  }
+}
