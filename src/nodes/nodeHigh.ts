@@ -1,49 +1,20 @@
 import { calculatorJobs } from '../mocks/calculator.js';
 import { adapterAutodockJobs } from '../mocks/adapter_autodock.js';
-import { bar } from '../ajvWrapper.js';
+import { bar } from '../lib/ajvWrapper.js';
 import { NodeBase, GraphState } from '../types/typesLG.js';
 import { ExtractedData, ResourceMap } from '../types/typesWF.js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import { AIMessage } from '@langchain/core/messages';
 import axios from 'axios';
-import WebSocket from 'ws';
-
-
-// ATTENTION_RONAK: NodeHigh is responsible for executing jobs in a workflow. For each job it runs, it expands resourceMaps to include the outputs the job produces. Later, it will be implemented to also write the job's metadata in GraphState for use in subsequent conditional steps of the workflow. edgeRouting will then be used to determine the next step based on this metadata.
 
 export class NodeHigh extends NodeBase {
 
     constructor() {
-        super();
+        super('NodeHigh'); // Pass node name to base class
     }
 
-    async invoke(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>> {
-
-        if (!state.dryModeManager.drySocketMode) {
-
-            // Connect to WebSocket server
-            const ws = new WebSocket('https://service-websocket-384484325421.europe-west2.run.app');
-
-            ws.on('open', () => {
-                ws.send(JSON.stringify({
-                    node: 'NodeHigh',
-                }));
-                ws.close();
-            });
-
-            ws.on('error', (error) => {
-                console.error('WebSocket Error:', error);
-            });
-        }
-
-        if (state.dryModeManager.dryRunMode) {
-            await new Promise(resolve => setTimeout(resolve, state.dryModeManager.delay));
-
-            return {
-                messages: [new AIMessage('NodeHigh completed in DryRun mode')],
-            };
-        }
-
+    // Implement the specific business logic for NodeHigh
+    protected async executeNode(state: GraphState, options?: Partial<RunnableConfig<Record<string, any>>>): Promise<Partial<GraphState>> {
         try {
             const workflowStep = state.workflowSpec.workflow.steps[state.workflowSpec.counter];
 
@@ -153,7 +124,6 @@ export class NodeHigh extends NodeBase {
             };
         }
     }
-
 }
 
 

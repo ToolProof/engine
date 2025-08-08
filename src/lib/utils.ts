@@ -1,4 +1,4 @@
-import { Job, Workflow, WorkflowStep } from './types/typesWF.js';
+import { Job, Workflow, WorkflowStep } from '../types/typesWF.js';
 
 interface ValidationResult {
     isValid: boolean;

@@ -1,5 +1,5 @@
 import { runRemoteGraph as runWorkflowRunner } from './testClients/clientWorkflowRunner.js';
-import { validateWorkflow } from './utils.js';
+import { validateWorkflow } from './lib/utils.js';
 import { calculatorJobs, calculatorWorkflowSpec_1, calculatorWorkflowSpec_2 } from './mocks/calculator.js';
 import { adapterAutodockJobs, adapterAutodockWorkflowSpec_1 } from './mocks/adapter_autodock.js';
 
