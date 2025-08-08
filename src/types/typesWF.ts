@@ -98,7 +98,7 @@ export interface Workflow extends Identifiable {
 }
 
 export interface ExtractedData {
-    [key: string]: number | string | boolean;
+    [key: string]: number | string | boolean; // ATTENTION: This should map to a JSON type
 }
 
 export interface ResourceMap {
