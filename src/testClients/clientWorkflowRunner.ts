@@ -23,19 +23,19 @@ const calculatorWorkflowSpec_1b: WorkflowSpec = {
     resourceMaps: [
         {
             num_alpha: {
-                path: 'calculator/_inputs/num_2.json',
+                path: 'calculator/_inputs/num_4.json',
                 extractedData: {}
             },
             num_beta: {
-                path: 'calculator/_inputs/num_5.json',
+                path: 'calculator/_inputs/num_4.json',
                 extractedData: {}
             },
             num_gamma: {
-                path: 'calculator/_inputs/num_2.json',
+                path: 'calculator/_inputs/num_4.json',
                 extractedData: {}
             },
             num_delta: {
-                path: 'calculator/_inputs/num_3.json',
+                path: 'calculator/_inputs/num_4.json',
                 extractedData: {}
             }
         },
@@ -47,7 +47,7 @@ const calculatorWorkflowSpec_2b: WorkflowSpec = {
     resourceMaps: [
         {
             num_alpha: {
-                path: 'calculator/_inputs/num_8.json',
+                path: 'calculator/_inputs/num_4.json',
                 extractedData: {}
             }
         },
